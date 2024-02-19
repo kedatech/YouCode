@@ -12,4 +12,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\YouCode.BE\YouCode.BE.csproj" />
+    <ProjectReference Include="..\YouCode.BL\YouCode.BL.csproj" />
+  </ItemGroup>
+
 </Project>
