@@ -14,11 +14,13 @@ namespace YouCode.BE
         public int Id { get; set; }
         [ForeignKey("User")]
         public int IdFollow { get; set; }
+        [ForeignKey("User")]
         public int IdFollower { get; set; }
         public DateTime FollowerAt { get; set; }
 
         [NotMapped]
         public User User = new  User();
+        
 
 
     }
