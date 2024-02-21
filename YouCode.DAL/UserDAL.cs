@@ -38,7 +38,7 @@ namespace YouCode.DAL
             }
         }
         // eliminar un usuario 
-        public static async Task<int> DeletAsync(User user)
+        public static async Task<int> DeleteAsync(User user)
         {
             int result = 0;
             using (var bdContexto = new ContextoDB())

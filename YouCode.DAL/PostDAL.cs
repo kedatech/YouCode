@@ -37,7 +37,7 @@ namespace YouCode.DAL
             }
 
         }
-        public static async Task<int> DeletAsync(Post post)
+        public static async Task<int> DeleteAsync(Post post)
         {
             int result = 0;
             using (var bdContexto = new ContextoDB())
