@@ -16,7 +16,7 @@ namespace YouCode.BE
         public int IdFollow { get; set; }
         [ForeignKey("User")]
         public int IdFollower { get; set; }
-        public DateTime FollowerAt { get; set; }
+        public DateTime FollowedAt { get; set; }
 
         [NotMapped]
         public User User = new  User();

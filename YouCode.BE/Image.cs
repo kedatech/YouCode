@@ -11,9 +11,9 @@ namespace YouCode.BE
     public class Image
     {
         [Key]
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
         [Required]
-        public string Path { get; set; }
+        public string Path { get; set; } = string.Empty;
 
         [ForeignKey("Post")]
         public int IdPost { get; set; }
