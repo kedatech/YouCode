@@ -15,4 +15,8 @@
     <ProjectReference Include="..\YouCode.BE\YouCode.BE.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="NewFolder\" />
+  </ItemGroup>
+
 </Project>

@@ -22,7 +22,9 @@ namespace YouCode.BE
         [Required]
         public string Password { get; set; }
         [Required]
-        public DateTime CreatedAt {get; set; }
-        
+        public DateTime CreatedAt { get; set; }
+        [NotMapped]
+        public int Top_Aux { get; set; }
+
     }
 }
