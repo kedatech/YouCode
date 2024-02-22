@@ -8,7 +8,7 @@ using YouCode.BE;
 
 namespace YouCode.DAL
 {
-    internal class UserDAL
+    public class UserDAL
     {
         //agregar un nuevo usuario a la base de datos 
         public static async Task<int> CreateAsync(User user)
