@@ -12,7 +12,7 @@ namespace YouCode.BE
     {
         [Key]
         public int Id { get; set; }
-        public string MoreInfo { get; set; }
+        public string MoreInfo { get; set; } = string.Empty;
         [ForeignKey("User")]
         public int IdUser { get; set; }
         [NotMapped]

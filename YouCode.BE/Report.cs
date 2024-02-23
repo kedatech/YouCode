@@ -16,9 +16,8 @@ namespace YouCode.BE
         [ForeignKey("User")]
         public int IdUser { get; set; }
      
-        public string Type { get; set; }
-        public string Description { get; set; }
-        public DateTime CratedAt { get; set; }
+        public string Type { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
         [NotMapped]
         public User User = new User();
