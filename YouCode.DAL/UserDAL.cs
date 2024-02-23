@@ -73,6 +73,19 @@ namespace YouCode.DAL
 
             return user;
         }
+
+        public static async Task<List<User>> SearchAsync(User user)
+        {
+            List<User> users = new List<User>();
+            using(var ContextDb = new ContextoDB())
+            {
+                var select = ContextDb.User.AsQueryable();
+                select = QuerySelect(select, user);
+                users = await select.ToListAsync();
+            }
+            return users;
+        }
+
         internal static IQueryable<User> QuerySelect(IQueryable<User> query, User user)
         {
             if (user.Id > 0)

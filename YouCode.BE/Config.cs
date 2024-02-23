@@ -14,7 +14,7 @@ namespace YouCode.BE
         public int Id { get; set;  }
         [ForeignKey("User")]
         public int IdUser { get; set;  }
-        public string Info { get; set;  }
+        public string Info { get; set;  } = string.Empty;
 
         [NotMapped]
         public User User = new User();
