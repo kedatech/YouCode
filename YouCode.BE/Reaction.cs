@@ -18,7 +18,7 @@ namespace YouCode.BE
         [ForeignKey("Post")]
         public int IdPost { get; set;  }
         [ForeignKey("Comment")]
-        public string IdComment { get; set; }
+        public int IdComment { get; set; }
 
         [NotMapped]
         public User User = new User();

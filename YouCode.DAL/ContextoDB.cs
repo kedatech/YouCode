@@ -26,7 +26,7 @@ namespace YouCode.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data source = DESKTOP-PBLCGGH;
+            optionsBuilder.UseSqlServer(@"Data source = AREVPC;
                                         Initial Catalog = YouCode;
                                         Integrated Security = true;
                                         Encrypt = false;
