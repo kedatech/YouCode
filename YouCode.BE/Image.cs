@@ -15,9 +15,13 @@ namespace YouCode.BE
         [Required]
         public string Path { get; set; }
 
-        [ForeignKey("Post")]
+        [ForeignKey("Post")] 
+
         public int IdPost { get; set; }
         [NotMapped]
         public Post Post { get; set; } = new Post();
+        [NotMapped]
+        public int Top_Aux { get; set; }
+        public int IdAdd { get; set; }
     }
 }

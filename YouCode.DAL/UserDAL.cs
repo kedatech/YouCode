@@ -21,13 +21,13 @@ namespace YouCode.DAL
             }
             return result;
         }
-        //Busca el usuario 
+        //actualiza el usuario 
         public static async Task<int> UpdateAsync(User user)
         {
             int result = 0;
             using (var bdContexto = new ContextoDB())
             {
-                var userDB = await bdContexto.User.FirstOrDefaultAsync(c => c.Id == user.Id);
+                var userDB = await bdContexto.User.FirstOrDefaultAsync(u => u.Id == user.Id);
                 if (userDB != null)
                 {
                     userDB.Name = user.Name;
@@ -43,7 +43,7 @@ namespace YouCode.DAL
             int result = 0;
             using (var bdContexto = new ContextoDB())
             {
-                var userDB = await bdContexto.User.FirstOrDefaultAsync(c => c.Id == user.Id);
+                var userDB = await bdContexto.User.FirstOrDefaultAsync(u => u.Id == user.Id);
                 if (userDB != null)
                 {
                     bdContexto.User.Remove(userDB);
@@ -58,7 +58,7 @@ namespace YouCode.DAL
             var userDB = new User();
             using (var bdContexto = new ContextoDB())
             {
-                userDB = await bdContexto.User.FirstOrDefaultAsync(c => c.Id == user.Id);
+                userDB = await bdContexto.User.FirstOrDefaultAsync(u => u.Id == user.Id);
             }
             return userDB;
         }
