@@ -8,20 +8,21 @@ using System.Threading.Tasks;
 
 namespace YouCode.BE
 {
-    public class Image
+    public class Follower
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        public string Path { get; set; } = string.Empty;
+        [ForeignKey("User")]
+        public int IdFollow { get; set; }
+        [ForeignKey("User")]
+        public int IdFollower { get; set; }
+        public DateTime FollowedAt { get; set; }
 
-        [ForeignKey("Post")] 
-
-        public int IdPost { get; set; }
         [NotMapped]
-        public Post Post { get; set; } = new Post();
-        [NotMapped]
+        public User User = new  User();
         public int Top_Aux { get; set; }
-        public int IdAdd { get; set; }
+        
+
+
     }
 }

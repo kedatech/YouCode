@@ -5,17 +5,25 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace YouCode.BE
 {
-    public class Profile
+    public class Reaction
     {
         [Key]
         public int Id { get; set; }
-        public string MoreInfo { get; set; } = string.Empty;
         [ForeignKey("User")]
         public int IdUser { get; set; }
+        [ForeignKey("Post")]
+        public int IdPost { get; set;  }
+        [ForeignKey("Comment")]
+        public int IdComment { get; set; }
+
         [NotMapped]
-        public User User { get; set; } = new User ();
+        public User User = new User();
+        public Post Post = new Post();
+        public Comment Comment = new Comment();
+
     }
 }

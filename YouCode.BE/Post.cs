@@ -14,9 +14,9 @@ namespace YouCode.BE
         [Key]
         public int Id { get; set; }
         [Required]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         [Required]
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
         [Required]
         public DateTime PostedAt { get; set; }
         [ForeignKey("User")]
@@ -24,5 +24,7 @@ namespace YouCode.BE
 
         [NotMapped]
         public User User { get; set; } = new User();
+        [NotMapped]
+        public int Top_Aux { get; set; }
     }
 }

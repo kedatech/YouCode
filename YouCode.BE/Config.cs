@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 
 namespace YouCode.BE
 {
-    public class Profile
+    public class Config
     {
         [Key]
-        public int Id { get; set; }
-        public string MoreInfo { get; set; } = string.Empty;
+        public int Id { get; set;  }
         [ForeignKey("User")]
-        public int IdUser { get; set; }
+        public int IdUser { get; set;  }
+        public string Info { get; set;  } = string.Empty;
+
         [NotMapped]
-        public User User { get; set; } = new User ();
+        public User User = new User();
     }
 }

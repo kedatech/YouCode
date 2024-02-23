@@ -13,15 +13,16 @@ namespace YouCode.BE
         [Key]
         public int Id { get; set; }
         [Required] 
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         [Required]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         [Required]
         public DateTime CreatedAt { get; set; }
         [ForeignKey("User")]
         public int IdUser { get; set; }
         [NotMapped]
         public User User {  get; set; } = new User();
+        public int Top_Aux { get; set; }
 
     }
 }
