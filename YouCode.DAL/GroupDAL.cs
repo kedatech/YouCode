@@ -25,6 +25,11 @@ public class GroupDAL
                 if (groupDB != null)
                 {
                     groupDB.Id = group.Id;
+                    groupDB.IdUser = group.IdUser;
+                    groupDB.Name = group.Name;
+                    groupDB.Description = group.Description;
+                    groupDB.CreatedAt = group.CreatedAt;
+
                     bdContexto.Update(groupDB);
                     result = await bdContexto.SaveChangesAsync();
                 }

@@ -30,7 +30,13 @@ namespace YouCode.DAL
                 var userDB = await bdContexto.User.FirstOrDefaultAsync(u => u.Id == user.Id);
                 if (userDB != null)
                 {
+                    userDB.Id = user.Id;
                     userDB.Name = user.Name;
+                    userDB.Username = user.Username;
+                    userDB.Email = user.Email;
+                    userDB.Password = user.Password;
+                    userDB.CreatedAt = user.CreatedAt;
+                    
                     bdContexto.Update(userDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
@@ -95,6 +101,10 @@ namespace YouCode.DAL
             if (!string.IsNullOrWhiteSpace(user.Name))
             {
                 query = query.Where(c => c.Name.Contains(user.Name));
+            }
+            if (!string.IsNullOrWhiteSpace(user.Username))
+            {
+                query = query.Where(c => c.Username.Contains(user.Username));
             }
 
             query = query.OrderByDescending(c => c.Id);

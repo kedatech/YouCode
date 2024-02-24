@@ -24,7 +24,6 @@ namespace YouCode.BE
 
         [NotMapped]
         public User User { get; set; } = new User();
-        [NotMapped]
         public int Top_Aux { get; set; }
     }
 }

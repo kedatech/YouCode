@@ -30,6 +30,9 @@ namespace YouCode.DAL
                 if (commentDB != null)
                 {
                     commentDB.Id = comment.Id;
+                    commentDB.IdPost = comment.IdPost;
+                    commentDB.Content = comment.Content;
+                    
                     bdContexto.Update(commentDB);
                     result = await bdContexto.SaveChangesAsync();
                 }

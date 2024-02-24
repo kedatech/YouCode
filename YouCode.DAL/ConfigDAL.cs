@@ -24,6 +24,9 @@ public class ConfigDAL
                 if (configDB != null)
                 {
                     configDB.Id = config.Id;
+                    configDB.IdUser = config.IdUser;
+                    configDB.Info = config.Info;
+                    
                     bdContexto.Update(configDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
