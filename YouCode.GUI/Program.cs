@@ -4,7 +4,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 // Register IHttpClientFactory
 builder.Services.AddHttpClient();
+
+builder.WebHost.UseUrls("http://*:5000");
+
+// Agregar configuración CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        builder => builder
+            .AllowAnyOrigin() // Esto permite cualquier origen
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
