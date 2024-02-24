@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
 # Copia el archivo del proyecto y restaura las dependencias
-COPY YouCode.GUI.csproj ./
+COPY ./YouCode.GUI/YouCode.GUI.csproj ./
 RUN dotnet restore
 
 # Copia todo el contenido del proyecto y compila la aplicación
