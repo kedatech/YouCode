@@ -23,7 +23,7 @@
     <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
   </ItemGroup>
 
-  <Target Name="Tailwind" BeforeTargets="Build">
-    <Exec Command="npm run tailwind"/>
+  <Target Name="Tailwind" BeforeTargets="Publish">
+    <Exec Command="npm run tailwind:min"/>
   </Target>
 </Project>
