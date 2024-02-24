@@ -2,19 +2,18 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Instala Node.js
+# Instala Node.js y limpia en un solo paso para reducir la cantidad de capas
 RUN apt-get update -yq \
-    && apt-get install curl gnupg -yq \
-    && curl -sL https://deb.nodesource.com/setup_16.x | bash \
-    && apt-get install nodejs -yq
+    && apt-get install -yq curl gnupg \
+    && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -yq nodejs \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Verifica la instalación de Node.js y npm
-RUN sudo npm install -g npm@latest
+# Verifica la instalación de Node.js y npm, actualiza npm
+RUN npm install -g npm@latest
 
-RUN node --version
-RUN npm --version
-
-# Ajusta la ruta del COPY para considerar la estructura de directorios correcta
+# Ajusta la ruta del COPY para considerar la estructura de directorios correcta y copia el archivo csproj
 COPY ./YouCode.GUI/YouCode.GUI.csproj ./YouCode.GUI/
 
 # Cambia al directorio del proyecto antes de restaurar
@@ -24,8 +23,8 @@ RUN dotnet restore
 # Copia el resto de los archivos del proyecto
 COPY ./YouCode.GUI/ ./
 
-# Instala las dependencias de Node.js, por ejemplo, para TailwindCSS
-RUN npm install
+# Usa npm ci para instalar dependencias, optimizado para entornos de producción
+RUN npm ci --only=production
 
 # Compila la aplicación .NET
 RUN dotnet publish -c Release -o out 
