@@ -8,7 +8,7 @@ RUN dotnet restore
 
 # Copia todo el contenido del proyecto y compila la aplicación
 COPY . .
-RUN dotnet publish -c Release -o out
+RUN dotnet publish ./YouCode.GUI.csproj -c Release -o out 
 
 # Publica la aplicación en una imagen de ASP.NET Core
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
