@@ -18,4 +18,12 @@
     <ProjectReference Include="..\YouCode.BL\YouCode.BL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
+    <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
+  </ItemGroup>
+
+  <Target Name="Tailwind" BeforeTargets="Build">
+    <Exec Command="npm run tailwind"/>
+  </Target>
 </Project>
