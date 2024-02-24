@@ -9,6 +9,8 @@ RUN apt-get update -yq \
     && apt-get install nodejs -yq
 
 # Verifica la instalación de Node.js y npm
+RUN sudo npm install -g npm@latest
+
 RUN node --version
 RUN npm --version
 
