@@ -23,9 +23,10 @@ namespace YouCode.BE
         public int IdPost { get; set; }
         [NotMapped]
         public User User { get; set; } = new User();
+        [NotMapped]
         public Post Post { get; set; } =new Post();
+        [NotMapped]
         public int Top_Aux { get; set; }
-
 
     }
 }

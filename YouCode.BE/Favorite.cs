@@ -10,15 +10,20 @@ using System.Threading.Tasks;
 namespace YouCode.BE
 {
     public class Favorite
-    {
+     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey("User")]
+
+        [ForeignKey("IdUser")]
         public int IdUser { get; set; }
-        [ForeignKey("Post")]
+
+        [ForeignKey("IdPost")]
         public int IdPost { get; set; }
+
         [NotMapped]
-        public User User = new User();
-        public Post Post = new Post();
+        public User User { get; set; } = new User();
+
+        [NotMapped]
+        public Post Post { get; set; } = new Post();
     }
 }
