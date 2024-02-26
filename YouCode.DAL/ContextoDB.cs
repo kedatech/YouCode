@@ -26,11 +26,11 @@ namespace YouCode.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data source = DESKTOP-9Q2BNN8\SQLEXPRESS;
-                                        Initial Catalog = YouCode;
-                                        Integrated Security = true;
-                                        Encrypt = false;
-                                        trustServerCertificate = true");
+            optionsBuilder.UseSqlServer(@"Data Source= AREVPC;
+                                    Initial Catalog = YouCodeDB; 
+                                    Encrypt = false;
+                                    TrustServerCertificate = true; 
+                                    Integrated Security = true");
         }
     }
 }

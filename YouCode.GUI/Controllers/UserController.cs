@@ -12,7 +12,7 @@ public class UserController : Controller
     
     public IActionResult Profile()
     {
-        return RedirectToAction("Index", "Profile");
+        return View();
     }
 
     public async Task<IActionResult> Feed()
