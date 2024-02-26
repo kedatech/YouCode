@@ -14,4 +14,13 @@
     <ProjectReference Include="..\YouCode.BE\YouCode.BE.csproj" />
     <ProjectReference Include="..\YouCode.BL\YouCode.BL.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
+    <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
+  </ItemGroup>
+
+  <Target Name="Tailwind" BeforeTargets="Publish">
+    <Exec Command="npm run tailwind:min"/>
+  </Target>
 </Project>
