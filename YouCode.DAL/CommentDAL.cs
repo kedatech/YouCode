@@ -79,6 +79,10 @@ namespace YouCode.DAL
             {
                 query = query.Where(c => c.Id == comment.Id);
             }
+            if (comment.IdPost > 0)
+            {
+                query = query.Where(c => c.IdPost == comment.IdPost);
+            }
             if (!string.IsNullOrWhiteSpace(comment.Content))
             {
                 query = query.Where(c => c.Content.Contains(comment.Content));
