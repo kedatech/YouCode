@@ -24,6 +24,9 @@ public class VideoDAL
                 if (videoDB != null)
                 {
                     videoDB.Id = video.Id;
+                    videoDB.IdPost = video.IdPost;
+                    videoDB.Path = video.Path;
+
                     bdContexto.Update(videoDB);
                     result = await bdContexto.SaveChangesAsync();
                 }

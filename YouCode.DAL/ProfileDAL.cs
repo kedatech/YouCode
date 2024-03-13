@@ -24,6 +24,8 @@ public class ProfileDAL
                 if (profileDB != null)
                 {
                     profileDB.Id = profile.Id;
+                    profileDB.IdUser = profile.IdUser;
+                    profileDB.MoreInfo = profile.MoreInfo;
                     bdContexto.Update(profileDB);
                     result = await bdContexto.SaveChangesAsync();
                 }

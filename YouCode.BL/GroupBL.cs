@@ -30,7 +30,7 @@ namespace YouCode.BL
             return await GroupDAL.GetByIdAsync(group);
         }
 
-        public async Task<List<Video>> GetAllAsync()
+        public async Task<List<Group>> GetAllAsync()
         {
             return await GroupDAL.GetAllAsync();
         }

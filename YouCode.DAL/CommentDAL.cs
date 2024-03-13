@@ -30,6 +30,9 @@ namespace YouCode.DAL
                 if (commentDB != null)
                 {
                     commentDB.Id = comment.Id;
+                    commentDB.IdPost = comment.IdPost;
+                    commentDB.Content = comment.Content;
+                    
                     bdContexto.Update(commentDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
@@ -75,6 +78,10 @@ namespace YouCode.DAL
             if (comment.Id > 0)
             {
                 query = query.Where(c => c.Id == comment.Id);
+            }
+            if (comment.IdPost > 0)
+            {
+                query = query.Where(c => c.IdPost == comment.IdPost);
             }
             if (!string.IsNullOrWhiteSpace(comment.Content))
             {

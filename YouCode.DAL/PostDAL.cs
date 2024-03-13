@@ -30,6 +30,11 @@ namespace YouCode.DAL
                 if (postDB != null)
                 {
                     postDB.Id = post.Id;
+                    postDB.IdUser = post.IdUser;
+                    postDB.Title = post.Title;
+                    postDB.Content = post.Content;
+                    postDB.PostedAt = post.PostedAt;
+                    
                     bdContexto.Update(postDB);
                     result = await bdContexto.SaveChangesAsync();
                 }

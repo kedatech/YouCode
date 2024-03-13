@@ -25,7 +25,7 @@ namespace YouCode.BL
             return await ImageDAL.DeleteAsync(image);
         }
 
-        public async Task<int> GetByIdAsync(Image image)
+        public async Task<Image> GetByIdAsync(Image image)
         {
             return await ImageDAL.GetByIdAsync(image); 
         }

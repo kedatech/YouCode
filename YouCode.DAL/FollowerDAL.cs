@@ -24,6 +24,9 @@ public class FollowerDAL
                 if (followerDB != null)
                 {
                     followerDB.Id = follower.Id;
+                    followerDB.IdFollower = follower.IdFollower;
+                    followerDB.IdFollow = follower.IdFollow;
+                    followerDB.FollowedAt = follower.FollowedAt;
                     bdContexto.Update(followerDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
