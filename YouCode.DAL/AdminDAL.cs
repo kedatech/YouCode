@@ -24,6 +24,8 @@ public class AdminDAL
                 if (adminDB != null)
                 {
                     adminDB.Id = admin.Id;
+                    adminDB.IdUser = admin.IdUser;
+                    adminDB.CreatedAt = admin.CreatedAt;
                     bdContexto.Update(adminDB);
                     result = await bdContexto.SaveChangesAsync();
                 }

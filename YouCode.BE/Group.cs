@@ -18,10 +18,14 @@ namespace YouCode.BE
         public string Description { get; set; } = string.Empty;
         [Required]
         public DateTime CreatedAt { get; set; }
+        
         [ForeignKey("User")]
         public int IdUser { get; set; }
+
         [NotMapped]
         public User User {  get; set; } = new User();
+
+        [NotMapped]
         public int Top_Aux { get; set; }
 
     }

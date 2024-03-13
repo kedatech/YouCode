@@ -24,6 +24,8 @@ public class FavoriteDAL
                 if (favoriteDB != null)
                 {
                     favoriteDB.Id = favorite.Id;
+                    favoriteDB.IdUser = favorite.IdUser;
+                    favoriteDB.IdPost = favorite.IdPost;
                     bdContexto.Update(favoriteDB);
                     result = await bdContexto.SaveChangesAsync();
                 }

@@ -33,6 +33,7 @@ namespace YouCode.DAL
                 {
                     imageDB.Id = image.Id;
                     imageDB.Path = image.Path;
+                    imageDB.IdPost = image.IdPost;
                     bdContexto.Update(imageDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
@@ -79,8 +80,8 @@ namespace YouCode.DAL
         {
             if (image.IdPost > 0)
                 query = query.Where(s => s.Id == image.Id);
-            if (image.IdAdd > 0)
-                query = query.Where(s => s.IdAdd == image.IdAdd);
+            if (image.IdPost > 0)
+                query = query.Where(s => s.IdPost == image.IdPost);
             if (!string.IsNullOrWhiteSpace(image.Path))
                 query = query.Where(s => s.Path.Contains(image.Path));
 

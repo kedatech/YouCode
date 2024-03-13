@@ -22,8 +22,12 @@ namespace YouCode.BE
 
         [NotMapped]
         public User User = new User();
-        public Post Post = new Post();
-        public Comment Comment = new Comment();
+
+        [NotMapped]
+         public Post Post = new Post();
+
+        [NotMapped]
+         public Comment Comment = new Comment();
 
     }
 }

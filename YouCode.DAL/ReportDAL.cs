@@ -24,6 +24,10 @@ public class ReportDAL
                 if (reportDB != null)
                 {
                     reportDB.Id = report.Id;
+                    reportDB.IdUser = report.IdUser;
+                    reportDB.Type = report.Type;
+                    reportDB.Description = report.Description;
+
                     bdContexto.Update(reportDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
