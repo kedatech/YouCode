@@ -21,6 +21,9 @@ WORKDIR /app/YouCode.GUI
 RUN dotnet restore
 
 # Copia el resto de los archivos del proyecto
+COPY ./YouCode.BE/ ./
+COPY ./YouCode.DAL/ ./
+COPY ./YouCode.BL/ ./
 COPY ./YouCode.GUI/ ./
 
 # Usa npm ci para instalar dependencias, optimizado para entornos de producción
