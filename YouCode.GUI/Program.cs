@@ -5,7 +5,7 @@ builder.Services.AddControllersWithViews();
 // Register IHttpClientFactory
 builder.Services.AddHttpClient();
 
-builder.WebHost.UseUrls("http://*:5000");
+builder.WebHost.UseUrls("http://localhost:5096");
 
 // Agregar configuración CORS
 builder.Services.AddCors(options =>

@@ -11,11 +11,15 @@ namespace YouCode.BE
     public class Profile
     {
         [Key]
+        [ForeignKey("User")]
         public int Id { get; set; }
         public string MoreInfo { get; set; } = string.Empty;
-        
-        [ForeignKey("User")]
-        public int IdUser { get; set; }
+
+        public string AvatarUrl { get; set; }
+
+        public string Bio { get; set; }
+
+        public string Email { get; set; }
 
         [NotMapped]
         public User User { get; set; } = new User ();
