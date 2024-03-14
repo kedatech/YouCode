@@ -13,7 +13,6 @@ namespace YouCode.BE
         [Key]
         [ForeignKey("User")]
         public int Id { get; set; }
-        public string MoreInfo { get; set; } = string.Empty;
 
         public string AvatarUrl { get; set; }
 
