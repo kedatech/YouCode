@@ -17,14 +17,11 @@ namespace YouCode.BE
         public string Name { get; set; } = string.Empty;
         [Required]
         public string Username { get; set; } = string.Empty;
-        [Required]
-        public string Email { get; set; } = string.Empty;
-        [Required]
-        public string Password { get; set; } = string.Empty;
+       
+       
         [Required]
         public DateTime CreatedAt { get; set; }
-        [NotMapped]
-        public int Top_Aux { get; set; }
+       
 
     }
 }
