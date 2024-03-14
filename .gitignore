@@ -482,3 +482,4 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+YouCode.GUI/wwwroot/css/styles.css
