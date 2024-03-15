@@ -67,6 +67,16 @@ namespace YouCode.DAL
             }
             return userDB;
         }
+        
+        public static async Task<User> GetByUsernameAsync(User user)
+        {
+            var userDB = new User();
+            using (var bdContexto = new ContextoDB())
+            {
+                userDB = await bdContexto.User.FirstOrDefaultAsync(u => u.Username == user.Username);
+            }
+            return userDB;
+        }
         //obtener todos los usuarios de la base de datos
         public static async Task<List<User>> GetAllAsync()
         {

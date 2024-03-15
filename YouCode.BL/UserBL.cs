@@ -29,6 +29,10 @@ namespace YouCode.BL
         {
             return await UserDAL.GetByIdAsync(user);
         } 
+        public async Task<User> GetByUsernameAsync(User user)
+        {
+            return await UserDAL.GetByUsernameAsync(user);
+        } 
 
         public async Task<List<User>> GetAllAsync()
         {
