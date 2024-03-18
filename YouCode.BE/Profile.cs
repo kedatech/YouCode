@@ -20,7 +20,6 @@ namespace YouCode.BE
 
         public string Email { get; set; } = string.Empty;
         
-        [NotMapped]
         public User User { get; set; }
     }
 }
