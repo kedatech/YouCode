@@ -19,7 +19,8 @@ namespace YouCode.GUI.Controllers
         }
 
         // Acción que muestra los detalles de un administrador
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id) 
+    
         {
             var admin = await adminBL.GetByIdAsync(new Admin { Id = id });
             return View(admin);
