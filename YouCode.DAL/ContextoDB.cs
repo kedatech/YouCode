@@ -21,7 +21,6 @@ namespace YouCode.DAL
         public DbSet<Admin> Admin { get; set; }
         public DbSet<Follower> Follower {  get; set; }
         public DbSet<Reaction> Reaction { get ; set; }
-        public DbSet<Config> Config { get; set; }
         public DbSet<Profile> Profile { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -18,9 +18,8 @@ namespace YouCode.BE
         [Required]
         public string Username { get; set; } = string.Empty;
        
-       
-        [Required]
-        public DateTime CreatedAt { get; set; }
+        // [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
        
 
     }

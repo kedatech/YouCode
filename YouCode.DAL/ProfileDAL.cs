@@ -23,9 +23,9 @@ public class ProfileDAL
                 var profileDB = await bdContexto.Profile.FirstOrDefaultAsync(c => c.Id == profile.Id);
                 if (profileDB != null)
                 {
-                    profileDB.Id = profile.Id;
-                    profileDB.IdUser = profile.IdUser;
-                    profileDB.MoreInfo = profile.MoreInfo;
+                    profileDB.Bio = profile.Bio;
+                    profileDB.AvatarUrl = profile.AvatarUrl;
+                    profileDB.Email = profile.Email;
                     bdContexto.Update(profileDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
@@ -49,13 +49,18 @@ public class ProfileDAL
         }
         public static async Task<Profile> GetByIdAsync(Profile profile)
         {
-            var profileDB = new Profile();
+            Profile profileDB;
             using (var bdContexto = new ContextoDB())
             {
-                profileDB = await bdContexto.Profile.FirstOrDefaultAsync(c => c.Id == profile.Id);
+                profileDB = await bdContexto.Profile
+                    .Include(profile => profile.User) // Incluye la entidad User
+                    .FirstOrDefaultAsync(c => c.Id == profile.Id);
             }
             return profileDB;
         }
+
+
+
         public static async Task<List<Profile>> GetAllAsync()
         {
             var profile = new List<Profile>();
@@ -71,10 +76,6 @@ public class ProfileDAL
             if (profile.Id > 0)
             {
                 query = query.Where(c => c.Id == profile.Id);
-            }
-            if (profile.IdUser > 0)
-            {
-                query = query.Where(c => c.IdUser == profile.IdUser);
             }
 
             return query;
