@@ -87,9 +87,6 @@ namespace YouCode.DAL
 
             query = query.OrderByDescending(s => s.Id).AsQueryable();
 
-            if (image.Top_Aux > 0)
-                query = query.Take(image.Top_Aux).AsQueryable();
-
             return query;
         }
        // permite buscar imágenes en la base de datos

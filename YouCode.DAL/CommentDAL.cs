@@ -89,10 +89,7 @@ namespace YouCode.DAL
             }
 
             query = query.OrderByDescending(c => c.Id);
-            if (comment.Top_Aux > 0)
-            {
-                query = query.Take(comment.Top_Aux).AsQueryable();
-            }
+       
             return query;
         }
 

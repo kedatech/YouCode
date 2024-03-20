@@ -20,7 +20,5 @@ namespace YouCode.BE
         [NotMapped]
         public Post Post { get; set; } = new Post();
 
-        [NotMapped]
-        public int Top_Aux { get; set; }
     }
 }

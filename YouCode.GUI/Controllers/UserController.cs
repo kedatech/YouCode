@@ -26,12 +26,7 @@ public class UserController : Controller
         ViewBag.Error = "";
         return View();
     }
-    public async Task<ActionResult> Details(int id)
-    {
-        var user = await userBL.GetByIdAsync(new User { Id = id});
-        return View(user);
-        //Deberia de retornar al Profile de ese Usuario :v
-    }
+    
     public async Task<IActionResult> Edit(int id)
     {
         var user = await userBL.GetByIdAsync(new User{Id =  id});
