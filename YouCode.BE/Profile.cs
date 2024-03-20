@@ -14,13 +14,12 @@ namespace YouCode.BE
         [ForeignKey("User")]
         public int Id { get; set; }
 
-        public string AvatarUrl { get; set; }
+        public string AvatarUrl { get; set; } = string.Empty;
 
-        public string Bio { get; set; }
+        public string Bio { get; set; } = string.Empty;
 
-        public string Email { get; set; }
-
-        [NotMapped]
-        public User User { get; set; } = new User ();
+        public string Email { get; set; } = string.Empty;
+        
+        public User User { get; set; }
     }
 }

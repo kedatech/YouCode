@@ -7,8 +7,10 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Octokit" Version="9.1.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YouCode.BE\YouCode.BE.csproj" />
@@ -21,6 +23,6 @@
   </ItemGroup>
 
   <Target Name="Tailwind" BeforeTargets="Publish">
-    <Exec Command="npm run tailwind:min"/>
+    <Exec Command="npm run tailwind:min" />
   </Target>
 </Project>

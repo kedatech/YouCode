@@ -8,11 +8,13 @@ namespace YouCode.GUI.Controllers;
 public class UserController : Controller
 {
     UserBL userBL = new UserBL();
+    ProfileBL profileBL = new ProfileBL();
     PostBL postBL = new PostBL();
     
-    public IActionResult Profile()
+    public async Task<IActionResult> Profile(int id)
     {
-        return View();
+        var profile = await profileBL.GetByIdAsync(new Profile { Id = id });
+        return View(profile);
     }
 
     public async Task<IActionResult> Feed()
@@ -20,33 +22,10 @@ public class UserController : Controller
         var posts = await postBL.GetAllAsync();
         return View(posts);
     }
-
-    public IActionResult Create()
-    {
-        ViewBag.Error = "";
-        return View();
-    }
-    
     public async Task<IActionResult> Edit(int id)
     {
         var user = await userBL.GetByIdAsync(new User{Id =  id});
         return View(user);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(User user)
-    {
-        try
-        {
-            int res = await userBL.CreateAsync(user);
-            return RedirectToAction(nameof(Index));
-        }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View(user);
-        }
     }
 
     [HttpPut]
