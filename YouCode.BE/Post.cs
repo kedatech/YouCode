@@ -21,9 +21,6 @@ namespace YouCode.BE
         public DateTime PostedAt { get; set; }
         [ForeignKey("User")]
         public int IdUser { get; set; }
-
-        [NotMapped]
-        public int Top_Aux { get; set; }
         public User User { get; set; } = new User();      
     }
 }

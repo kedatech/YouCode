@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace YouCode.BE
 {
    public class Group
-    {
+   {
         [Key]
         public int Id { get; set; }
         [Required] 
@@ -25,8 +25,5 @@ namespace YouCode.BE
         [NotMapped]
         public User User {  get; set; } = new User();
 
-        [NotMapped]
-        public int Top_Aux { get; set; }
-
-    }
+   }
 }

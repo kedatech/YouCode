@@ -11,14 +11,7 @@ public class FollowerController : Controller
     
     public async Task<IActionResult> Index(Follower follower)
     {
-        if(follower.Top_Aux == 0)
-            follower.Top_Aux = 10;
-        else if(follower.Top_Aux < 0)
-            follower.Top_Aux = 0;
-
-        var followers = await followerBL.SearchAsync(follower);
-        ViewBag.Top = follower.Top_Aux;
-        return View(followers);
+        return View();
     }
     public IActionResult Create()
     {

@@ -87,10 +87,7 @@ public class GroupDAL
             }
 
             query = query.OrderByDescending(c => c.Id);
-            if (group.Top_Aux > 0)
-            {
-                query = query.Take(group.Top_Aux).AsQueryable();
-            }
+            
             return query;
         }
 

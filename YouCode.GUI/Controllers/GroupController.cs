@@ -11,14 +11,7 @@ public class GroupController : Controller
     
     public async Task<IActionResult> Index(Group group)
     {
-        if(group.Top_Aux == 0)
-            group.Top_Aux = 10;
-        else if(group.Top_Aux < 0)
-            group.Top_Aux = 0;
-
-        var groups = await groupBL.SearchAsync(group);
-        ViewBag.Top = group.Top_Aux;
-        return View(groups);
+        return View();
     }
     public IActionResult Create()
     {
