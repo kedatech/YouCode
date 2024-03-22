@@ -83,10 +83,7 @@ public class FollowerDAL
             }
 
             query = query.OrderByDescending(c => c.Id);
-            if (follower.Top_Aux > 0)
-            {
-                query = query.Take(follower.Top_Aux).AsQueryable();
-            }
+            
             return query;
         }
 

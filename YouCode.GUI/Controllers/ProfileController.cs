@@ -10,10 +10,6 @@ public class ProfileController : Controller
     UserBL userBL = new UserBL();
     PostBL postBL = new PostBL();
     
-    public IActionResult Index()
-    {
-        return View(); //falta de ver como madres traerme la info del usuario actual
-    }
     public IActionResult Create()
     {
         ViewBag.Error = "";
