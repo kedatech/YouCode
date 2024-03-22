@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http;
 using Octokit;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using YouCode.BE;
 using YouCode.BL;
@@ -28,6 +34,26 @@ namespace YouCode.GUI.Controllers
 
         public IActionResult Index() => View();
 
+
+
+
+
+
+        public IActionResult Wall()
+        {
+            //Aqui deberia de comprobar si tiene sesion
+            return View();
+        }
+
+
+
+
+
+
+
+
+
+
         public IActionResult Register()
         {
             ViewData["ClientId"] = _configuration["GithubClientId"];
@@ -43,6 +69,25 @@ namespace YouCode.GUI.Controllers
             return Redirect(githubOAuthUrl);
         }
 
+        public string CreateJTW(string username, int userId, int profileId)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, username)
+                }),
+                Expires = DateTime.Now.AddMonths(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+            
+            return tokenString;
+
+        }
         public async Task<IActionResult> Login(string code)
         {
             try
@@ -73,14 +118,25 @@ namespace YouCode.GUI.Controllers
                     Bio = userGithub.Bio ?? string.Empty,
 
                 };
-
+                
                 // Si es un nuevo usuario rea el perfil
+                
+                var token = "";
+
                 if (is_new_user)
                 {
                     await _profileBL.CreateAsync(profileDB);
                 }
 
+                token = CreateJTW(userDB.Username, userDB.Id, profileDB.Id);
+                HttpContext.Session.SetString("JwtToken", token);
+                Console.WriteLine("token created: "+token);
+                
+
+
                 return RedirectToAction("Profile", "User", new { id = profileDB.Id });
+                // return RedirectToAction("Index", "Home");
+                // return RedirectToAction("Privacy", "Home", new { user = User.Identity.Name});
             }
             catch (Exception ex)
             {

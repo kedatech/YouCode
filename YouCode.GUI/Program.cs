@@ -1,3 +1,8 @@
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +11,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 
 builder.WebHost.UseUrls("http://localhost:5096");
+
+builder.Services.AddSession();
 
 // Agregar configuración CORS
 builder.Services.AddCors(options =>
@@ -16,6 +23,38 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
+
+// start jwt config
+var key =  builder.Configuration.GetValue<string>("JwtSettings:Key");
+
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(options =>{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(opt =>
+{
+    
+    var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+    var credentiasl = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature);
+
+    opt.RequireHttpsMetadata = false;
+    opt.SaveToken = true;
+    opt.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = signingKey,
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+
+});
+// end jwt config
+
+
+
 var app = builder.Build();
 
 
@@ -32,7 +71,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",

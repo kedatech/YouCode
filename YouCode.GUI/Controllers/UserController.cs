@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using YouCode.DAL;
 using YouCode.BE;
 using YouCode.BL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace YouCode.GUI.Controllers;
 public class UserController : Controller
@@ -11,8 +12,17 @@ public class UserController : Controller
     ProfileBL profileBL = new ProfileBL();
     PostBL postBL = new PostBL();
     
+    // [Authorize]
+
     public async Task<IActionResult> Profile(int id)
     {
+        var token = HttpContext.Session.GetString("JwtToken");
+        if (string.IsNullOrEmpty(token))
+        {
+            // Redirigir al inicio de sesión si el token no está presente en la sesión
+            return RedirectToAction("Index", "Home");
+        }
+
         var profile = await profileBL.GetByIdAsync(new Profile { Id = id });
         return View(profile);
     }

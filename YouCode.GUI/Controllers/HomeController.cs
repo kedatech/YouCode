@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Octokit;
 using System.Diagnostics;
+using System.Security.Claims;
 using YouCode.GUI.Models;
 
 namespace YouCode.GUI.Controllers
@@ -21,7 +22,14 @@ namespace YouCode.GUI.Controllers
         }
         public IActionResult Index()
         {
+            var token = HttpContext.Session.GetString("JwtToken");
+            Console.WriteLine("token: "+token);
             return View();
+        }
+
+        public string Protected(ClaimsPrincipal user)
+        {
+            return user.Identity?.Name;
         }
 
         
@@ -49,9 +57,9 @@ namespace YouCode.GUI.Controllers
             return View(user);
         }
 
-        public IActionResult Privacy()
+        public IActionResult Privacy(string u)
         {
-            return View();
+            return View(u);
         }
 
         
