@@ -14,7 +14,7 @@ public class UserController : Controller
     PostBL postBL = new PostBL();
     
     [Route("User/Profile/{username}")]
-    // [JwtAuthentication]
+    [JwtAuthentication]
     public async Task<IActionResult> Profile(string username)
     {
         var user = await userBL.GetByUsernameAsync(username);
