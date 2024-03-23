@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -7,36 +6,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 // Register IHttpClientFactory
 builder.Services.AddHttpClient();
+// builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-builder.WebHost.UseUrls("http://localhost:5096");
 
-builder.Services.AddSession();
+// Configure JWT
+var key = builder.Configuration.GetValue<string>("JwtSettings:Key");
 
-// Agregar configuración CORS
-builder.Services.AddCors(options =>
+builder.Services.AddAuthentication(options =>
 {
-    options.AddPolicy("AllowAnyOrigin",
-        builder => builder
-            .AllowAnyOrigin() // Esto permite cualquier origen
-            .AllowAnyHeader()
-            .AllowAnyMethod());
-});
-
-// start jwt config
-var key =  builder.Configuration.GetValue<string>("JwtSettings:Key");
-
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(options =>{
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(opt =>
 {
-    
     var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
-    var credentiasl = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature);
+    var credentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature);
 
     opt.RequireHttpsMetadata = false;
     opt.SaveToken = true;
@@ -47,16 +34,38 @@ builder.Services.AddAuthentication(options =>{
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero,
     };
-
 });
-// end jwt config
 
+builder.WebHost.UseUrls("http://localhost:5096");
 
+// Add session and configure cookie
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".SuperMemory.Session";
+    options.IdleTimeout = TimeSpan.FromMinutes(1);
+    options.Cookie.IsEssential = true;
+
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.None;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+
+// Add distributed memory cache
+builder.Services.AddDistributedMemoryCache();
+
+// Add CORS configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        builder => builder
+            .AllowAnyOrigin() // Allow any origin
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var app = builder.Build();
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -71,10 +80,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-
+// Ensure that app.UseSession() is placed after app.UseRouting() and before app.UseAuthorization()
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
+app.UseCookiePolicy();
+
+app.UseCors("AllowAnyOrigin"); // Use CORS policy
 
 app.MapControllerRoute(
     name: "default",

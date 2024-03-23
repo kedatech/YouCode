@@ -4,6 +4,7 @@ using YouCode.DAL;
 using YouCode.BE;
 using YouCode.BL;
 using Microsoft.AspNetCore.Authorization;
+using YouCode.GUI.Services.Auth;
 
 namespace YouCode.GUI.Controllers;
 public class UserController : Controller
@@ -12,21 +13,32 @@ public class UserController : Controller
     ProfileBL profileBL = new ProfileBL();
     PostBL postBL = new PostBL();
     
-    // [Authorize]
-
-    public async Task<IActionResult> Profile(int id)
+    [Route("User/Profile/{username}")]
+    // [JwtAuthentication]
+    public async Task<IActionResult> Profile(string username)
     {
-        var token = HttpContext.Session.GetString("JwtToken");
-        if (string.IsNullOrEmpty(token))
-        {
-            // Redirigir al inicio de sesión si el token no está presente en la sesión
-            return RedirectToAction("Index", "Home");
-        }
-
-        var profile = await profileBL.GetByIdAsync(new Profile { Id = id });
-        return View(profile);
+        var user = await userBL.GetByUsernameAsync(username);
+            if(user != null)
+            {
+                var profile = await profileBL.GetByIdAsync(new Profile { Id = user.Id });
+                if(profile != null)
+                {
+                    return View(profile);
+                }
+                else
+                {
+                    Console.WriteLine("Error, perfil no existe");
+                    return RedirectToAction("Index", "Home"); // error
+                }
+            }
+            else
+            {
+                Console.WriteLine("Error, user no existe");
+                return RedirectToAction("Index", "Home"); // error
+            }
+        
     }
-
+    [JwtAuthentication]
     public async Task<IActionResult> Feed()
     {
         var posts = await postBL.GetAllAsync();
