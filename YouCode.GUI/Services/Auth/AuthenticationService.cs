@@ -18,10 +18,10 @@ namespace YouCode.GUI.Services.Auth
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var xd = "E4C54F0E688584D8D57F1A9C238A6B3A71EAD74F3B6F6B9AB4B936059E44C4BD";
+            var sectionName = "JwtSettings:Key";
+            var keyBytes = configuration.GetSection(sectionName).Value;
+            var key = Encoding.UTF8.GetBytes(keyBytes);
 
-            var sectionName = "JwtSettings";
-            var key = Encoding.UTF8.GetBytes(xd);
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -46,9 +46,8 @@ namespace YouCode.GUI.Services.Auth
                 .AddJsonFile("appsettings.json")
                 .Build();
             
-             var xd = "E4C54F0E688584D8D57F1A9C238A6B3A71EAD74F3B6F6B9AB4B936059E44C4BD";
-            var sectionName = "JwtSettings";
-            var key = xd;
+            var sectionName = "JwtSettings:Key";
+            var key = configuration.GetSection(sectionName).Value;
             if (token == null)
                 return null;
 
@@ -80,8 +79,21 @@ namespace YouCode.GUI.Services.Auth
 
         public static string EncryptToken(string token)
         {
-            var xd = "w54D%k2Tf!Lp#Z@1^X8~j7*qY&v9Nc$E";
-            var key = Encoding.ASCII.GetBytes(xd);
+            var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+            
+            var sectionName = "JwtSettings:CookieKey";
+            var keyBytes = configuration.GetSection(sectionName).Value;
+            var key = Encoding.ASCII.GetBytes(keyBytes);
+            if(key.Length == 0)
+            {
+                return null;
+            }   
+            if(string.IsNullOrEmpty(token))
+            {
+                return null;
+            }
             using (var aesAlg = Aes.Create())
             {
                 aesAlg.Key = key;
@@ -106,8 +118,23 @@ namespace YouCode.GUI.Services.Auth
 
         public static string DecryptToken(string encryptedToken)
         {
-            var xd = "w54D%k2Tf!Lp#Z@1^X8~j7*qY&v9Nc$E";
-            var key = Encoding.ASCII.GetBytes(xd);
+            var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+            
+            var sectionName = "JwtSettings:CookieKey";
+            var keyBytes = configuration.GetSection(sectionName).Value;
+            var key = Encoding.ASCII.GetBytes(keyBytes);
+            if(key.Length == 0)
+            {
+                return null;
+            }
+            if(string.IsNullOrEmpty(encryptedToken))
+            {
+                return null;
+            }
+                
+            
             using (var aesAlg = Aes.Create())
             {
                 aesAlg.Key = key;
