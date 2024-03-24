@@ -1,13 +1,20 @@
+using YouCode.BE;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http;
 using Octokit;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
-using YouCode.BE;
 using YouCode.BL;
 using YouCode.GUI.Models;
+using YouCode.GUI.Services.Auth;
 
 namespace YouCode.GUI.Controllers
 {
@@ -27,14 +34,7 @@ namespace YouCode.GUI.Controllers
         }
 
         public IActionResult Index() => View();
-
-        public IActionResult Register()
-        {
-            ViewData["ClientId"] = _configuration["GithubClientId"];
-            ViewData["RedirectUrl"] = _configuration["RedirectUri"];
-            return View();
-        }
-
+        [AllowAnonymous]
         public IActionResult Redirect()
         {
             var clientId = _configuration["GithubClientId"];
@@ -42,14 +42,14 @@ namespace YouCode.GUI.Controllers
             var githubOAuthUrl = $"https://github.com/login/oauth/authorize?client_id={clientId}&redirect_uri={redirectUrl}&scope=user:email";
             return Redirect(githubOAuthUrl);
         }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Login(string code)
         {
             try
             {
                 var accessToken = await GetAccessTokenAsync(code);
                 var userGithub = await GetUserFromGitHubAsync(accessToken);
-                var userDB = await _userBL.GetByUsernameAsync(new BE.User { Username = userGithub.Login });
+                var userDB = await _userBL.GetByUsernameAsync(userGithub.Login);
                 bool is_new_user = userDB == null;
                 
                 if (is_new_user)
@@ -73,14 +73,34 @@ namespace YouCode.GUI.Controllers
                     Bio = userGithub.Bio ?? string.Empty,
 
                 };
+                
+                // Si es un nuevo usuario crea el perfil
 
-                // Si es un nuevo usuario rea el perfil
                 if (is_new_user)
                 {
                     await _profileBL.CreateAsync(profileDB);
                 }
 
-                return RedirectToAction("Profile", "User", new { id = profileDB.Id });
+                //----🚧 Create Jwt section
+
+                var jwtToken = AuthenticationService.GenerateJwtToken(userDB.Username);
+                var validUserName = AuthenticationService.ValidateToken(jwtToken);
+
+                if (string.IsNullOrEmpty(validUserName))
+                {
+                    return RedirectToAction("Privacy", "Home"); //🚨 Debe retornar debido a un error
+                }
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTime.Now.AddMonths(1)
+                };
+                var encryptedToken = AuthenticationService.EncryptToken(jwtToken);
+                Response.Cookies.Append("_TojiBestoProta", encryptedToken, cookieOptions);
+
+                //----🚧 Create Jwt section
+                return RedirectToAction("Profile", "User", new { username = userDB.Username });
             }
             catch (Exception ex)
             {
@@ -88,7 +108,7 @@ namespace YouCode.GUI.Controllers
                 return StatusCode(500);
             }
         }
-
+        
         private async Task<string> GetAccessTokenAsync(string code)
         {
             var httpClient = _httpClientFactory.CreateClient();

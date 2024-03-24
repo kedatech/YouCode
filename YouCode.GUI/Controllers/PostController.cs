@@ -9,23 +9,19 @@ public class PostController : Controller
 {
     PostBL postBL = new PostBL();
     CommentBL commentBL = new CommentBL();
-    
-    public IActionResult Create()
-    {
-        ViewBag.Error = "";
-        return View();
-    }
 
     public async Task<IActionResult> Comments(int idPost)
     {
         var comments = await commentBL.SearchAsync(new Comment{IdPost = idPost});
         return View(comments);
     }
+    //TODO: Esto podria renombrarse a Post/id y mostrarse en un modal
     public async Task<ActionResult> Details(int id)
     {
         var post = await postBL.GetByIdAsync(new Post { Id = id});
         return View(post);
     }
+    //TODO: Esto podria solo ser una llamada de accion del backend
     public async Task<IActionResult> Edit(int id)
     {
         var post = await postBL.GetByIdAsync(new Post{Id =  id});
