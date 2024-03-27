@@ -94,20 +94,27 @@
                     </div>
                 </div>
 
-                <div class="block">
+                <div class="block" id="Boton login">
                     <div class="inline relative">
-                        <a asp-controller="Auth" asp-action="Redirect">
-                            <button type="button"
-                                class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg">
-                                <span class="text-gray-700 pr-2 font-semibold text-lg">Login with</span>
-                                <div class="flex flex-grow-0 flex-shrink-0 h-10 w-10">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                        class="w-full h-full">
-                                        <img src="/Images/github-mark.svg" alt="GitHub" class="w-full h-full">
-                                    </svg>
-                                </div>
-                            </button> 
-                        </a>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <span class="text-gray-700 pr-2 font-semibold text-lg">Hello, @User.Identity.Name!</span>
+                        }
+                        else
+                        {
+                            <a asp-controller="Auth" asp-action="Redirect">
+                                <button type="button"
+                                    class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg">
+                                    <span class="text-gray-700 pr-2 font-semibold text-lg">Login with</span>
+                                    <div class="flex flex-grow-0 flex-shrink-0 h-10 w-10">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                            class="w-full h-full">
+                                            <img src="/Images/github-mark.svg" alt="GitHub" class="w-full h-full">
+                                        </svg>
+                                    </div>
+                                </button> 
+                            </a>
+                        }
                     </div>
                 </div>
 
