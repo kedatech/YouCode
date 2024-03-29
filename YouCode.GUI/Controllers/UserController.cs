@@ -1,17 +1,19 @@
-using YouCode;
+    using YouCode;
 using Microsoft.AspNetCore.Mvc;
 using YouCode.DAL;
 using YouCode.BE;
 using YouCode.BL;
 using Microsoft.AspNetCore.Authorization;
 using YouCode.GUI.Services.Auth;
+using YouCode.GUI.Services;
 
 namespace YouCode.GUI.Controllers;
 public class UserController : Controller
 {
-    UserBL userBL = new UserBL();
-    ProfileBL profileBL = new ProfileBL();
-    PostBL postBL = new PostBL();
+    private readonly UserBL userBL = new UserBL();
+    private readonly ProfileBL profileBL = new ProfileBL();
+    private readonly PostBL postBL = new PostBL();
+    private readonly PostService postService = new PostService();
     
     [Route("User/Profile/{username}")]
     [JwtAuthentication]
@@ -41,7 +43,7 @@ public class UserController : Controller
     [JwtAuthentication]
     public async Task<IActionResult> Feed()
     {
-        var posts = await postBL.GetAllAsync();
+        var posts = await postService.GetAllAsync();
         return View(posts);
     }
     public async Task<IActionResult> Edit(int id)
