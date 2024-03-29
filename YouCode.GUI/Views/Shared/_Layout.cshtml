@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="~/YouCode.GUI.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/minstyles.min.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -72,7 +74,7 @@
             <div class="flex justify-end items-center relative">
 
                 <div class="flex mr-4 items-center">
-                    <a class="inline-block py-2 px-3 hover:bg-gray-200 rounded-full" asp-area="" asp-controller="Home" asp-action="Index">
+                    <a class="inline-block py-2 px-3 hover:bg-gray-200 rounded-full" asp-area="" asp-controller="User" asp-action="Feed">
                         <div class="flex items-center relative cursor-pointer whitespace-nowrap">Feed</div>
                     </a>
                     
@@ -105,9 +107,9 @@
                             <a asp-controller="Auth" asp-action="Redirect">
                                 <button type="button"
                                     class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg">
-                                    <span class="text-gray-700 pr-2 font-semibold text-lg">Login with</span>
-                                    <div class="flex flex-grow-0 flex-shrink-0 h-10 w-10">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    <span class="text-gray-700 pr-2 font-semibold text-[13px]">Login with</span>
+                                    <div class="flex flex-grow-0 flex-shrink-0 h-6 w-6">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="currentColor"
                                             class="w-full h-full">
                                             <img src="/Images/github-mark.svg" alt="GitHub" class="w-full h-full">
                                         </svg>
