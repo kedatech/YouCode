@@ -1,13 +1,13 @@
-@* @using YouCode.BL *@
+@using YouCode.GUI.Components.Icons
 @model IEnumerable<YouCode.GUI.Services.PostDto>
 @{
     ViewData["Title"] = "Feed";
 }
 
-<div class="w-full flex flex-col items-center">
+<div class="w-full flex flex-col items-center" id="contendor-post">
     @foreach (var post in Model)
     {
-        <div class="bg-white border rounded-sm max-w-md my-3 w-full">
+        <div class="bg-white border rounded-sm max-w-md my-3 w-full post-item-render" id="post-@post.Id">
             <div class="flex items-center px-4 py-3">
                 <img class="h-8 w-8 rounded-full" src="@post.UserProfile.AvatarUrl" />
                 <div class="ml-3 ">
@@ -32,7 +32,7 @@
                         @foreach (var image in post.Images)
                         {
                             <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
-                                <img src="@image.Path" alt="@image.Path" 
+                                <img src="@image.Path" alt="post image" 
                                     class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 aspect-w-16 aspect-h-9 object-cover">
                             </div>
                         }
@@ -69,14 +69,28 @@
 
             @* *@
 
+            @* @ViewBag.User.Id     *@
+
             <div class="flex items-center justify-between mx-4 mt-3 mb-2">
                 <div class="flex gap-5">
                     <!-- SVG de Corazón (Me gusta) -->
-                    <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
-                        <path
-                            d="M34.6 6.1c5.7 0 10.4 5.2 10.4 11.5 0 6.8-5.9 11-11.5 16S25 41.3 24 41.9c-1.1-.7-4.7-4-9.5-8.3-5.7-5-11.5-9.2-11.5-16C3 11.3 7.7 6.1 13.4 6.1c4.2 0 6.5 2 8.1 4.3 1.9 2.6 2.2 3.9 2.5 3.9.3 0 .6-1.3 2.5-3.9 1.6-2.3 3.9-4.3 8.1-4.3m0-3c-4.5 0-7.9 1.8-10.6 5.6-2.7-3.7-6.1-5.5-10.6-5.5C6 3.1 0 9.6 0 17.6c0 7.3 5.4 12 10.6 16.5.6.5 1.3 1.1 1.9 1.7l2.3 2c4.4 3.9 6.6 5.9 7.6 6.5.5.3 1.1.5 1.6.5.6 0 1.1-.2 1.6-.5 1-.6 2.8-2.2 7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6 48 25 48 17.6c0-8-6-14.5-13.4-14.5z">
-                        </path>
+
+                    @namespace YouCode.GUI.Components.Icons
+
+                    <svg onclick="setLike(@post.Id)" class="hover" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="hear 1" clip-path="url(#clip0_31_2)">
+                    <g id="hear - copia 1">
+                    <path class="hidden" id="like-green" d="M19.4048 5.62257C18.9072 5.1089 18.3155 4.70111 17.6636 4.42265C17.0117 4.14419 16.3126 4.00055 15.6064 4C14.2706 4.00022 12.9836 4.51459 12.0002 5.44126C11.0169 4.51443 9.72986 4.00004 8.39404 4C7.68701 4.00075 6.9871 4.14483 6.3346 4.42393C5.6821 4.70303 5.08988 5.11165 4.59203 5.62627C2.46857 7.81221 2.46947 11.2313 4.59384 13.408L12.0002 21L19.4066 13.408C21.531 11.2313 21.5319 7.81221 19.4048 5.62257Z" fill="#4FDC54"/>
+                    <path id="like-gray" d="M12 4.59511C10.9104 3.59321 9.48419 3.03716 8.00398 3.03711C7.22052 3.03793 6.44495 3.19367 5.72192 3.49538C4.99888 3.79709 4.34265 4.2388 3.79098 4.79511C1.43798 7.15811 1.43898 10.8541 3.79298 13.2071L11.125 20.5391C11.295 20.8381 11.623 21.0311 12 21.0311C12.1548 21.0296 12.3071 20.9918 12.4446 20.9208C12.5822 20.8498 12.7011 20.7475 12.792 20.6221L20.207 13.2071C22.561 10.8531 22.561 7.15811 20.205 4.79111C19.6536 4.23583 18.9979 3.79501 18.2756 3.49399C17.5532 3.19298 16.7785 3.03771 15.996 3.03711C14.5158 3.03735 13.0897 3.59338 12 4.59511ZM18.791 6.20511C20.354 7.77611 20.355 10.2301 18.793 11.7931L12 18.5861L5.20698 11.7931C3.64498 10.2301 3.64598 7.77611 5.20498 6.20911C5.96498 5.45311 6.95898 5.03711 8.00398 5.03711C9.04898 5.03711 10.039 5.45311 10.793 6.20711L11.293 6.70711C11.3858 6.80006 11.496 6.87379 11.6173 6.9241C11.7386 6.97441 11.8686 7.00031 12 7.00031C12.1313 7.00031 12.2614 6.97441 12.3827 6.9241C12.504 6.87379 12.6142 6.80006 12.707 6.70711L13.207 6.20711C14.719 4.69811 17.281 4.70211 18.791 6.20511Z" fill="#4F4F5E"/>
+                    </g>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_31_2">
+                    <rect width="24" height="24" fill="white"/>
+                    </clipPath>
+                    </defs>
                     </svg>
+
                     <!-- SVG de Comentario -->
                     <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
                         <path
@@ -95,11 +109,87 @@
             </div>
             <!-- La cantidad de 'likes' podría ser dinámica dependiendo de la lógica de la aplicación, aquí se usa un número estático como placeholder -->
             <div class="flex justify-between font-semibold text-sm mx-4 mt-2 mb-4">
-                <span>@post.ReactionCount Likes</span>
+                <span class="likes">@post.Reactions.Count Likes</span>
                 <span>@post.FavoriteCount Saved</span>
             </div>
+
+            @* propiedad oculta con un array de los usurios que dieron like *@
+            <input type="hidden" value='@Json.Serialize(post.Reactions)' class="reactions" />
         </div>
     }
 </div>
 
 
+@section Scripts {
+    <script>
+
+        // obtener id del localStorage
+
+        var stringId = localStorage.getItem('YCuserId')
+
+        if(!stringId){
+            alert('No se ha iniciado sesión');
+        }
+
+        var userId = parseInt(stringId);
+        console.log(userId);
+        // obtener el contenedor de los post
+        const contenedorPost = document.getElementById('contendor-post');
+
+        // obtener la lista de post
+        const postItems = contenedorPost.querySelectorAll('.post-item-render');
+
+        // recorrer los post, obtener la lista de reacciones y verificar si el usuario actual ya reaccionó
+        postItems.forEach(postItem => {
+            const reactions = JSON.parse(postItem.querySelector('.reactions').value);
+            const likeGreen = postItem.querySelector('#like-green');
+            const likeGray = postItem.querySelector('#like-gray');
+
+            // verificar si el usuario actual ya reaccionó
+            const userReaction = reactions.find(reaction => reaction.idUser == userId);
+
+            console.log(userReaction);
+
+            // si el usuario ya reaccionó, mostrar el corazón verde
+            if (userReaction) {
+                likeGreen.classList.remove('hidden');
+                likeGray.classList.add('hidden');
+            }
+        });
+
+
+        function setLike(postId) {
+            // obtener el post
+            const postItem = document.getElementById(`post-${postId}`);
+            // obtener la lista de reacciones
+            const reactions = JSON.parse(postItem.querySelector('.reactions').value);
+            // verificar si el usuario actual ya reaccionó
+            const userReaction = reactions.find(reaction => reaction.idUser == userId);
+
+            // si el usuario ya reaccionó, eliminar la reacción
+            if (userReaction) {
+                // eliminar la reacción del array
+                const index = reactions.indexOf(userReaction);
+                reactions.splice(index, 1);
+                // actualizar la lista de reacciones
+                postItem.querySelector('.reactions').value = JSON.stringify(reactions);
+                // actualizar la cantidad de likes
+                postItem.querySelector('.likes').innerText = `${reactions.length} Likes`;
+                // cambiar el color del corazón
+                postItem.querySelector('#like-green').classList.add('hidden');
+                postItem.querySelector('#like-gray').classList.remove('hidden');
+            } else {
+                // si el usuario no ha reaccionado, agregar la reacción
+                reactions.push({ idUser: userId });
+                // actualizar la lista de reacciones
+                postItem.querySelector('.reactions').value = JSON.stringify(reactions);
+                // actualizar la cantidad de likes
+                postItem.querySelector('.likes').innerText = `${reactions.length} Likes`;
+                // cambiar el color del corazón
+                postItem.querySelector('#like-green').classList.remove('hidden');
+                postItem.querySelector('#like-gray').classList.add('hidden');
+            }
+        }
+
+    </script>
+}

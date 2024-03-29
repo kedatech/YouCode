@@ -26,7 +26,7 @@ namespace YouCode.GUI.Services
                 var favoriteCount = allfav.Count(f => f.IdPost == post.Id);
 
                 var allreactions = await reactionBL.GetAllAsync();
-                var reactionCount = allreactions.Count(r => r.IdPost == post.Id);
+                var reactions = allreactions.Where(r => r.IdPost == post.Id).ToList();
 
                 postDtos.Add(new PostDto
                 {
@@ -39,7 +39,7 @@ namespace YouCode.GUI.Services
                     PostedAt = post.PostedAt,
                     Images = images,
                     FavoriteCount = favoriteCount,
-                    ReactionCount = reactionCount
+                    Reactions = reactions
                 });
             }
             return postDtos;
@@ -51,7 +51,7 @@ namespace YouCode.GUI.Services
         public Profile? UserProfile { get; set; }
         public List<Image>? Images { get; set; }
         public int FavoriteCount { get; set; }
-        public int ReactionCount { get; set; }
+        public List<Reaction>? Reactions { get; set; }
 
     }
 }
