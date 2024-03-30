@@ -42,5 +42,14 @@
     </div>
 
 
+@section Scripts {
+    <script>
+        // obtener el id del usuario
+        var userId = @Model.User.Id;
 
+        // guardarlo en localStorage
 
+        localStorage.clear();
+        localStorage.setItem('YCuserId', userId);
+    </script>
+}
