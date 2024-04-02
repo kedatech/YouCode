@@ -8,7 +8,7 @@
 
   <div class="relative max-w-4xl mx-auto my-10 bg-white rounded-lg shadow-md p-5">
     <div class="relative">
-        <button id="openModal" class="absolute m-1 top-0 right-0 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-semibold transition-all duration-300 hover:bg-green-600 hover:text-white hover:border-transparent">Editar perfil</button>
+        <button id="openModal" hidden class="absolute m-1 top-0 right-0 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-semibold transition-all duration-300 hover:bg-green-600 hover:text-white hover:border-transparent">Editar perfil</button>
 
             </div>
                 <div class="flex items-center justify-center">
@@ -153,27 +153,27 @@
 
 
         $(document).ready(function() {
-    // Función para verificar si el usuario es propietario y mostrar u ocultar el botón en consecuencia
-    function checkUserOwner(username) {
-        $.ajax({
-            url: '/Auth/ValidateUserOwner',
-            type: 'GET',
-            data: { username: username },
-            success: function(response) {
-                if (response.is_owner) {
-                    // Si el usuario es propietario, mostrar el botón
-                    $('#openModal').show();
-                } else {
-                    // Si el usuario no es propietario, ocultar el botón
-                    $('#openModal').hide();
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-                // Manejar errores aquí
-            }
-        });
-    }
+            // Función para verificar si el usuario es propietario y mostrar u ocultar el botón en consecuencia
+            function checkUserOwner(username) {
+                $.ajax({
+                    url: '/Auth/ValidateUserOwner',
+                    type: 'GET',
+                    data: { username: username },
+                    success: function(response) {
+                        if (response.is_owner) {
+                            // Si el usuario es propietario, mostrar el botón
+                            $('#openModal').show();
+                        } else {
+                            // Si el usuario no es propietario, ocultar el botón
+                            $('#openModal').remove();
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                        // Manejar errores aquí
+                    }
+            });
+        }
 
     // Al cargar el documento, verifica si el usuario es propietario
     checkUserOwner('@Model.User.Username');

@@ -39,6 +39,16 @@ namespace YouCode.GUI.Services.Auth
 
         }
 
+
+        public static string ValidateUserLogged(HttpContext httpContext)
+        {
+            var encryptedToken = httpContext.Request.Cookies["_TojiBestoProta"];
+            var token_decrypted = DecryptToken(encryptedToken);
+            var username = ValidateToken(token_decrypted);
+
+            return username;
+        }
+
         
         public static string ValidateToken(string token)
         {
