@@ -8,11 +8,15 @@
 
   <div class="relative max-w-4xl mx-auto my-10 bg-white rounded-lg shadow-md p-5">
     <div class="relative">
-        <button id="openModal" class="absolute m-1 top-0 right-0 text-gray-700 px-3 py-2 rounded-lg border border-transparent text-sm font-semibold transition-all duration-300 hover:bg-green-600 hover:text-white hover:border-transparent">Editar perfil</button>
+        <button id="openModal" class="absolute m-1 top-0 right-0 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-semibold transition-all duration-300 hover:bg-green-600 hover:text-white hover:border-transparent">Editar perfil</button>
 
             </div>
                 <div class="flex items-center justify-center">
-                    <img class="w-40 h-40 mx-3 rounded-full" src="@Model.AvatarUrl" alt="Profile picture">
+                     <div class="mt-2">
+                        <span class="block w-40 h-40 rounded-full m-auto shadow" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@Model.AvatarUrl');">
+                        </span>
+                    </div>
+
                     <div class="ml-6">
                         <h2 class="text-3xl font-bold">@Model.User.Name</h2>
                         <p class="text-gray-600 text-xl font-semibold mt-1">@Model.User.Username</p>
@@ -37,40 +41,95 @@
             <p class="text-gray-600 text-md p-2 mt-2">@Model.Bio</p>
             
         </div>
+        
     </div>
   </div>
 
-  <div id="editProfileModal" class="fixed inset-0 z-50 overflow-auto bg-gray-900 bg-opacity-50 flex justify-center items-center hidden">
-    <div class="bg-white rounded-lg p-8">
-        <h2 class="text-2xl font-bold mb-4">Editar Perfil</h2>
-        <!-- Formulario de edición de perfil -->
-        <form id="profileForm" enctype="multipart/form-data">
-            <div class="mb-4">
-                <label for="profileName" class="block text-sm font-bold mb-2">Nombre de Perfil</label>
-                <input type="text" id="profileName" name="Name" class="w-full border rounded-md px-3 py-2">
+
+
+
+<div id="editProfileModal" class="z-10 fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="max-h-full w-full max-w-xl overflow-y-auto sm:rounded-2xl bg-white p-8">
+       <form id="profileForm" enctype="multipart/form-data" class="space-y-4">
+            <!-- Inicio del formulario de edición de perfil -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <!-- Columna izquierda: Selector de foto -->
+                <div class="text-center">
+                <!-- foto-->
+                <div x-data="{photoName: null, photoPreview: null}" class="col-span-6 ml-2 sm:col-span-4 md:mr-3">
+                    <!-- Photo File Input -->
+                    <input id="profilePicture" name="AvatarFile" type="file" accept="image/*" class="hidden" x-ref="photo" x-on:change="
+                        photoName = $refs.photo.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            photoPreview = e.target.result;
+                        };
+                        reader.readAsDataURL($refs.photo.files[0]);
+                    ">
+
+                    <label class="block text-gray-700 text-sm font-bold mb-2 text-center" for="photo">
+                        Foto de Perfil <span class="text-red-600"> </span>
+                    </label>
+                        
+                    <div class="text-center">
+                        <!-- Current Profile Photo -->
+                        <div class="mt-2" x-show="!photoPreview">
+                            <span class="block w-40 h-40 rounded-full m-auto shadow" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@Model.AvatarUrl');">
+                            </span>
+                        </div>
+
+                        <!-- New Profile Photo Preview -->
+                        <div class="mt-2" x-show="photoPreview" style="display: none;">
+                            <span class="block w-40 h-40 rounded-full m-auto shadow" x-bind:style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('null');">
+                            </span>
+                        </div>
+                        <button type="button" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150 mt-2 ml-3" x-on:click.prevent="$refs.photo.click()">
+                            Subir Nueva Foto
+                        </button>
+                    </div>
+                </div>
+
+                <!-- foto-->
             </div>
-            <div class="mb-4">
-                <label for="profileBio" class="block text-sm font-bold mb-2">Biografía</label>
-                <textarea id="profileBio" name="Bio" rows="4" class="w-full border rounded-md px-3 py-2"></textarea>
+
+
+            <!-- Columna derecha: Campos de texto y botones -->
+            <div>
+                <h1 class="mb-4 text-3xl font-extrabold">Editar perfil</h1>
+                
+                    <div class="mb-4">
+                        <label for="profileName" class="block text-sm font-bold mb-2">Nombre de Perfil</label>
+                        <input value="@Model.User.Name" type="text" id="profileName" name="Name" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500" placeholder="Nombre">
+                    </div>
+                    <div class="mb-4">
+                        <label for="profileBio" class="block text-sm font-bold mb-2">Biografía</label>
+                        <textarea id="profileBio" name="Bio" rows="4" class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500" placeholder="Biografía">@Model.Bio</textarea>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <button type="button" id="submitBtn" class="mx-2 p-3 bg-green-600 rounded-lg text-white w-full font-semibold focus:outline-none focus:shadow-outline transition-all duration-300 hover:bg-green-800">Actualizar</button>
+                        <button type="button" id="closeModal" class="mx-2 p-3 bg-white border border-gray-300 rounded-lg w-full font-semibold focus:outline-none focus:shadow-outline transition-all duration-300 hover:bg-gray-800 hover:text-white">Cancelar</button>
+                    </div>
+                
             </div>
-            <div class="mb-4">
-                <label for="profilePicture" class="block text-sm font-bold mb-2">Foto de Perfil</label>
-                <input type="file" id="profilePicture" name="AvatarFile" accept="image/*">
-            </div>
-            <button type="button" id="submitBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Guardar Cambios</button>
-            <button type="button" id="closeModal" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded ml-2">Cancelar</button>
+            
         </form>
-
-
-
+        <!-- Fin del formulario de edición de perfil -->
     </div>
 </div>
+
+
+
 
 
 
 @section Scripts
 {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.3.x/dist/index.js"></script>
+    
+
     <script>
         var userId = @Model.User.Id;
         document.addEventListener("DOMContentLoaded", function () {
@@ -79,28 +138,10 @@
             var editProfileModal = document.getElementById("editProfileModal");
             var profileNameInput = document.getElementById("profileName");
             var profileBioTextarea = document.getElementById("profileBio");
+            var profilePhotoInput = document.getElementById("profilePhoto");
 
             openModalBtn.addEventListener("click", function () {
                 editProfileModal.classList.remove("hidden");
-
-                // Hacer una solicitud AJAX para obtener los datos del perfil
-                $.ajax({
-                    url: '/Profile/GetProfile',
-                    type: 'GET',
-                    success: function(response) {
-                        if (response.success) {
-                            
-                            // Llenar los campos del formulario con los datos del perfil
-                            profileNameInput.value = response.profileDto.name;
-                            profileBioTextarea.value = response.profileDto.bio;
-                        } else {
-                            console.error("Error al obtener el perfil:", response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error al obtener el perfil:", xhr.responseText);
-                    }
-                });
             });
 
             closeModalBtn.addEventListener("click", function () {
@@ -109,27 +150,55 @@
         });
 
 
-        $(document).ready(function() {
-            $('#submitBtn').click(function() {
-                var formData = new FormData($('#profileForm')[0]);
 
-                $.ajax({
-                    url: '/Profile/EditProfile',
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        //console.log(response);
-                        window.location.href = response.redirectTo;
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                        // Manejar errores aquí
-                    }
-                });
-            });
+
+        $(document).ready(function() {
+    // Función para verificar si el usuario es propietario y mostrar u ocultar el botón en consecuencia
+    function checkUserOwner(username) {
+        $.ajax({
+            url: '/Auth/ValidateUserOwner',
+            type: 'GET',
+            data: { username: username },
+            success: function(response) {
+                if (response.is_owner) {
+                    // Si el usuario es propietario, mostrar el botón
+                    $('#openModal').show();
+                } else {
+                    // Si el usuario no es propietario, ocultar el botón
+                    $('#openModal').hide();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+                // Manejar errores aquí
+            }
         });
+    }
+
+    // Al cargar el documento, verifica si el usuario es propietario
+    checkUserOwner('@Model.User.Username');
+
+    // Al hacer clic en el botón de enviar, verifica si el usuario es propietario
+    $('#submitBtn').click(function() {
+        var formData = new FormData($('#profileForm')[0]);
+
+        $.ajax({
+            url: '/Profile/EditProfile',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                //console.log(response);
+                window.location.href = response.redirectTo;
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+                // Manejar errores aquí
+            }
+        });
+    });
+});
 
 
 

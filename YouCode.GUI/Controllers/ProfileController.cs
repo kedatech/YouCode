@@ -1,17 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using YouCode.BE;
-using YouCode.BL;
-using System.IO;
-using System.Threading.Tasks;
-using YouCode.GUI.Services;
-
-
-using System.IO;
-using System.Threading.Tasks;
-
-using Firebase.Auth;
-using static YouCode.GUI.Services.PostService;
 using YouCode.GUI.Services.Auth;
+using static YouCode.GUI.Services.ProfileService;
 
 
 namespace YouCode.GUI.Controllers
@@ -48,7 +37,7 @@ namespace YouCode.GUI.Controllers
                 return Json(new { success = false});
             }
             var res_dto = await GetProfileDto(username);
-            Console.WriteLine(res_dto.Name);
+            
             if(res_dto != null)
             {
                 return Json(new { success = true, profileDto = res_dto});

@@ -5,7 +5,7 @@ using YouCode.GUI.Services;
 
 namespace YouCode.GUI.Services
 {
-    public class PostService
+    public class ProfileService
     {
 
         public static async Task<bool> UpdateProfile(ProfileDto dto, string sesion_username)

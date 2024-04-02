@@ -34,6 +34,20 @@ namespace YouCode.GUI.Controllers
         }
 
         public IActionResult Index() => View();
+
+        /// <summary>
+        /// Valida si el usuario 'username' es el propietario logueado en la Sesión
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>IActionResult</returns>
+        [JwtAuthentication]
+        [HttpGet]
+        public IActionResult ValidateUserOwner(string username)
+        {
+            var owner_username = HttpContext.Session.GetString("UserName");
+
+            return Json(new { is_owner = owner_username == username });
+        }
         [AllowAnonymous]
         public IActionResult Redirect()
         {
