@@ -70,7 +70,7 @@ namespace YouCode.DAL
             var post = new List<Post>();
             using (var bdContexto = new ContextoDB())
             {
-                post = await bdContexto.Post.ToListAsync();
+                post = await bdContexto.Post.Include(c => c.User).ToListAsync();
             }
 
             return post;

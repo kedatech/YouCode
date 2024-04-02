@@ -3,104 +3,73 @@ using Microsoft.AspNetCore.Mvc;
 using Octokit;
 using YouCode.BL;
 using YouCode.DAL;
+using System.Threading.Tasks;
+using YouCode.GUI.Services.Auth;
 
 namespace YouCode.GUI.Controllers
 { 
-    public class ReactionController : Controller     
+    [Route("api/reaction")] // Define la ruta base para el controlador API
+    [ApiController] // Indica que este controlador es un controlador API
+    [JwtAuthentication]
+    public class ReactionApiController : ControllerBase     
     {
-        // creación de objetos de acceso a la capa BL
-        ReactionBL reactionBL = new ReactionBL();
-        UserBL userBL = new UserBL();
-        PostBL postBL = new PostBL();
-        CommentBL commentBL = new CommentBL();
+        private readonly ReactionBL _reactionBL = new ReactionBL();
 
-
-        // Acción que muestra los detalles de una reacción existente
-        public async Task<IActionResult> Details(int id)
-        {
-            try
-            {
-                var reaction = await reactionBL.GetByIdAsync(id);
-                if (reaction == null)
-                {
-                    return NotFound(); // Devuelve una respuesta 404 si no se encuentra la reacción
-                }
-                return View(reaction);
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = ex.Message;
-                return RedirectToAction(nameof(Index)); // Redirige a la página de índice si hay un error
-            }
-        }
-
-        // Acción que muestra el formulario para crear una nueva reacción
-        public async Task<IActionResult> Create()
-        {
-            try
-            {
-                ViewBag.Users = await userBL.GetAllAsync();
-                ViewBag.Posts = await postBL.GetAllAsync();
-                ViewBag.Comments = await commentBL.GetAllAsync();
-                return View();
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = ex.Message;
-                return RedirectToAction(nameof(Index)); // Redirigir a la página de índice si hay un error
-            }
-        }
-
-        // Acción que recibe los datos del formulario y los envía a la base de datos para crear una nueva reacción
+        // POST: api/ReactionApi
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(BE.Reaction reaction)
+        public async Task<IActionResult> PostCreate([FromBody] BE.Reaction reaction)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Devuelve 400 si el modelo no es válido
+            }
             try
             {
-                await reactionBL.CreateAsync(reaction);
-                return RedirectToAction(nameof(Index));
+                await _reactionBL.CreateAsync(reaction);
+                return CreatedAtAction("Get", new { id = reaction.Id }, reaction); // Devuelve 201 como confirmación de que la reacción se creó
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                // Recargar la lista de usuarios, posts y comentarios en caso de error
-                ViewBag.Users = await userBL.GetAllAsync();
-                ViewBag.Posts = await postBL.GetAllAsync();
-                ViewBag.Comments = await commentBL.GetAllAsync();
-                return View(reaction);
+                // Manejo de la excepción en caso de error
+                return StatusCode(500, ex.Message); // Devuelve 500 en caso de error interno del servidor
             }
         }
 
-        // Acción que muestra los datos de una reacción para confirmar su eliminación
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var reactions = await _reactionBL.GetAllAsync();
+                return Ok(reactions); // Devuelve 200 con la lista de reacciones
+            }
+            catch (Exception ex)
+            {
+                // Manejo de la excepción en caso de error
+                return StatusCode(500, ex.Message); // Devuelve 500 en caso de error interno del servidor
+            }
+        }
+
+        // DELETE: api/ReactionApi/{id}
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             try
             {
-                var reaction = await reactionBL.GetByIdAsync(id);
-                return View(reaction);
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = ex.Message;
-                return RedirectToAction(nameof(Index)); // Redirigir a la página de índice si hay un error
-            }
-        }
+                BE.Reaction reactionQuery = new BE.Reaction { Id = id };
+                var reaction = await _reactionBL.GetByIdAsync(reactionQuery);
+                if (reaction == null)
+                {
+                    return NotFound(); // Devuelve 404 si no se encuentra la reacción
+                }
 
-        // Acción que recibe la confirmación para eliminar una reacción
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(BE.Reaction reaction)
-        {
-            try
-            {
-                await reactionBL.DeleteAsync(reaction);
-                return RedirectToAction(nameof(Index));
+                await _reactionBL.DeleteAsync(reaction);
+                return NoContent(); // Devuelve 204 como confirmación de que la reacción se eliminó
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                return RedirectToAction(nameof(Delete), new { reactionObj = reaction }); // Redirigir a la página de detalles de la reacción en caso de error
+                // Manejo de la excepción en caso de error
+                return StatusCode(500, ex.Message); // Devuelve 500 en caso de error interno del servidor
             }
         }
     }

@@ -39,10 +39,5 @@ namespace YouCode.BL
         {
             return await ReactionDAL.SearchAsync(reaction);
         }
-
-        public Task<string?> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

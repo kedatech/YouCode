@@ -25,11 +25,7 @@ namespace YouCode.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source= AREVPC;
-                                    Initial Catalog = YouCodeDB; 
-                                    Encrypt = false;
-                                    TrustServerCertificate = true; 
-                                    Integrated Security = true");
+            optionsBuilder.UseSqlServer("Server=(local);Database=YouCodeDb;Integrated Security=True;Encrypt=False");
         }
     }
 }

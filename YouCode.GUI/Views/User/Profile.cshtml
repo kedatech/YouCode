@@ -72,6 +72,7 @@
 {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        var userId = @Model.User.Id;
         document.addEventListener("DOMContentLoaded", function () {
             var openModalBtn = document.getElementById("openModal");
             var closeModalBtn = document.getElementById("closeModal");
@@ -130,6 +131,9 @@
             });
         });
 
+
+
+        localStorage.clear();
+        localStorage.setItem('YCuserId', userId);
     </script>
 }
-
