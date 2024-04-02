@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using YouCode.BL;
 using YouCode.GUI.Models;
-
+using YouCode.GUI.Services.Auth;
 namespace YouCode.GUI.Controllers
 {
     public class HomeController : Controller
