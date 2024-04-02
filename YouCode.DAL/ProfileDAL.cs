@@ -25,7 +25,7 @@ public class ProfileDAL
                 {
                     profileDB.Bio = profile.Bio;
                     profileDB.AvatarUrl = profile.AvatarUrl;
-                    profileDB.Email = profile.Email;
+                    // profileDB.Email = profile.Email;
                     bdContexto.Update(profileDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
