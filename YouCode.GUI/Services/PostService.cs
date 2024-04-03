@@ -1,5 +1,6 @@
 using YouCode.BE;
 using YouCode.BL;
+using YouCode.GUI.Models.DTOs;
 
 namespace YouCode.GUI.Services
 {
@@ -13,11 +14,20 @@ namespace YouCode.GUI.Services
         private readonly ReactionBL reactionBL = new ReactionBL();
 
 
-        public async Task<List<PostDto>> GetAllAsync()
+        public async Task<List<PostDto>> GetAllAsync(string? username)
         {
             var posts = await postBL.GetAllAsync();
+
+            var postFiltered = posts.FindAll(p => {
+                if (username == null)
+                {
+                    return true;
+                }
+                return p.User.Username == username;
+            });
             var postDtos = new List<PostDto>();
-            foreach (var post in posts)
+                
+            foreach (var post in postFiltered)
             {
                 var profile = await profileBL.GetByIdAsync(new Profile { Id = post.User.Id });
                 var Allimages = await imageBL.GetAllAsync();
@@ -44,14 +54,5 @@ namespace YouCode.GUI.Services
             }
             return postDtos;
         }
-    }
-
-    public class PostDto : Post
-    {
-        public Profile? UserProfile { get; set; }
-        public List<Image>? Images { get; set; }
-        public int FavoriteCount { get; set; }
-        public List<Reaction>? Reactions { get; set; }
-
     }
 }
