@@ -3,11 +3,15 @@
 @{
     ViewData["Title"] = "Feed";
 }
+@* dividir en vista desktop en dos columnas en proporciona 1 3 *@
+<main class="max-w-5xl relative mx-auto w-full grid md:grid-cols-10 gap-0">
 
-<div class="w-full flex flex-col items-center" id="contendor-post">
+
+<div class="w-full px-4 flex flex-col items-center md:col-span-7"
+id="contendor-post">
     @foreach (var post in Model)
     {
-        <div class="bg-white border rounded-sm max-w-md my-3 w-full post-item-render" id="post-@post.Id">
+        <div class="bg-white border rounded-sm w-full mb-3 w-full post-item-render" id="post-@post.Id">
             <div class="flex items-center px-4 py-3">
                 <img class="h-8 w-8 rounded-full" src="@post.UserProfile.AvatarUrl" />
                 <div class="ml-3 ">
@@ -27,7 +31,7 @@
             {
                 <div id="controls-carousel" class="relative w-full" data-carousel="static">
                     <!-- Carousel wrapper -->
-                    <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                    <div class="relative h-56 overflow-hidden  md:h-96">
                         <!-- Item 1 -->
                         @foreach (var image in post.Images)
                         {
@@ -118,6 +122,35 @@
         </div>
     }
 </div>
+
+    <section class="md:col-span-3 h-full">
+        <article class="sticky top-[90px]">
+            <div class="bg-gray-200 border rounded-sm p-4">
+            <h2 class="font-semibold text-gray-800">¿Who to follow?</h2>
+            <div class="mt-4 flex flex-wrap">
+                <div class="bg-white rounded-md p-2 w-full grid grid-cols-10">
+                    <div class="col-span-2">
+                        <div class="aspect-w-1 aspect-h-1">
+                            <img src="https://picsum.photos/400" alt="User 1" class="object-cover w-full h-full p-2 rounded-full">
+                        </div>
+                    </div>
+                    <div class="col-span-5 flex flex-col w-full justify-center">
+                        <h3 class="font-semibold text-gray-800 text-sm">Tonoto Gonzales</h3>
+                        <h3 class="font-semibold text-gray-500 text-sm"> @@siiuuu</h3>
+                    </div>
+                    
+                    <div class="col-span-3 px-2 py-4 flex justify-center items-center">
+                        <button class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
+                    </div>
+                </div>
+               
+                </div>
+            </div>
+        </div>
+        </article>
+    </section>
+
+</main>
 
 @section Scripts {
     <script>
