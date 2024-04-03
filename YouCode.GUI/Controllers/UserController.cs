@@ -6,6 +6,7 @@ using YouCode.BL;
 using Microsoft.AspNetCore.Authorization;
 using YouCode.GUI.Services.Auth;
 using YouCode.GUI.Services;
+using YouCode.GUI.Models.DTOs;
 
 namespace YouCode.GUI.Controllers;
 public class UserController : Controller
@@ -23,9 +24,15 @@ public class UserController : Controller
             if(user != null)
             {
                 var profile = await profileBL.GetByIdAsync(new Profile { Id = user.Id });
+                var posts = await postService.GetAllAsync(user.Username);
+                Console.WriteLine(user.Username);
+                
                 if(profile != null)
                 {
-                    return View(profile);
+                    return View(new ProfileReturnDto(){
+                        Profile = profile,
+                        Posts = posts
+                    });
                 }
                 else
                 {
@@ -43,7 +50,7 @@ public class UserController : Controller
     [JwtAuthentication]
     public async Task<IActionResult> Feed()
     {
-        var posts = await postService.GetAllAsync();
+        var posts = await postService.GetAllAsync(null);
         return View(posts);
     }
     public async Task<IActionResult> Edit(int id)

@@ -1,9 +1,384 @@
-﻿
+﻿@using YouCode.GUI.Components.Icons
+@model IEnumerable<YouCode.GUI.Models.DTOs.PostDto>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Feed";
 }
+@* dividir en vista desktop en dos columnas en proporciona 1 3 *@
+<main class="max-w-5xl relative mx-auto w-full grid md:grid-cols-10 gap-0">
 
-<div class="text-center">
-    @* home con banner *@
-    <h1 class="display-4">Welcome, @User.Identity.Name to YouCode</h1>
+
+<div class="w-full px-4 flex flex-col items-center md:col-span-7" id="contendor-post">
+    <button onclick="openModal()" class="w-200 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md my-3 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        Crear nueva publicación
+    </button>
+    @foreach (var post in Model)
+    {
+        <div class="bg-white border rounded-sm w-full mb-3 w-full post-item-render" id="post-@post.Id">
+            <div class="flex items-center px-4 py-3">
+                <div class="flex items-center px-4 py-3">
+                    <span class="h-12 w-12 rounded-full bg-cover" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
+                    <div class="ml-3 ">
+                        <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span class="text-gray-600">@post.User.Username</span></span>
+                        <!-- Asumiendo que User tiene una propiedad Name -->
+                        <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                </div>
+            </div>
+            <div class="px-2">
+                <h2 class="font-semibold text-gray-800">@post.Title</h2>
+                <p class="text-[12px]">@post.Content</p>
+            </div>
+
+            @* *@
+
+            @if (post.Images.Any())
+            {
+                <div id="controls-carousel" class="relative w-full" data-carousel="static">
+                    <!-- Carousel wrapper -->
+                    <div class="relative h-56 overflow-hidden  md:h-96">
+                        <!-- Item 1 -->
+                        @foreach (var image in post.Images)
+                        {
+                            <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
+                                <img src="@image.Path" alt="post image" 
+                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 aspect-w-16 aspect-h-9 object-cover">
+                            </div>
+                        }
+                    </div>
+                    <!-- Slider controls -->
+                    <button type="button"
+                        class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                        data-carousel-prev>
+                        <span
+                            class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                            <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 1 1 5l4 4" />
+                            </svg>
+                            <span class="sr-only">Previous</span>
+                        </span>
+                    </button>
+                    <button type="button"
+                        class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                        data-carousel-next>
+                        <span
+                            class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                            <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="m1 9 4-4-4-4" />
+                            </svg>
+                            <span class="sr-only">Next</span>
+                        </span>
+                    </button>
+                </div>
+            }
+
+            @* *@
+
+            @* @ViewBag.User.Id     *@
+
+            <div class="flex items-center justify-between mx-4 mt-3 mb-2">
+                <div class="flex gap-5">
+                    <!-- SVG de Corazón (Me gusta) -->
+
+                    @namespace YouCode.GUI.Components.Icons
+
+                    <svg onclick="setLike(@post.Id)" class="hover" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="hear 1" clip-path="url(#clip0_31_2)">
+                    <g id="hear - copia 1">
+                    <path class="hidden" id="like-green" d="M19.4048 5.62257C18.9072 5.1089 18.3155 4.70111 17.6636 4.42265C17.0117 4.14419 16.3126 4.00055 15.6064 4C14.2706 4.00022 12.9836 4.51459 12.0002 5.44126C11.0169 4.51443 9.72986 4.00004 8.39404 4C7.68701 4.00075 6.9871 4.14483 6.3346 4.42393C5.6821 4.70303 5.08988 5.11165 4.59203 5.62627C2.46857 7.81221 2.46947 11.2313 4.59384 13.408L12.0002 21L19.4066 13.408C21.531 11.2313 21.5319 7.81221 19.4048 5.62257Z" fill="#4FDC54"/>
+                    <path id="like-gray" d="M12 4.59511C10.9104 3.59321 9.48419 3.03716 8.00398 3.03711C7.22052 3.03793 6.44495 3.19367 5.72192 3.49538C4.99888 3.79709 4.34265 4.2388 3.79098 4.79511C1.43798 7.15811 1.43898 10.8541 3.79298 13.2071L11.125 20.5391C11.295 20.8381 11.623 21.0311 12 21.0311C12.1548 21.0296 12.3071 20.9918 12.4446 20.9208C12.5822 20.8498 12.7011 20.7475 12.792 20.6221L20.207 13.2071C22.561 10.8531 22.561 7.15811 20.205 4.79111C19.6536 4.23583 18.9979 3.79501 18.2756 3.49399C17.5532 3.19298 16.7785 3.03771 15.996 3.03711C14.5158 3.03735 13.0897 3.59338 12 4.59511ZM18.791 6.20511C20.354 7.77611 20.355 10.2301 18.793 11.7931L12 18.5861L5.20698 11.7931C3.64498 10.2301 3.64598 7.77611 5.20498 6.20911C5.96498 5.45311 6.95898 5.03711 8.00398 5.03711C9.04898 5.03711 10.039 5.45311 10.793 6.20711L11.293 6.70711C11.3858 6.80006 11.496 6.87379 11.6173 6.9241C11.7386 6.97441 11.8686 7.00031 12 7.00031C12.1313 7.00031 12.2614 6.97441 12.3827 6.9241C12.504 6.87379 12.6142 6.80006 12.707 6.70711L13.207 6.20711C14.719 4.69811 17.281 4.70211 18.791 6.20511Z" fill="#4F4F5E"/>
+                    </g>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_31_2">
+                    <rect width="24" height="24" fill="white"/>
+                    </clipPath>
+                    </defs>
+                    </svg>
+
+                    <!-- SVG de Comentario -->
+                    <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
+                        <path
+                            d="M47.8 3.8c-.3-.5-.8-.8-1.3-.8h-45C.9 3.1.3 3.5.1 4S0 5.2.4 5.7l15.9 15.6 5.5 22.6c.1.6.6 1 1.2 1.1h.2c.5 0 1-.3 1.3-.7l23.2-39c.4-.4.4-1 .1-1.5zM5.2 6.1h35.5L18 18.7 5.2 6.1zm18.7 33.6l-4.4-18.4L42.4 8.6 23.9 39.7z">
+                        </path>
+                    </svg>
+                </div>
+                <div class="flex">
+                    <!-- SVG de Compartir -->
+                    <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
+                        <path
+                            d="M43.5 48c-.4 0-.8-.2-1.1-.4L24 29 5.6 47.6c-.4.4-1.1.6-1.6.3-.6-.2-1-.8-1-1.4v-45C3 .7 3.7 0 4.5 0h39c.8 0 1.5.7 1.5 1.5v45c0 .6-.4 1.2-.9 1.4-.2.1-.4.1-.6.1zM24 26c.8 0 1.6.3 2.2.9l15.8 16V3H6v39.9l15.8-16c.6-.6 1.4-.9 2.2-.9z">
+                        </path>
+                    </svg>
+                </div>
+            </div>
+            <!-- La cantidad de 'likes' podría ser dinámica dependiendo de la lógica de la aplicación, aquí se usa un número estático como placeholder -->
+            <div class="flex justify-between font-semibold text-sm mx-4 mt-2 mb-4">
+                <span class="likes">@post.Reactions.Count Likes</span>
+                <span>@post.FavoriteCount Saved</span>
+            </div>
+
+            @* propiedad oculta con un array de los usurios que dieron like *@
+            <input type="hidden" value='@Json.Serialize(post.Reactions)' class="reactions" />
+        </div>
+    }
 </div>
+
+    <section class="md:col-span-3 h-full">
+        <article class="sticky top-[90px]">
+            <div class="bg-gray-200 border rounded-sm p-4">
+            <h2 class="font-semibold text-gray-800">Who to follow?</h2>
+            <div class="mt-4 flex flex-wrap">
+                <div class="bg-white rounded-md p-2 w-full grid grid-cols-10">
+                    <div class="col-span-2">
+                        <div class="aspect-w-1 aspect-h-1">
+                            <img src="https://picsum.photos/400" alt="User 1" class="object-cover w-full h-full p-2 rounded-full">
+                        </div>
+                    </div>
+                    <div class="col-span-5 flex flex-col w-full justify-center">
+                        <h3 class="font-semibold text-gray-800 text-sm">Tonoto Gonzales</h3>
+                        <h3 class="font-semibold text-gray-500 text-sm"> @@siiuuu</h3>
+                    </div>
+                    
+                    <div class="col-span-3 px-2 py-4 flex justify-center items-center">
+                        <button class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
+                    </div>
+                </div>
+               
+                </div>
+            </div>
+        </div>
+        </article>
+    </section>
+
+</main>
+
+
+    <div id="myModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <form id="postForm" class="editor mx-auto w-100 md:w-10/12 lg:w-8/12 xl:w-6/12 bg-white p-4 rounded-lg overflow-y-auto">
+            <style>
+                body {background:white !important;}
+            </style>
+            <input id="PostTitleInput" name="title" class="title bg-gray-100 rounded-md border border-gray-300 p-2 mb-4 outline-none w-full" spellcheck="false" placeholder="Título" type="text">
+            <textarea id="PostContentInput" name="content" class="" spellcheck="false" placeholder="Escribe tu publicación aquí."></textarea>
+            
+            <div class="buttons flex">
+                <div class="icons flex text-gray-500 m-1">
+                    <svg class="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                </div>
+                <button type="button" class="btn border border-gray-300 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-500 ml-auto" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn border border-indigo-500 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-200 ml-2 bg-green-500">Publicar</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div id="spinnerOverlay" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+            <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+            </svg>
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+
+
+
+
+@section Scripts {
+
+    <style>
+        .CodeMirror, .CodeMirror-scroll {
+            min-height: 150px;
+            max-height: 200px;
+        }
+
+        
+
+        .CodeMirror {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f7f7f7;
+        }
+    </style>
+
+    <script>
+
+
+
+       var simplemde = new SimpleMDE({ 
+            element: document.getElementById("PostContentInput"),
+            forceSync: true, // Fuerza la sincronización del contenido
+            toolbar: ["code","bold", "link", "preview"],
+	        spellChecker: false,
+            promptURLs:true,
+            previewRender: function(plainText) {
+                return customMarkdownParser(plainText); // Returns HTML from a custom parser
+            },
+            previewRender: function(plainText, preview) { // Async method
+                setTimeout(function(){
+                    preview.innerHTML = customMarkdownParser(plainText);
+                }, 250);
+
+                return "Loading...";
+            },
+        });
+
+        function openModal() {
+            var modal = document.getElementById('myModal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            var modal = document.getElementById('myModal');
+            modal.classList.add('hidden');
+        }
+
+
+        // Inicializar cuando el contenido esté cargado completamente
+        document.addEventListener('DOMContentLoaded', function () {
+            initializePosts();
+            var postForm = document.getElementById('postForm');
+            postForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+
+                // Obtener los valores del título y el contenido del formulario
+                var title = postForm.elements['title'].value;
+                var content = postForm.elements['content'].value;
+
+                // Llamar a la función createPost para enviar los datos al servidor
+                createPost(title, content);
+
+                // Cerrar el modal después de enviar el formulario
+                closeModal();
+            });
+        });
+
+        function initializePosts() {
+            var userId = getUserId();
+            if (!userId) {
+                alert('No se ha iniciado sesión');
+                return;
+            }
+
+            var postItems = document.querySelectorAll('.post-item-render');
+            postItems.forEach(function(postItem) {
+                setupPostItem(postItem, userId);
+            });
+        }
+
+        function getUserId() {
+            var stringId = localStorage.getItem('YCuserId');
+            return stringId ? parseInt(stringId) : null;
+        }
+
+        function setupPostItem(postItem, userId) {
+            var reactions = JSON.parse(postItem.querySelector('.reactions').value);
+            var likeGreen = postItem.querySelector('#like-green');
+            var likeGray = postItem.querySelector('#like-gray');
+
+            var userReaction = reactions.find(function(reaction) { return reaction.idUser === userId; });
+            if (userReaction) {
+                likeGreen.classList.remove('hidden');
+                likeGray.classList.add('hidden');
+            } else {
+                likeGreen.classList.add('hidden');
+                likeGray.classList.remove('hidden');
+            }
+
+            var likeBtn = postItem.querySelector('.hover'); // Asumiendo que la clase 'hover' se utiliza para el botón de 'Me gusta'
+            likeBtn.onclick = function() { setLike(postItem, userId, reactions); };
+        }
+
+        // Refactorización para evitar el uso de una variable global 'requestInProgress'
+        function setLike(postItem, userId, reactions) {
+            var userReaction = reactions.find(function(reaction) { return reaction.idUser === userId; });
+            var postId = postItem.getAttribute('id').split('-')[1]; // Obtener el ID del post desde el atributo 'id'
+
+            if (userReaction) {
+                removeLike(postItem, reactions, userReaction.id);
+            } else {
+                addLike(postItem, reactions, userId, postId);
+            }
+        }
+
+        function addLike(postItem, reactions, userId, postId) {
+            var url = 'http://localhost:5096/api/reaction/';
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idUser: userId, idPost: postId })
+            })
+            .then(function(response) { 
+                if (!response.ok) throw new Error('Falló la petición');
+                return response.json(); 
+            })
+            .then(function(data) {
+                reactions.push({ id: data.id, idUser: userId, idPost: postId }); // Asumiendo que la respuesta incluye un 'id' para la reacción
+                updateUIForLike(postItem, reactions);
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+
+        function removeLike(postItem, reactions, reactionId) {
+            var url = `http://localhost:5096/api/reaction/${reactionId}`;
+            fetch(url, { method: 'DELETE' })
+            .then(function(response) { 
+                if (!response.ok) throw new Error('Falló la petición');
+                var index = reactions.findIndex(function(reaction) { return reaction.id === reactionId; });
+                reactions.splice(index, 1);
+                updateUIForLike(postItem, reactions);
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+
+        function updateUIForLike(postItem, reactions) {
+            var likesCount = postItem.querySelector('.likes');
+            likesCount.innerText = `${reactions.length} Likes`;
+            var likeGreen = postItem.querySelector('#like-green');
+            var likeGray = postItem.querySelector('#like-gray');
+            likeGreen.classList.toggle('hidden', reactions.length === 0);
+            likeGray.classList.toggle('hidden', reactions.length > 0);
+            postItem.querySelector('.reactions').value = JSON.stringify(reactions);
+        }
+
+        //---------------------
+        function createPost(title, content) {
+            $('#spinnerOverlay').removeClass('hidden');
+            var url = 'http://localhost:5096/api/Post/CreatePost';
+            var data = {
+                Title: title,
+                Content: simplemde.value(),
+            };
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(function(response) { 
+                $('#spinnerOverlay').addClass('hidden');
+                console.log(data);
+                if (!response.ok) throw new Error('Falló la petición');
+                // Recargar la página después de recibir una respuesta exitosa
+                window.location.reload();
+            })
+            .catch(function(error) {
+                $('#spinnerOverlay').addClass('hidden');
+                console.error('Error:', error);
+            });
+        }
+
+
+    </script>
+}

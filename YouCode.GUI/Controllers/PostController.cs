@@ -9,17 +9,27 @@ namespace YouCode.GUI.Controllers;
 public class PostController : Controller
 {
     PostBL postBL = new PostBL();
+    UserBL userBL = new UserBL();
     CommentBL commentBL = new CommentBL();
     
-    [ValidateAntiForgeryToken]
+    // [ValidateAntiForgeryToken]
     [JwtAuthentication]
     [HttpPost]
     [Route("api/Post/CreatePost")]
-    public async Task<IActionResult> CreatePost(Post post)
+    public async Task<IActionResult> CreatePost([FromBody] Post post)
     {
-        var res = await postBL.CreateAsync(post);
+        var user = await userBL.GetByUsernameAsync(HttpContext.Session.GetString("UserName"));
+        if(user != null)
+        {
+            post.IdUser = user.Id ;
+            var res = await postBL.CreateAsync(post);
+        }
+        else{
+            return BadRequest();
+        }
+        
 
-        return RedirectToAction("Index", "Home");
+        return Ok();
     }
     
 }

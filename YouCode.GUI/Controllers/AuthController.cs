@@ -86,7 +86,7 @@ namespace YouCode.GUI.Controllers
                     
                     userDB = new BE.User
                     {
-                        Name = userGithub.Name,
+                        Name = userGithub.Name == null ? userGithub.Login : userGithub.Name,
                         Username = userGithub.Login,
                         CreatedAt = DateTime.UtcNow
                     };
