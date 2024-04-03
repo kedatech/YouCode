@@ -5,7 +5,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - YouCode.GUI</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/YouCode.GUI.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
@@ -74,7 +73,7 @@
             <div class="flex justify-end items-center relative">
 
                 <div class="flex mr-4 items-center">
-                    <a class="inline-block py-2 px-3 hover:bg-gray-200 rounded-full" asp-area="" asp-controller="User" asp-action="Feed">
+                    <a class="inline-block py-2 px-3 hover:bg-gray-200 rounded-full"  href="/">
                         <div class="flex items-center relative cursor-pointer whitespace-nowrap">Feed</div>
                     </a>
                     
@@ -130,12 +129,10 @@
         </div>
     </nav>
 
-    <div class="container">
         <main role="main" class="pb-3">
 
             @RenderBody()
         </main>
-    </div>
 
     @* <footer class="border-top footer text-muted">
         <div class="container">
