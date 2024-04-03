@@ -5,17 +5,22 @@
 }
 
 <div class="w-full flex flex-col items-center" id="contendor-post">
+
+    <button onclick="openModal()" class="w-200 bg-blue-500 text-white font-semibold py-2 px-4 rounded-md my-3 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+        Crear nueva publicación
+    </button>
     @foreach (var post in Model)
     {
         <div class="bg-white border rounded-sm max-w-md my-3 w-full post-item-render" id="post-@post.Id">
             <div class="flex items-center px-4 py-3">
-                <img class="h-8 w-8 rounded-full" src="@post.UserProfile.AvatarUrl" />
-                <div class="ml-3 ">
-                    <span class="text-sm font-semibold antialiased block leading-tight">@post.User.Name</span>
-                    <!-- Asumiendo que User tiene una propiedad 'Name' -->
-                    <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
-                </div>
+            <span class="h-12 w-12 rounded-full bg-cover" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
+            <div class="ml-3">
+                <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span class="text-gray-600">@post.User.Username</span></span>
+                <!-- Asumiendo que User tiene una propiedad Name -->
+                <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
             </div>
+        </div>
+
             <div class="px-2">
                 <h2 class="font-semibold text-gray-800">@post.Title</h2>
                 <p class="text-[12px]">@post.Content</p>
@@ -117,10 +122,113 @@
             <input type="hidden" value='@Json.Serialize(post.Reactions)' class="reactions" />
         </div>
     }
-</div>
+
+
+    <div id="myModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="editor mx-auto w-100 md:w-10/12 lg:w-8/12 xl:w-6/12 bg-white p-4 rounded-lg overflow-y-auto">
+            <div class="heading text-center font-bold text-2xl m-4 text-gray-800">Nueva publicación</div>
+            <style>
+                body {background:white !important;}
+            </style>
+            <input id="PostTitleInput" class="title bg-gray-100 rounded-md border border-gray-300 p-2 mb-4 outline-none w-full" spellcheck="false" placeholder="Título" type="text">
+            <textarea id="PostContentInput" class="" spellcheck="false" placeholder="Escribe tu publicación aquí."></textarea>
+            
+            <!-- icons -->
+            <div class="icons flex text-gray-500 m-2">
+                <svg class="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <svg class="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                <svg class="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                @* <div class="count ml-auto text-gray-400 text-xs font-semibold">0/300</div> *@
+            </div>
+            <!-- buttons -->
+            <div class="buttons flex">
+                <div class="btn border border-gray-300 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-500 ml-auto" onclick="closeModal()">Cancelar</div>
+                <div class="btn border border-indigo-500 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-200 ml-2 bg-green-500">Publicar</div>
+            </div>
+        </div>
+    </div>
+
+
+
 
 @section Scripts {
+    <style>
+        .CodeMirror, .CodeMirror-scroll {
+            min-height: 150px;
+            max-height: 200px;
+        }
+
+        
+
+        .CodeMirror {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f7f7f7;
+        }
+    </style>
+
     <script>
+
+        function customMarkdownParser(plainText) {
+            // Reemplaza los caracteres especiales del markdown para su representación HTML
+            var html = plainText
+                // Encabezados
+                .replace(/^#\s+(.*)$/gm, '<h1>$1</h1>')
+                .replace(/^##\s+(.*)$/gm, '<h2>$1</h2>')
+                .replace(/^###\s+(.*)$/gm, '<h3>$1</h3>')
+                .replace(/^####\s+(.*)$/gm, '<h4>$1</h4>')
+                .replace(/^#####\s+(.*)$/gm, '<h5>$1</h5>')
+                .replace(/^######\s+(.*)$/gm, '<h6>$1</h6>')
+                // Negrita
+                .replace(/\*\*(.*)\*\*/g, '<strong>$1</strong>')
+                // Itálica
+                .replace(/\*(.*)\*/g, '<em>$1</em>')
+                // Enlaces
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+                // Líneas horizontales
+                .replace(/^\s*([-*]\s*){3,}\s*$/gm, '<hr>')
+                // Líneas de código
+                .replace(/```(.*)\n([\s\S]*?)\n```/g, '<pre><code>$2</code></pre>')
+                // Listas ordenadas
+                .replace(/^\d+\.\s.*$/gm, function(match) {
+                    var items = match.split('.').slice(1);
+                    var htmlList = items.map(function(item) {
+                        return '<li>' + item.trim() + '</li>';
+                    }).join('');
+                    return '<ol>' + htmlList + '</ol>';
+                })
+                // Listas sin orden
+                .replace(/^\*\s.*$/gm, function(match) {
+                    var items = match.split('*').slice(1);
+                    var htmlList = items.map(function(item) {
+                        return '<li>' + item.trim() + '</li>';
+                    }).join('');
+                    return '<ul>' + htmlList + '</ul>';
+                });
+
+            return html;
+        }
+
+
+
+       var simplemde = new SimpleMDE({ 
+            element: document.getElementById("PostContentInput"),
+            forceSync: true, // Fuerza la sincronización del contenido
+            toolbar: ["code","bold", "link", "preview"],
+	        spellChecker: false,
+            promptURLs:true,
+            previewRender: function(plainText) {
+                return customMarkdownParser(plainText); // Returns HTML from a custom parser
+            },
+            previewRender: function(plainText, preview) { // Async method
+                setTimeout(function(){
+                    preview.innerHTML = customMarkdownParser(plainText);
+                }, 250);
+
+                return "Loading...";
+            },
+        });
+
         // Inicializar cuando el contenido esté cargado completamente
         document.addEventListener('DOMContentLoaded', function () {
             initializePosts();
@@ -217,5 +325,33 @@
             likeGray.classList.toggle('hidden', reactions.length > 0);
             postItem.querySelector('.reactions').value = JSON.stringify(reactions);
         }
+
+        function openModal() {
+            var modal = document.getElementById('myModal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            var modal = document.getElementById('myModal');
+            modal.classList.add('hidden');
+        }
+
+
+
+        function createPost(postItem, reactions, reactionId) {
+            var url = `http://localhost:5096/api/reaction/${reactionId}`;
+            fetch(url, { method: 'DELETE' })
+            .then(function(response) { 
+                if (!response.ok) throw new Error('Falló la petición');
+                var index = reactions.findIndex(function(reaction) { return reaction.id === reactionId; });
+                reactions.splice(index, 1);
+                updateUIForLike(postItem, reactions);
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+
+
     </script>
 }
