@@ -26,7 +26,27 @@
             </div>
             <div class="px-2">
                 <h2 class="font-semibold text-gray-800">@post.Title</h2>
-                <p class="text-[12px]">@post.Content</p>
+                @if (ViewBag.PostsHtml != null)
+                {
+                    bool found = false;
+                    foreach (var postHtml in ViewBag.PostsHtml)
+                    {
+                        if (postHtml.Id == post.Id)
+                        {
+                            <p class="text-[12px]">@Html.Raw(postHtml.ContentHtml)</p>
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        <p class="text-[12px]">@post.Content</p>
+                    }
+                }
+                else
+                {
+                    <p class="text-[12px]">@post.Content</p>
+                }
             </div>
 
             @* *@
@@ -157,7 +177,7 @@
 </main>
 
 
-    <div id="myModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div id="NewPostModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
         <form id="postForm" class="editor mx-auto w-100 md:w-10/12 lg:w-8/12 xl:w-6/12 bg-white p-4 rounded-lg overflow-y-auto">
             <style>
                 body {background:white !important;}
@@ -208,9 +228,6 @@
     </style>
 
     <script>
-
-
-
        var simplemde = new SimpleMDE({ 
             element: document.getElementById("PostContentInput"),
             forceSync: true, // Fuerza la sincronización del contenido
@@ -230,12 +247,12 @@
         });
 
         function openModal() {
-            var modal = document.getElementById('myModal');
+            var modal = document.getElementById('NewPostModal');
             modal.classList.remove('hidden');
         }
 
         function closeModal() {
-            var modal = document.getElementById('myModal');
+            var modal = document.getElementById('NewPostModal');
             modal.classList.add('hidden');
         }
 

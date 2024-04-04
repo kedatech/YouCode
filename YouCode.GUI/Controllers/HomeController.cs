@@ -1,3 +1,4 @@
+using Markdig;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Octokit;
@@ -29,6 +30,15 @@ namespace YouCode.GUI.Controllers
         public async Task<IActionResult> Index()
         {
             var posts = await postService.GetAllAsync(null);
+            var postsHtml = new List<dynamic>();
+
+            foreach (var post in posts)
+            {
+                var contentHtml = Markdown.ToHtml(post.Content);
+                postsHtml.Add(new { Id = post.Id, ContentHtml = contentHtml });
+            }
+
+            ViewBag.PostsHtml = postsHtml;
             return View(posts);
         }
         

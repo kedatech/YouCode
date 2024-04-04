@@ -27,7 +27,6 @@ public class PostController : Controller
         else{
             return BadRequest();
         }
-        
 
         return Ok();
     }

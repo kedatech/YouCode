@@ -5,6 +5,7 @@
 
 
 
+
 function customMarkdownParser(plainText) {
     // Reemplaza los caracteres especiales del markdown para su representación HTML
     var html = plainText
