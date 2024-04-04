@@ -276,14 +276,14 @@
 
 
 
-<script src="~/js/like-func.js" asp-append-version="true"></script>
+
 
 @section Scripts
 {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.3.x/dist/index.js"></script>
-
+    <script src="~/js/like-func.js" asp-append-version="true"></script>
 
     <script>
         var userId = @Model.Profile.User.Id;
@@ -335,7 +335,17 @@
 
             // Al hacer clic en el botón de enviar, verifica si el usuario es propietario
             $('#submitBtn').click(function () {
-                $('#spinnerOverlay').removeClass('hidden');
+                // Obtenemos los valores de los campos
+                var profileName = $('#profileName').val();
+                var profileBio = $('#profileBio').val();
+
+                if (profileName.trim() === "" || profileBio.trim() === "") {
+                    alert("Por favor completa todos los campos.");
+                    return // Evita que se envíe el formulario
+                }
+
+                // Si todos los campos están llenos, procedemos con el envío del formulario
+                $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
                 var formData = new FormData($('#profileForm')[0]);
 
                 $.ajax({
@@ -345,7 +355,6 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        //console.log(response);
                         window.location.href = response.redirectTo;
                     },
                     error: function (xhr, status, error) {
@@ -353,9 +362,10 @@
                         // Manejar errores aquí
                     },
                     complete: function() {
-                    // Oculta el spinner
-                    $('#spinnerOverlay').addClass('hidden');
-                }
+                        // Oculta el spinner
+                        $('#spinnerOverlay').addClass('hidden');
+                        $('#editProfileModal').addClass('hidden');
+                    }
                 });
             });
         });
