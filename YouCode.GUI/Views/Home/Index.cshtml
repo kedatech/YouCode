@@ -33,7 +33,11 @@
                     {
                         if (postHtml.Id == post.Id)
                         {
-                            <p class="text-[12px]">@Html.Raw(postHtml.ContentHtml)</p>
+                            
+                            <div class="p-4 overflow-auto">
+                                <p class="text-[12px]">@Html.Raw(postHtml.ContentHtml)</p>
+                            </div>
+                           
                             found = true;
                             break;
                         }
@@ -45,7 +49,7 @@
                 }
                 else
                 {
-                    <p class="text-[12px]">@post.Content</p>
+                    
                 }
             </div>
 
@@ -218,8 +222,7 @@
             max-height: 200px;
         }
 
-        
-
+    
         .CodeMirror {
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -262,17 +265,12 @@
             initializePosts();
             var postForm = document.getElementById('postForm');
             postForm.addEventListener('submit', function(event) {
-                event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+                event.preventDefault(); 
 
-                // Obtener los valores del título y el contenido del formulario
                 var title = postForm.elements['title'].value;
                 var content = postForm.elements['content'].value;
 
-                // Llamar a la función createPost para enviar los datos al servidor
                 createPost(title, content);
-
-                // Cerrar el modal después de enviar el formulario
-                closeModal();
             });
         });
 
@@ -370,8 +368,13 @@
 
         //---------------------
         function createPost(title, content) {
-            $('#spinnerOverlay').removeClass('hidden');
+            if (title.trim() === "" || content.trim() === "") {
+                alert("Por favor completa todos los campos.");
+                return
+            }
+
             var url = 'http://localhost:5096/api/Post/CreatePost';
+            $('#spinnerOverlay').removeClass('hidden');
             var data = {
                 Title: title,
                 Content: simplemde.value(),
@@ -394,6 +397,7 @@
                 $('#spinnerOverlay').addClass('hidden');
                 console.error('Error:', error);
             });
+            closeModal();
         }
 
 
