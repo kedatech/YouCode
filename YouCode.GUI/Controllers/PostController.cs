@@ -29,15 +29,15 @@ public class PostController : Controller
                 Content = postFormData.Content,
                 IdUser = user.Id});
             
-            if(postResponse != null)
+            if (postFormData.Files != null && postFormData.Files.Count != 0)
             {
                 var counter = 0;
-                foreach(IFormFile foto in postFormData.Files)
+                foreach (IFormFile foto in postFormData.Files)
                 {
-                    var path = await ImageService.SubirArchivo(foto.OpenReadStream(), user.Username+"POST_IMAGE_"+counter.ToString());
-                    await imageBL.CreateAsync(new Image{Path = path ?? "https://via.placeholder.com/300x200.png?text=Imagen+no+disponible", IdPost = postResponse.Id});
-                    counter ++;
-                    
+                    var path = await ImageService.SubirArchivo(foto.OpenReadStream(), user.Username + "POST_IMAGE_" + counter.ToString());
+                    await imageBL.CreateAsync(new Image { Path = path ?? "https://via.placeholder.com/300x200.png?text=Imagen+no+disponible", IdPost = postResponse.Id });
+                    counter++;
+
                 }
             }
 
@@ -58,7 +58,7 @@ public class PostController : Controller
         public int IdUser {get; set; }
         public string? Title { get; set; }
         public string? Content { get; set; }
-        public List<IFormFile> Files { get; set; }
+        public List<IFormFile>? Files { get; set; }
     }
     
 }
