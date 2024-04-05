@@ -31,9 +31,9 @@ public class PostController : Controller
             
             if(postResponse != null)
             {
+                var counter = 0;
                 foreach(IFormFile foto in postFormData.Files)
                 {
-                    var counter = 0;
                     var path = await ImageService.SubirArchivo(foto.OpenReadStream(), user.Username+"POST_IMAGE_"+counter.ToString());
                     await imageBL.CreateAsync(new Image{Path = path ?? "https://via.placeholder.com/300x200.png?text=Imagen+no+disponible", IdPost = postResponse.Id});
                     counter ++;

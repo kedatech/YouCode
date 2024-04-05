@@ -163,26 +163,31 @@
     }
 </div>
 
+    @*<-! WHO TO FOLLOW -->*@
     <section class="md:col-span-3 h-full">
         <article class="sticky top-[90px]">
             <div class="bg-gray-200 border rounded-md p-4">
             <h2 class="font-semibold text-gray-800">Who to follow?</h2>
             <div class="mt-4 flex flex-wrap">
-                <div class="bg-white rounded-md p-2 w-full grid grid-cols-10">
-                    <div class="col-span-2">
-                        <div class="aspect-w-1 aspect-h-1">
-                            <img src="https://picsum.photos/400" alt="User 1" class="object-cover w-full h-full p-2 rounded-full">
+                @foreach(var user in ViewBag.UsersToFollow)
+                {
+                    <div class="bg-white rounded-md p-2 my-2 w-full grid grid-cols-10">
+                        <div class="col-span-2">
+                            <div class="aspect-w-1 aspect-h-1">
+                                <img src="https://picsum.photos/400" alt="User 1" class="object-cover w-full h-full p-2 rounded-full">
+                            </div>
+                        </div>
+                        <div class="col-span-5 flex flex-col w-full justify-center">
+                            <h3 class="font-semibold text-gray-800 text-sm">@user.Name</h3>
+                            <h3 class="font-semibold text-gray-500 text-sm"> @user.Username</h3>
+                        </div>
+                        
+                        <div class="col-span-3 px-2 py-4 flex justify-center items-center">
+                            <button class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
                         </div>
                     </div>
-                    <div class="col-span-5 flex flex-col w-full justify-center">
-                        <h3 class="font-semibold text-gray-800 text-sm">Tonoto Gonzales</h3>
-                        <h3 class="font-semibold text-gray-500 text-sm"> @@siiuuu</h3>
-                    </div>
-                    
-                    <div class="col-span-3 px-2 py-4 flex justify-center items-center">
-                        <button class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
-                    </div>
-                </div>
+                }
+
                
                 </div>
             </div>
