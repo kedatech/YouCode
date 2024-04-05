@@ -43,8 +43,8 @@ builder.WebHost.UseUrls("http://localhost:5096");
 // Add session and configure cookie
 builder.Services.AddSession(options =>
 {
-    options.Cookie.Name = ".SuperMemory.Session";
-    options.IdleTimeout = TimeSpan.FromMinutes(1);
+    options.Cookie.Name = ".ZeldaMemorie";
+    options.IdleTimeout = TimeSpan.FromDays(31);
     options.Cookie.IsEssential = true;
 
     options.Cookie.HttpOnly = true;

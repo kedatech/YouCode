@@ -5,16 +5,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - YouCode.GUI</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/YouCode.GUI.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/minstyles.min.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+
 </head>
 
-<body>
+<body >
     <!-- component -->
-    <nav class=" bg-white w-full flex relative justify-between items-center mx-auto px-8 h-20">
+    <nav class=" bg-white border top-0 w-full z-50 flex fixed justify-between items-center mx-auto px-8 h-20">
         <!-- logo -->
         <div class="inline-flex">
             <a class="_o6689fn" href="/">
@@ -72,7 +74,7 @@
             <div class="flex justify-end items-center relative">
 
                 <div class="flex mr-4 items-center">
-                    <a class="inline-block py-2 px-3 hover:bg-gray-200 rounded-full" asp-area="" asp-controller="Home" asp-action="Index">
+                    <a class="inline-block py-2 px-3 hover:bg-gray-200 rounded-full"  href="/">
                         <div class="flex items-center relative cursor-pointer whitespace-nowrap">Feed</div>
                     </a>
                     
@@ -96,25 +98,31 @@
 
                 <div class="block" id="Boton login">
                     <div class="inline relative">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <span class="text-gray-700 pr-2 font-semibold text-lg">Hello, @User.Identity.Name!</span>
-                        }
-                        else
-                        {
-                            <a asp-controller="Auth" asp-action="Redirect">
-                                <button type="button"
-                                    class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg">
-                                    <span class="text-gray-700 pr-2 font-semibold text-lg">Login with</span>
-                                    <div class="flex flex-grow-0 flex-shrink-0 h-10 w-10">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                                            class="w-full h-full">
-                                            <img src="/Images/github-mark.svg" alt="GitHub" class="w-full h-full">
-                                        </svg>
-                                    </div>
-                                </button> 
-                            </a>
-                        }
+                        <a id="ButtonLogin" asp-controller="Auth" asp-action="Redirect" hidden>
+                            <button type="button"
+                                class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg">
+                                <span class="text-gray-700 pr-2 font-semibold text-[13px]">Login with</span>
+                                <div class="flex flex-grow-0 flex-shrink-0 h-6 w-6">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="currentColor"
+                                        class="w-full h-full">
+                                        <img src="/Images/github-mark.svg" alt="GitHub" class="w-full h-full">
+                                    </svg>
+                                </div>
+                            </button> 
+                        </a>
+
+                        <a id="ButtonProfile" asp-controller="User" asp-action="Profile" asp-route-username="@ViewBag.Username" hidden>
+                            <button type="button"
+                                class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg">
+                                <span class="text-gray-700 pr-2 font-semibold text-[13px]">Perfil</span>
+                                <div class="flex flex-grow-0 flex-shrink-0 h-6 w-6">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="currentColor"
+                                        class="w-full h-full">
+                                        <img src="/Images/profile.svg" alt="Profile" class="w-full h-full">
+                                    </svg>
+                                </div>
+                            </button> 
+                        </a>
                     </div>
                 </div>
 
@@ -122,23 +130,56 @@
         </div>
     </nav>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+        <main class="mt-[90px]" role="main" class="pb-3">
 
             @RenderBody()
         </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    @* <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2024 - YouCode.GUI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Casí todos los derechos reservados</a>
         </div>
-    </footer>
+    </footer> *@
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/js/flowbite.min.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(document).ready(function () {
+             function checkUserOwner() {
+                $.ajax({
+                    url: '/api/Auth/ValidateLoggedUser',
+                    type: 'GET',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.currentUsername === null || response.currentUsername === "") {
+                            $('#ButtonLogin').show();
+                            $('#ButtonProfile').hide();
+                        } else {
+                            $('#ButtonLogin').hide();
+                            $('#ButtonProfile').show();
+                            $('#ButtonProfile').attr('href', '/User/Profile/' + response.currentUsername);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert(error);
+                    }
+                });
+             }
+             checkUserOwner();
+        });
+        
+    </script>
+    
 </body>
 
 </html>
+
+@section Scripts
+{
+    
+}

@@ -34,6 +34,35 @@ namespace YouCode.GUI.Controllers
         }
 
         public IActionResult Index() => View();
+
+        /// <summary>
+        /// Valida si el usuario 'username' es el propietario logueado en la Sesión
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns>IActionResult</returns>
+        [JwtAuthentication]
+        [HttpGet]
+        public IActionResult ValidateUserOwner(string username)
+        {
+            var owner_username = HttpContext.Session.GetString("UserName");
+
+            return Json(new { is_owner = owner_username == username });
+        }
+
+        /// <summary>
+        /// Valida si el usuario está logueado. Retorna el username de la sesión.
+        /// </summary>
+        /// <returns>Json response</returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("api/Auth/ValidateLoggedUser")]
+        public IActionResult ValidateLoggedUser()
+        {
+            var _current_username = AuthenticationService.ValidateUserLogged(HttpContext);
+            ViewBag.Username = _current_username;
+
+            return Json(new { currentUsername = _current_username });
+        }
         [AllowAnonymous]
         public IActionResult Redirect()
         {
@@ -57,7 +86,7 @@ namespace YouCode.GUI.Controllers
                     
                     userDB = new BE.User
                     {
-                        Name = userGithub.Name,
+                        Name = userGithub.Name == null ? userGithub.Login : userGithub.Name,
                         Username = userGithub.Login,
                         CreatedAt = DateTime.UtcNow
                     };

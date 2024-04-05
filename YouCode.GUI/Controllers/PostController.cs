@@ -3,68 +3,32 @@ using Microsoft.AspNetCore.Mvc;
 using YouCode.DAL;
 using YouCode.BE;
 using YouCode.BL;
+using YouCode.GUI.Services.Auth;
 
 namespace YouCode.GUI.Controllers;
 public class PostController : Controller
 {
     PostBL postBL = new PostBL();
+    UserBL userBL = new UserBL();
     CommentBL commentBL = new CommentBL();
-
-    public async Task<IActionResult> Comments(int idPost)
-    {
-        var comments = await commentBL.SearchAsync(new Comment{IdPost = idPost});
-        return View(comments);
-    }
-    //TODO: Esto podria renombrarse a Post/id y mostrarse en un modal
-    public async Task<ActionResult> Details(int id)
-    {
-        var post = await postBL.GetByIdAsync(new Post { Id = id});
-        return View(post);
-    }
-    //TODO: Esto podria solo ser una llamada de accion del backend
-    public async Task<IActionResult> Edit(int id)
-    {
-        var post = await postBL.GetByIdAsync(new Post{Id =  id});
-        return View(post);
-    }
-
+    
+    // [ValidateAntiForgeryToken]
+    [JwtAuthentication]
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Post post)
+    [Route("api/Post/CreatePost")]
+    public async Task<IActionResult> CreatePost([FromBody] Post post)
     {
-        try
+        var user = await userBL.GetByUsernameAsync(HttpContext.Session.GetString("UserName"));
+        if(user != null)
         {
-            int res = await postBL.CreateAsync(post);
-            return RedirectToAction(nameof(Index));
+            post.IdUser = user.Id ;
+            var res = await postBL.CreateAsync(post);
         }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View(post);
+        else{
+            return BadRequest();
         }
-    }
 
-    [HttpPut]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Post post)
-    {
-        try
-        {
-            int res = await postBL.UpdateAsync(post);
-            return RedirectToAction(nameof(Index));
-        }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View();
-        }
+        return Ok();
     }
-
-    [HttpDelete]
-    [ValidateAntiForgeryToken]
-    public IActionResult Delete(int id)
-    {
-        var res = postBL.DeleteAsync(new Post{Id = id});
-        return RedirectToAction(nameof(Index));
-    }
+    
 }
