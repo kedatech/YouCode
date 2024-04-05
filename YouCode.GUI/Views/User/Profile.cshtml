@@ -76,8 +76,8 @@
                             if (postHtml.Id == post.Id)
                             {
                                 
-                                <div class="p-4 h-64 overflow-auto">
-                                    <p class="text-[12px]">@Html.Raw(postHtml.ContentHtml)</p>
+                                <div class="p-4 h-24  overflow-auto">
+                                    <p class="PCLAS">@Html.Raw(postHtml.ContentHtml)</p>
                                 </div>
                             
                                 found = true;
@@ -328,8 +328,13 @@
             });
 
             $("#bioParagraph").html(FormatBio());
-
+            $(".PCLAS").addClass("text-red-200");
         });
+
+        document.querySelectorAll('.PCLAS').forEach(function(pElement) {
+            pElement.classList.add('');
+        });
+
 
         function FormatBio(){
             var xd = "@Model.Profile.Bio";

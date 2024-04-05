@@ -20,6 +20,21 @@ namespace YouCode.DAL
             }
             return result;
         }
+        /// <summary>
+        /// Esta madre guarda el post y retorna el recien creado :)
+        /// </summary>
+        /// <param name="post"></param>
+        /// <returns></returns>
+        public static async Task<Post> GetCreateAsync(Post post)
+        {
+            int result = 0;
+            using (var bdContexto = new ContextoDB())
+            {
+                bdContexto.Post.Add(post);
+                result = await bdContexto.SaveChangesAsync();
+            }
+            return post;
+        }
         //Busca Id de 
         public static async Task<int> UpdateAsync(Post post)
         {
@@ -62,6 +77,16 @@ namespace YouCode.DAL
             using (var bdContexto = new ContextoDB())
             {
                 postDB = await bdContexto.Post.FirstOrDefaultAsync(c => c.Id == post.Id);
+            }
+            return postDB;
+        }
+
+        public static async Task<Post> GetByUserIdAsync(int userId)
+        {
+            var postDB = new Post();
+            using (var bdContexto = new ContextoDB())
+            {
+                postDB = await bdContexto.Post.FirstOrDefaultAsync(c => c.IdUser == userId);
             }
             return postDB;
         }
