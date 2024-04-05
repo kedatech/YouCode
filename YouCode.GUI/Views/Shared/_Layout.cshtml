@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/minstyles.min.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 
 </head>
 
@@ -143,6 +144,8 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/js/flowbite.min.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
     <script>
         $(document).ready(function () {
@@ -153,7 +156,6 @@
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'json',
                     success: function (response) {
-                        console.log(response);
                         if (response.currentUsername === null || response.currentUsername === "") {
                             $('#ButtonLogin').show();
                             $('#ButtonProfile').hide();

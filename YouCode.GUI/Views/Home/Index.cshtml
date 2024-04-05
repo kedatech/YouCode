@@ -7,22 +7,61 @@
 <main class="max-w-5xl relative mx-auto w-full grid md:grid-cols-10 gap-0">
 
 
-<div class="w-full px-4 flex flex-col items-center md:col-span-7"
-id="contendor-post">
+<div class="w-full px-4 flex flex-col items-center md:col-span-7" id="contendor-post">
+    <div class="bg-gray-200 rounded-lg p-6 w-full my-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+            <span class="h-12 w-12 rounded-full bg-cover mr-4" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@ViewBag.AvatarUrl');"></span>
+        </div>
+            <input readonly onclick="openModal()" type="text" placeholder="¿Qué piensas?" class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300">
+        </div>
+    </div>
+
+
+
+
+
+
     @foreach (var post in Model)
     {
         <div class="bg-white border rounded-sm w-full mb-3 w-full post-item-render" id="post-@post.Id">
             <div class="flex items-center px-4 py-3">
-                <img class="h-8 w-8 rounded-full" src="@post.UserProfile.AvatarUrl" />
-                <div class="ml-3 ">
-                    <span class="text-sm font-semibold antialiased block leading-tight">@post.User.Name</span>
-                    <!-- Asumiendo que User tiene una propiedad 'Name' -->
-                    <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
+                <div class="flex items-center px-4 py-3">
+                    <span class="h-12 w-12 rounded-full bg-cover" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
+                    <div class="ml-3 ">
+                        <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span class="text-gray-600">@post.User.Username</span></span>
+                        <!-- Asumiendo que User tiene una propiedad Name -->
+                        <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
+                    </div>
                 </div>
             </div>
             <div class="px-2">
                 <h2 class="font-semibold text-gray-800">@post.Title</h2>
-                <p class="text-[12px]">@post.Content</p>
+                @if (ViewBag.PostsHtml != null)
+                {
+                    bool found = false;
+                    foreach (var postHtml in ViewBag.PostsHtml)
+                    {
+                        if (postHtml.Id == post.Id)
+                        {
+                            
+                            <div class="p-4 overflow-auto">
+                                <p class="text-[12px]">@Html.Raw(postHtml.ContentHtml)</p>
+                            </div>
+                           
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        <p class="text-[12px]">@post.Content</p>
+                    }
+                }
+                else
+                {
+                     <p class="text-[12px]">@post.Content</p>
+                }
             </div>
 
             @* *@
@@ -125,8 +164,8 @@ id="contendor-post">
 
     <section class="md:col-span-3 h-full">
         <article class="sticky top-[90px]">
-            <div class="bg-gray-200 border rounded-sm p-4">
-            <h2 class="font-semibold text-gray-800">¿Who to follow?</h2>
+            <div class="bg-gray-200 border rounded-md p-4">
+            <h2 class="font-semibold text-gray-800">Who to follow?</h2>
             <div class="mt-4 flex flex-wrap">
                 <div class="bg-white rounded-md p-2 w-full grid grid-cols-10">
                     <div class="col-span-2">
@@ -152,4 +191,226 @@ id="contendor-post">
 
 </main>
 
-<script src="~/js/like-func.js" asp-append-version="true"></script>
+
+    <div id="NewPostModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <form id="postForm" class="editor mx-auto w-100 md:w-10/12 lg:w-8/12 xl:w-6/12 bg-white p-4 rounded-lg overflow-y-auto">
+            <style>
+                body {background:white !important;}
+            </style>
+            <input id="PostTitleInput" name="title" class="title bg-gray-100 rounded-md border border-gray-300 p-2 mb-4 outline-none w-full" spellcheck="false" placeholder="Título" type="text">
+            <textarea id="PostContentInput" name="content" class="" spellcheck="false" placeholder="Escribe tu publicación aquí."></textarea>
+            
+            <div class="buttons flex">
+                <div class="icons flex text-gray-500 m-1">
+                    <svg class="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                </div>
+                <button type="button" class="btn border border-gray-300 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-500 ml-auto" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn border border-indigo-500 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-200 ml-2 bg-green-500">Publicar</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div id="spinnerOverlay" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+            <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+            </svg>
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+
+
+
+
+
+@section Scripts {
+
+    <style>
+        .CodeMirror, .CodeMirror-scroll {
+            min-height: 150px;
+            max-height: 200px;
+        }
+
+    
+        .CodeMirror {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f7f7f7;
+        }
+    </style>
+    <script src="~/js/like-func.js" asp-append-version="true"></script>
+    <script>
+       var simplemde = new SimpleMDE({ 
+            element: document.getElementById("PostContentInput"),
+            forceSync: true, // Fuerza la sincronización del contenido
+            toolbar: ["code","bold", "link", "preview"],
+	        spellChecker: false,
+            promptURLs:true,
+            previewRender: function(plainText) {
+                return customMarkdownParser(plainText); // Returns HTML from a custom parser
+            },
+            previewRender: function(plainText, preview) { // Async method
+                setTimeout(function(){
+                    preview.innerHTML = customMarkdownParser(plainText);
+                }, 250);
+
+                return "Loading...";
+            },
+        });
+
+        function openModal() {
+            var modal = document.getElementById('NewPostModal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            var modal = document.getElementById('NewPostModal');
+            modal.classList.add('hidden');
+        }
+
+
+        // Inicializar cuando el contenido esté cargado completamente
+        document.addEventListener('DOMContentLoaded', function () {
+            initializePosts();
+            var postForm = document.getElementById('postForm');
+            postForm.addEventListener('submit', function(event) {
+                event.preventDefault(); 
+
+                var title = postForm.elements['title'].value;
+                var content = postForm.elements['content'].value;
+
+                createPost(title, content);
+            });
+        });
+
+        function initializePosts() {
+            var userId = getUserId();
+            if (!userId) {
+                alert('No se ha iniciado sesión');
+                return;
+            }
+
+            var postItems = document.querySelectorAll('.post-item-render');
+            postItems.forEach(function(postItem) {
+                setupPostItem(postItem, userId);
+            });
+        }
+
+        function getUserId() {
+            var stringId = localStorage.getItem('YCuserId');
+            return stringId ? parseInt(stringId) : null;
+        }
+
+        function setupPostItem(postItem, userId) {
+            var reactions = JSON.parse(postItem.querySelector('.reactions').value);
+            var likeGreen = postItem.querySelector('#like-green');
+            var likeGray = postItem.querySelector('#like-gray');
+
+            var userReaction = reactions.find(function(reaction) { return reaction.idUser === userId; });
+            if (userReaction) {
+                likeGreen.classList.remove('hidden');
+                likeGray.classList.add('hidden');
+            } else {
+                likeGreen.classList.add('hidden');
+                likeGray.classList.remove('hidden');
+            }
+
+            var likeBtn = postItem.querySelector('.hover'); // Asumiendo que la clase 'hover' se utiliza para el botón de 'Me gusta'
+            likeBtn.onclick = function() { setLike(postItem, userId, reactions); };
+        }
+
+        // Refactorización para evitar el uso de una variable global 'requestInProgress'
+        function setLike(postItem, userId, reactions) {
+            var userReaction = reactions.find(function(reaction) { return reaction.idUser === userId; });
+            var postId = postItem.getAttribute('id').split('-')[1]; // Obtener el ID del post desde el atributo 'id'
+
+            if (userReaction) {
+                removeLike(postItem, reactions, userReaction.id);
+            } else {
+                addLike(postItem, reactions, userId, postId);
+            }
+        }
+
+        function addLike(postItem, reactions, userId, postId) {
+            var url = 'http://localhost:5096/api/reaction/';
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idUser: userId, idPost: postId })
+            })
+            .then(function(response) { 
+                if (!response.ok) throw new Error('Falló la petición');
+                return response.json(); 
+            })
+            .then(function(data) {
+                reactions.push({ id: data.id, idUser: userId, idPost: postId }); // Asumiendo que la respuesta incluye un 'id' para la reacción
+                updateUIForLike(postItem, reactions);
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+
+        function removeLike(postItem, reactions, reactionId) {
+            var url = `http://localhost:5096/api/reaction/${reactionId}`;
+            fetch(url, { method: 'DELETE' })
+            .then(function(response) { 
+                if (!response.ok) throw new Error('Falló la petición');
+                var index = reactions.findIndex(function(reaction) { return reaction.id === reactionId; });
+                reactions.splice(index, 1);
+                updateUIForLike(postItem, reactions);
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+
+        function updateUIForLike(postItem, reactions) {
+            var likesCount = postItem.querySelector('.likes');
+            likesCount.innerText = `${reactions.length} Likes`;
+            var likeGreen = postItem.querySelector('#like-green');
+            var likeGray = postItem.querySelector('#like-gray');
+            likeGreen.classList.toggle('hidden', reactions.length === 0);
+            likeGray.classList.toggle('hidden', reactions.length > 0);
+            postItem.querySelector('.reactions').value = JSON.stringify(reactions);
+        }
+
+        //---------------------
+        function createPost(title, content) {
+            if (title.trim() === "" || content.trim() === "") {
+                alert("Por favor completa todos los campos.");
+                return
+            }
+
+            var url = 'http://localhost:5096/api/Post/CreatePost';
+            $('#spinnerOverlay').removeClass('hidden');
+            var data = {
+                Title: title,
+                Content: simplemde.value(),
+            };
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(function(response) { 
+                $('#spinnerOverlay').addClass('hidden');
+                console.log(data);
+                if (!response.ok) throw new Error('Falló la petición');
+                // Recargar la página después de recibir una respuesta exitosa
+                window.location.reload();
+            })
+            .catch(function(error) {
+                $('#spinnerOverlay').addClass('hidden');
+                console.error('Error:', error);
+            });
+            closeModal();
+        }
+
+
+    </script>
+}

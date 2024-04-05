@@ -15,7 +15,7 @@ namespace YouCode.DAL
             int result = 0;
             using (var bdContexto = new ContextoDB())
             {
-                bdContexto.Add(post);
+                bdContexto.Post.Add(post);
                 result = await bdContexto.SaveChangesAsync();
             }
             return result;

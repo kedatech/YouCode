@@ -44,7 +44,7 @@ builder.WebHost.UseUrls("http://localhost:5096");
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".ZeldaMemorie";
-    options.IdleTimeout = TimeSpan.FromMinutes(1);
+    options.IdleTimeout = TimeSpan.FromDays(31);
     options.Cookie.IsEssential = true;
 
     options.Cookie.HttpOnly = true;

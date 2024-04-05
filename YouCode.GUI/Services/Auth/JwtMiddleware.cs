@@ -28,7 +28,7 @@ namespace YouCode.GUI.Services.Auth
                     filterContext.Result = new UnauthorizedResult();
                     return;
                 }
-               httpContext.Session.SetString("UserName", userName); 
+               httpContext.Session.SetString("UserName", userName);
             }
             else
             {
