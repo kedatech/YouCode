@@ -69,7 +69,30 @@
                 </div>
                 <div class="px-2">
                     <h2 class="font-semibold text-gray-800">@post.Title</h2>
-                    <p class="text-[12px]">@post.Content</p>
+                    @if (ViewBag.PostsHtml != null){
+                        bool found = false;
+                        foreach (var postHtml in ViewBag.PostsHtml)
+                        {
+                            if (postHtml.Id == post.Id)
+                            {
+                                
+                                <div class="p-4 h-64 overflow-auto">
+                                    <p class="text-[12px]">@Html.Raw(postHtml.ContentHtml)</p>
+                                </div>
+                            
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            <p class="text-[12px]">@post.Content</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-[12px]">@post.Content</p>
+                    }
                 </div>
 
                 @* *@
