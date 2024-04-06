@@ -106,38 +106,41 @@
                             @foreach (var image in post.Images)
                             {
                                 <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
-                                    <img src="@image.Path" alt="post image"
+                                    <img src="@image.Path" alt="post"
                                         class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 aspect-w-16 aspect-h-9 object-cover">
                                 </div>
                             }
                         </div>
                         <!-- Slider controls -->
-                        <button type="button"
-                            class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                            data-carousel-prev>
-                            <span
-                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                                <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 1 1 5l4 4" />
-                                </svg>
-                                <span class="sr-only">Previous</span>
-                            </span>
-                        </button>
-                        <button type="button"
-                            class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
-                            data-carousel-next>
-                            <span
-                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
-                                <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="m1 9 4-4-4-4" />
-                                </svg>
-                                <span class="sr-only">Next</span>
-                            </span>
-                        </button>
+                        @if (post.Images.Count > 1)
+                        {
+                            <button type="button"
+                                class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                                data-carousel-prev>
+                                <span
+                                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/50 group-hover:bg-white/50 group-focus:outline-none border border-gray-600">
+                                    <svg class="w-4 h-4 text-white" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                        <path stroke="#333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 1 1 5l4 4" />
+                                    </svg>
+                                    <span class="sr-only">Previous</span>
+                                </span>
+                            </button>
+                            <button type="button"
+                                class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                                data-carousel-next>
+                                <span
+                                    class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none border border-gray-600">
+                                    <svg class="w-4 h-4 text-white" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                        <path stroke="#333" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="m1 9 4-4-4-4" />
+                                    </svg>
+                                    <span class="sr-only">Next</span>
+                                </span>
+                            </button>
+                        }
                     </div>
                 }
 
@@ -151,7 +154,7 @@
 
                     @namespace YouCode.GUI.Components.Icons
 
-                        <svg onclick="setLike(@post.Id)" class="hover" width="30" height="30" viewBox="0 0 24 24"
+                        <svg class="hover btn-like" width="30" height="30" viewBox="0 0 24 24"
                             fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="hear 1" clip-path="url(#clip0_31_2)">
                                 <g id="hear - copia 1">
@@ -171,29 +174,79 @@
                         </svg>
 
                         <!-- SVG de Comentario -->
-                        <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
-                            <path
-                                d="M47.8 3.8c-.3-.5-.8-.8-1.3-.8h-45C.9 3.1.3 3.5.1 4S0 5.2.4 5.7l15.9 15.6 5.5 22.6c.1.6.6 1 1.2 1.1h.2c.5 0 1-.3 1.3-.7l23.2-39c.4-.4.4-1 .1-1.5zM5.2 6.1h35.5L18 18.7 5.2 6.1zm18.7 33.6l-4.4-18.4L42.4 8.6 23.9 39.7z">
-                            </path>
+                        <svg class="hover btn-save" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="Frame">
+                                <path class="hidden" 
+                                id="comment-green" d="M12 2C6.486 2 2 5.589 2 10C2 12.908 3.897 15.516 7 16.934V22L12.34 17.996C17.697 17.852 22 14.32 22 10C22 5.589 17.514 2 12 2ZM9.5 11C9.10218 11 8.72064 10.842 8.43934 10.5607C8.15804 10.2794 8 9.89782 8 9.5C8 9.10218 8.15804 8.72064 8.43934 8.43934C8.72064 8.15804 9.10218 8 9.5 8C9.89782 8 10.2794 8.15804 10.5607 8.43934C10.842 8.72064 11 9.10218 11 9.5C11 9.89782 10.842 10.2794 10.5607 10.5607C10.2794 10.842 9.89782 11 9.5 11ZM14.5 11C14.1022 11 13.7206 10.842 13.4393 10.5607C13.158 10.2794 13 9.89782 13 9.5C13 9.10218 13.158 8.72064 13.4393 8.43934C13.7206 8.15804 14.1022 8 14.5 8C14.8978 8 15.2794 8.15804 15.5607 8.43934C15.842 8.72064 16 9.10218 16 9.5C16 9.89782 15.842 10.2794 15.5607 10.5607C15.2794 10.842 14.8978 11 14.5 11Z" fill="#4FDC54"/>
+                                <g id="comment-gray">
+                                <path id="Vector" d="M9.5 11C10.3284 11 11 10.3284 11 9.5C11 8.67157 10.3284 8 9.5 8C8.67157 8 8 8.67157 8 9.5C8 10.3284 8.67157 11 9.5 11Z" fill="#4F4F5E"/>
+                                <path id="Vector_2" d="M14.5 11C15.3284 11 16 10.3284 16 9.5C16 8.67157 15.3284 8 14.5 8C13.6716 8 13 8.67157 13 9.5C13 10.3284 13.6716 11 14.5 11Z" fill="#4F4F5E"/>
+                                <path id="Vector_3" d="M12 2C6.486 2 2 5.589 2 10C2 12.908 3.897 15.515 7 16.934V22L12.34 17.996C17.697 17.852 22 14.32 22 10C22 5.589 17.514 2 12 2ZM12 16H11.667L9 18V15.583L8.359 15.336C5.671 14.301 4 12.256 4 10C4 6.691 7.589 4 12 4C16.411 4 20 6.691 20 10C20 13.309 16.411 16 12 16Z" fill="#4F585D"/>
+                                </g>
+                            </g>
                         </svg>
+
                     </div>
+                    
                     <div class="flex">
-                        <!-- SVG de Compartir -->
-                        <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
-                            <path
-                                d="M43.5 48c-.4 0-.8-.2-1.1-.4L24 29 5.6 47.6c-.4.4-1.1.6-1.6.3-.6-.2-1-.8-1-1.4v-45C3 .7 3.7 0 4.5 0h39c.8 0 1.5.7 1.5 1.5v45c0 .6-.4 1.2-.9 1.4-.2.1-.4.1-.6.1zM24 26c.8 0 1.6.3 2.2.9l15.8 16V3H6v39.9l15.8-16c.6-.6 1.4-.9 2.2-.9z">
-                            </path>
+                        <!-- SVG de Saved (Guardado) -->
+                        <svg class="hover btn-favorite" width="30" height="30" viewBox="0 0 24 24" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g id="Frame">
+                                <path class="hidden" id="favorite-green"
+                                    d="M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V8L16 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21ZM7 5H11V7H13V5H15V9H7V5ZM7 13H17V19H7V13Z"
+                                    fill="#4FDC54" />
+                                <path id="favorite-gray"
+                                    d="M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0392 21 19.5305 21 19V8.00002C21.0008 7.86841 20.9755 7.73795 20.9258 7.61611C20.876 7.49427 20.8027 7.38346 20.71 7.29002L16.71 3.29002C16.6166 3.19734 16.5057 3.12401 16.3839 3.07425C16.2621 3.02448 16.1316 2.99926 16 3.00002H5C4.46957 3.00002 3.96086 3.21073 3.58579 3.5858C3.21071 3.96088 3 4.46958 3 5.00002V19C3 19.5305 3.21071 20.0392 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21ZM15 19H9V14H15V19ZM13 7.00002H11V5.00002H13V7.00002ZM5 5.00002H7V9.00002H15V5.00002H15.59L19 8.41002V19H17V14C17 13.4696 16.7893 12.9609 16.4142 12.5858C16.0391 12.2107 15.5304 12 15 12H9C8.46957 12 7.96086 12.2107 7.58579 12.5858C7.21071 12.9609 7 13.4696 7 14V19H5V5.00002Z"
+                                    fill="#4F4F5E" />
+                            </g>
                         </svg>
                     </div>
+
                 </div>
-                <!-- La cantidad de 'likes' podría ser dinámica dependiendo de la lógica de la aplicación, aquí se usa un número estático como placeholder -->
                 <div class="flex justify-between font-semibold text-sm mx-4 mt-2 mb-4">
                     <span class="likes">@post.Reactions.Count Likes</span>
-                    <span>@post.Favorites.Count Saved</span>
+                    <span class="saves">@post.Favorites.Count Saved</span>
+                </div>
+
+                                <!-- component Commet GABY -->
+                <!-- Tailwindcss V3 Script because here v3 is not supported -->
+                <script src="https://cdn.tailwindcss.com/"></script>
+                <div class="flex justify-center items-center w-full pb-10">
+                    <div class="w-[90%] mx-auto">
+                        <!-- Ajuste del ancho del contenedor principal -->
+                        <div class="flex justify-between">
+                            @* <div class="mb-4">
+                                <span class="bg-[#F3F4F6] rounded-md font-semibold cursor-pointer p-2">Write</span>
+                                <span class="bg-transparent font-semibold text-[#7E8490] cursor-pointer p-2">Preview</span>
+                            </div> *@
+                            @* <div class="flex gap-3 text-[#9CA3AF]">
+
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                </svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                                </svg>
+                            </div> *@
+                        </div>
+                        <textarea placeholder="Add your comment..." class="p-2 focus:outline-1 focus:outline-blue-500 font-bold border-[0.1px] resize-none h-[120px] border-[#9EA5B1] rounded-md w-full"></textarea> <!-- Ajuste del ancho del textarea -->
+                        <div class="flex justify-end">
+                            <button class="flex items-center justify-center text-sm font-semibold absolute bg-[#4F46E5] w-fit text-white py-2 rounded px-3">
+                                Post
+                                <svg class="ml-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: #eee;transform: ;msFilter:;"><path d="m21.426 11.095-17-8A1 1 0 0 0 3.03 4.242l1.212 4.849L12 12l-7.758 2.909-1.212 4.849a.998.998 0 0 0 1.396 1.147l17-8a1 1 0 0 0 0-1.81z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 @* propiedad oculta con un array de los usurios que dieron like *@
                 <input type="hidden" value='@Json.Serialize(post.Reactions)' class="reactions" />
+                <input type="hidden" value='@Json.Serialize(post.Favorites)' class="favorites" />
+
             </div>
         }
     </div>
@@ -307,6 +360,7 @@
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.3.x/dist/index.js"></script>
     <script src="~/js/like-func.js" asp-append-version="true"></script>
+    <script src="~/js/save-func.js" asp-append-version="true"></script>
 
     <script>
         var userId = @Model.Profile.User.Id;
