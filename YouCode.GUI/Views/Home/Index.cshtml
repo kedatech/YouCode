@@ -25,6 +25,8 @@
     @foreach (var post in Model)
     {
         <div class="bg-white border rounded-sm w-full mb-3 w-full post-item-render" id="post-@post.Id">
+            
+            
             <div class="flex items-center px-4 py-3">
                 <div class="flex items-center px-4 py-3">
                     <span class="h-12 w-12 rounded-full bg-cover" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
@@ -45,9 +47,10 @@
                         if (postHtml.Id == post.Id)
                         {
                             
-                            <div class="p-4 overflow-auto">
-                                <p class="text-[12px]">@Html.Raw(postHtml.ContentHtml)</p>
+                            <div class="p-4 h-24 overflow-auto">
+                                <p class="">@Html.Raw(postHtml.ContentHtml)</p>
                             </div>
+
                            
                             found = true;
                             break;
@@ -198,26 +201,31 @@
     }
 </div>
 
+    @*<-! WHO TO FOLLOW -->*@
     <section class="md:col-span-3 h-full">
         <article class="sticky top-[90px]">
             <div class="bg-gray-200 border rounded-md p-4">
             <h2 class="font-semibold text-gray-800">Who to follow?</h2>
             <div class="mt-4 flex flex-wrap">
-                <div class="bg-white rounded-md p-2 w-full grid grid-cols-10">
-                    <div class="col-span-2">
-                        <div class="aspect-w-1 aspect-h-1">
-                            <img src="https://picsum.photos/400" alt="User 1" class="object-cover w-full h-full p-2 rounded-full">
+                @foreach(var user in ViewBag.UsersToFollow)
+                {
+                    <div class="bg-white rounded-md p-2 my-2 w-full grid grid-cols-10">
+                        <div class="col-span-2">
+                            <div class="aspect-w-1 aspect-h-1">
+                                <img src="https://picsum.photos/400" alt="User 1" class="object-cover w-full h-full p-2 rounded-full">
+                            </div>
+                        </div>
+                        <div class="col-span-5 flex flex-col w-full justify-center">
+                            <h3 class="font-semibold text-gray-800 text-sm">@user.Name</h3>
+                            <h3 class="font-semibold text-gray-500 text-sm"> @user.Username</h3>
+                        </div>
+                        
+                        <div class="col-span-3 px-2 py-4 flex justify-center items-center">
+                            <button class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
                         </div>
                     </div>
-                    <div class="col-span-5 flex flex-col w-full justify-center">
-                        <h3 class="font-semibold text-gray-800 text-sm">Tonoto Gonzales</h3>
-                        <h3 class="font-semibold text-gray-500 text-sm"> @@siiuuu</h3>
-                    </div>
-                    
-                    <div class="col-span-3 px-2 py-4 flex justify-center items-center">
-                        <button class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
-                    </div>
-                </div>
+                }
+
                
                 </div>
             </div>
@@ -228,20 +236,21 @@
 </main>
 
 
-    <div id="NewPostModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <form id="postForm" class="editor mx-auto w-100 md:w-10/12 lg:w-8/12 xl:w-6/12 bg-white p-4 rounded-lg overflow-y-auto">
+    <div id="NewPostModal" class="z-40 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <form enctype="multipart/form-data" id="postForm" class="editor mx-auto w-100 md:w-10/12 lg:w-8/12 xl:w-6/12 bg-white p-4 rounded-lg overflow-y-auto">
             <style>
                 body {background:white !important;}
             </style>
-            <input id="PostTitleInput" name="title" class="title bg-gray-100 rounded-md border border-gray-300 p-2 mb-4 outline-none w-full" spellcheck="false" placeholder="Título" type="text">
-            <textarea id="PostContentInput" name="content" class="" spellcheck="false" placeholder="Escribe tu publicación aquí."></textarea>
+            <input id="PostTitleInput" name="Title" class="title bg-gray-100 rounded-md border border-gray-300 p-2 mb-4 outline-none w-full" spellcheck="false" placeholder="Título" type="text">
+            <textarea id="PostContentInput" name="Content" class="" spellcheck="false" placeholder="Escribe tu publicación aquí."></textarea>
             
             <div class="buttons flex">
                 <div class="icons flex text-gray-500 m-1">
                     <svg class="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
                 </div>
+                <input id="InputFiles" name="Files" type="file" accept="image/*" multiple>
                 <button type="button" class="btn border border-gray-300 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-500 ml-auto" onclick="closeModal()">Cancelar</button>
-                <button type="submit" class="btn border border-indigo-500 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-200 ml-2 bg-green-500">Publicar</button>
+                <button id="submitBtn" type="submit" class="btn border border-indigo-500 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-200 ml-2 bg-green-500">Publicar</button>
             </div>
         </form>
     </div>
@@ -314,10 +323,11 @@
             postForm.addEventListener('submit', function(event) {
                 event.preventDefault(); 
 
-                var title = postForm.elements['title'].value;
-                var content = postForm.elements['content'].value;
+                /*var title = postForm.elements['Title'].value;
+                var content = postForm.elements['Content'].value;
+                var file = postForm.elements['File'].value;
 
-                createPost(title, content);
+                createPost(title, content, file);*/
             });
         });
 
@@ -413,8 +423,8 @@
             postItem.querySelector('.reactions').value = JSON.stringify(reactions);
         }
 
-        //---------------------
-        function createPost(title, content) {
+         //---------------------
+        /*function createPost(title, content) {
             if (title.trim() === "" || content.trim() === "") {
                 alert("Por favor completa todos los campos.");
                 return
@@ -445,7 +455,41 @@
                 console.error('Error:', error);
             });
             closeModal();
-        }
+        }   */
+
+        $('#submitBtn').click(function () {
+            // Obtenemos los valores de los campos
+            var postTitle = $('#PostTitleInput').val();
+            var postContent = $('#PostContentInput').val();
+            console.log(postTitle);
+            if (postTitle.trim() === "" || postContent.trim() === "") {
+                alert("Por favor completa todos los campos.");
+                return // Evita que se envíe el formulario
+            }
+
+            $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
+            var formData = new FormData($('#postForm')[0]);
+
+            $.ajax({
+                url: '/api/Post/CreatePost',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Manejar errores aquí
+                },
+                complete: function() {
+                    // Oculta el spinner
+                    $('#spinnerOverlay').addClass('hidden');
+                    $('#editProfileModal').addClass('hidden');
+                }
+            });
+        });
 
 
     </script>

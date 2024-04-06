@@ -48,6 +48,7 @@ namespace YouCode.GUI.Controllers
             }
             
             var posts = await postService.GetAllAsync(null);
+            var users = await userBL.GetAllAsync();
             var postsHtml = new List<dynamic>();
 
             foreach (var post in posts)
@@ -56,7 +57,23 @@ namespace YouCode.GUI.Controllers
                 postsHtml.Add(new { Id = post.Id, ContentHtml = contentHtml });
             }
 
+            List<BE.User> usersToFollow = new List<BE.User>();
+            var count = 0;
+            users.Shuffle();
+            foreach(var u in users)
+            {
+                if(count == 3)
+                {
+                    break;
+                }
+                if(u.Username != username)
+                {
+                    usersToFollow.Add(u);
+                    count ++;
+                }
+            }
             ViewBag.PostsHtml = postsHtml;
+            ViewBag.UsersToFollow = usersToFollow;
             return View(posts);
         }
         
@@ -69,6 +86,27 @@ namespace YouCode.GUI.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        
+    }
+
+    public static class Extensions
+    {
+        private static Random rng = new Random();
+
+        // Método de extensión para desordenar una lista
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
         }
     }
 }

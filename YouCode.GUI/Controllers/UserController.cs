@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using YouCode.GUI.Services.Auth;
 using YouCode.GUI.Services;
 using YouCode.GUI.Models.DTOs;
+using Markdig;
 
 namespace YouCode.GUI.Controllers;
 public class UserController : Controller
@@ -25,10 +26,15 @@ public class UserController : Controller
             {
                 var profile = await profileBL.GetByIdAsync(new Profile { Id = user.Id });
                 var posts = await postService.GetAllAsync(user.Username);
-                Console.WriteLine(user.Username);
-                
                 if(profile != null)
                 {
+                    var postsHtml = new List<dynamic>();
+                    foreach (var post in posts)
+                    {
+                        var contentHtml = Markdown.ToHtml(post.Content);
+                        postsHtml.Add(new { Id = post.Id, ContentHtml = contentHtml });
+                    }
+                    ViewBag.PostsHtml = postsHtml;
                     return View(new ProfileReturnDto(){
                         Profile = profile,
                         Posts = posts
