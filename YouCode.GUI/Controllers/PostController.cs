@@ -3,72 +3,62 @@ using Microsoft.AspNetCore.Mvc;
 using YouCode.DAL;
 using YouCode.BE;
 using YouCode.BL;
+using YouCode.GUI.Services.Auth;
+using YouCode.GUI.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace YouCode.GUI.Controllers;
 public class PostController : Controller
 {
     PostBL postBL = new PostBL();
+    UserBL userBL = new UserBL();
+    ImageBL imageBL = new ImageBL();
     CommentBL commentBL = new CommentBL();
     
-    public IActionResult Create()
-    {
-        ViewBag.Error = "";
-        return View();
-    }
-
-    public async Task<IActionResult> Comments(int idPost)
-    {
-        var comments = await commentBL.SearchAsync(new Comment{IdPost = idPost});
-        return View(comments);
-    }
-    public async Task<ActionResult> Details(int id)
-    {
-        var post = await postBL.GetByIdAsync(new Post { Id = id});
-        return View(post);
-    }
-    public async Task<IActionResult> Edit(int id)
-    {
-        var post = await postBL.GetByIdAsync(new Post{Id =  id});
-        return View(post);
-    }
-
+    // [ValidateAntiForgeryToken]
+    [JwtAuthentication]
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Post post)
+    [Route("api/Post/CreatePost")]
+    public async Task<IActionResult> CreatePost(PostFormData postFormData)
     {
-        try
+        var user = await userBL.GetByUsernameAsync(HttpContext.Session.GetString("UserName"));
+        if(user != null)
         {
-            int res = await postBL.CreateAsync(post);
-            return RedirectToAction(nameof(Index));
+            var postResponse = await postBL.GetCreateAsync(new Post{
+                Title = postFormData.Title,
+                Content = postFormData.Content,
+                IdUser = user.Id});
+            
+            if (postFormData.Files != null && postFormData.Files.Count != 0)
+            {
+                var counter = 0;
+                foreach (IFormFile foto in postFormData.Files)
+                {
+                    var path = await ImageService.SubirArchivo(foto.OpenReadStream(), user.Username + "POST_IMAGE_" + counter.ToString());
+                    await imageBL.CreateAsync(new Image { Path = path ?? "https://via.placeholder.com/300x200.png?text=Imagen+no+disponible", IdPost = postResponse.Id });
+                    counter++;
+
+                }
+            }
+
+
         }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View(post);
+        else{
+            return BadRequest();
         }
+
+        return Ok();
     }
 
-    [HttpPut]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Post post)
-    {
-        try
-        {
-            int res = await postBL.UpdateAsync(post);
-            return RedirectToAction(nameof(Index));
-        }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View();
-        }
-    }
 
-    [HttpDelete]
-    [ValidateAntiForgeryToken]
-    public IActionResult Delete(int id)
+
+    public class PostFormData
     {
-        var res = postBL.DeleteAsync(new Post{Id = id});
-        return RedirectToAction(nameof(Index));
+        public int Id {get; set; }
+        public int IdUser {get; set; }
+        public string? Title { get; set; }
+        public string? Content { get; set; }
+        public List<IFormFile>? Files { get; set; }
     }
+    
 }

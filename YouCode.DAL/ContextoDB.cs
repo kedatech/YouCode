@@ -21,16 +21,11 @@ namespace YouCode.DAL
         public DbSet<Admin> Admin { get; set; }
         public DbSet<Follower> Follower {  get; set; }
         public DbSet<Reaction> Reaction { get ; set; }
-        public DbSet<Config> Config { get; set; }
         public DbSet<Profile> Profile { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source= AREVPC;
-                                    Initial Catalog = YouCodeDB; 
-                                    Encrypt = false;
-                                    TrustServerCertificate = true; 
-                                    Integrated Security = true");
+            optionsBuilder.UseSqlServer("Server=(local);Database=YouCodeDb;Integrated Security=True;Encrypt=False");
         }
     }
 }

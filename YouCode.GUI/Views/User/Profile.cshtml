@@ -1,0 +1,412 @@
+@* @page "/perfil" *@
+@model YouCode.GUI.Models.DTOs.ProfileReturnDto
+
+@{
+    ViewBag.Title = @Model.Profile.User.Name;
+}
+
+
+<main class="max-w-2xl mx-auto">
+    <div class="relative w-full my-10 bg-white rounded-md border shadow-md p-5">
+        <div class="relative">
+            <button id="openModal" hidden
+                class="absolute m-1 top-0 right-0 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm font-semibold transition-all duration-300 hover:bg-green-600 hover:text-white hover:border-transparent">Editar
+                perfil</button>
+
+        </div>
+        <div class="flex items-center justify-center">
+            <div class="mt-2">
+                <span class="block w-40 h-40 rounded-full m-auto shadow"
+                    style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@Model.Profile.AvatarUrl');">
+                </span>
+            </div>
+
+            <div class="ml-6">
+                <h2 class="text-3xl font-bold">@Model.Profile.User.Name</h2>
+                <p class="text-gray-600 text-xl font-semibold mt-1">@Model.Profile.User.Username</p>
+                <hr class="mt-3">
+                <div class="flex justify-between text-gray-600 mx-2 mt-2">
+                    <div class="text-center">
+                        <span class="block font-bold text-lg">1.5k</span>
+                        <span class="text-xs">Seguidores</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-bold text-lg">120</span>
+                        <span class="text-xs">Seguidos</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="block font-bold text-lg">350</span>
+                        <span class="text-xs">Posts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-8">
+            <p class="text-gray-600 text-md p-2 mt-2" id="bioParagraph"></p>
+        </div>
+
+    </div>
+
+    @* si los post son cero mostrar un mensaje *@
+    @if (Model.Posts.Count == 0)
+    {
+        <div class="w-full flex items-center justify-center mt-5">
+            <p class="text-gray-600 text-lg">Cielos está un poco vacío por aquí...</p>
+        </div>
+    }
+
+    <div class="w-full flex flex-col items-center" id="contendor-post">
+        @foreach (var post in Model.Posts)
+        {
+            <div class="bg-white border shadow-md rounded-sm my-3 w-full post-item-render" id="post-@post.Id">
+                <div class="flex items-center px-4 py-3">
+                    <span class="h-12 w-12 rounded-full bg-cover" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
+                    <div class="ml-3 ">
+                        <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span class="text-gray-600">@post.User.Username</span></span>
+                        <!-- Asumiendo que User tiene una propiedad Name -->
+                        <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
+                    </div>
+                </div>
+                <div class="px-2">
+                    <h2 class="font-semibold text-gray-800">@post.Title</h2>
+                    @if (ViewBag.PostsHtml != null){
+                        bool found = false;
+                        foreach (var postHtml in ViewBag.PostsHtml)
+                        {
+                            if (postHtml.Id == post.Id)
+                            {
+                                
+                                <div class="p-4 h-24  overflow-auto">
+                                    <p class="PCLAS">@Html.Raw(postHtml.ContentHtml)</p>
+                                </div>
+                            
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            <p class="text-[12px]">@post.Content</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-[12px]">@post.Content</p>
+                    }
+                </div>
+
+                @* *@
+
+                @if (post.Images.Any())
+                {
+                    <div id="controls-carousel" class="relative w-full" data-carousel="static">
+                        <!-- Carousel wrapper -->
+                        <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                            <!-- Item 1 -->
+                            @foreach (var image in post.Images)
+                            {
+                                <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
+                                    <img src="@image.Path" alt="post image"
+                                        class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 aspect-w-16 aspect-h-9 object-cover">
+                                </div>
+                            }
+                        </div>
+                        <!-- Slider controls -->
+                        <button type="button"
+                            class="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                            data-carousel-prev>
+                            <span
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 1 1 5l4 4" />
+                                </svg>
+                                <span class="sr-only">Previous</span>
+                            </span>
+                        </button>
+                        <button type="button"
+                            class="absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+                            data-carousel-next>
+                            <span
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                                <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="m1 9 4-4-4-4" />
+                                </svg>
+                                <span class="sr-only">Next</span>
+                            </span>
+                        </button>
+                    </div>
+                }
+
+                @* *@
+
+                @* @ViewBag.User.Id *@
+
+                <div class="flex items-center justify-between mx-4 mt-3 mb-2">
+                    <div class="flex gap-5">
+                        <!-- SVG de Corazón (Me gusta) -->
+
+                    @namespace YouCode.GUI.Components.Icons
+
+                        <svg onclick="setLike(@post.Id)" class="hover" width="30" height="30" viewBox="0 0 24 24"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g id="hear 1" clip-path="url(#clip0_31_2)">
+                                <g id="hear - copia 1">
+                                    <path class="hidden" id="like-green"
+                                        d="M19.4048 5.62257C18.9072 5.1089 18.3155 4.70111 17.6636 4.42265C17.0117 4.14419 16.3126 4.00055 15.6064 4C14.2706 4.00022 12.9836 4.51459 12.0002 5.44126C11.0169 4.51443 9.72986 4.00004 8.39404 4C7.68701 4.00075 6.9871 4.14483 6.3346 4.42393C5.6821 4.70303 5.08988 5.11165 4.59203 5.62627C2.46857 7.81221 2.46947 11.2313 4.59384 13.408L12.0002 21L19.4066 13.408C21.531 11.2313 21.5319 7.81221 19.4048 5.62257Z"
+                                        fill="#4FDC54" />
+                                    <path id="like-gray"
+                                        d="M12 4.59511C10.9104 3.59321 9.48419 3.03716 8.00398 3.03711C7.22052 3.03793 6.44495 3.19367 5.72192 3.49538C4.99888 3.79709 4.34265 4.2388 3.79098 4.79511C1.43798 7.15811 1.43898 10.8541 3.79298 13.2071L11.125 20.5391C11.295 20.8381 11.623 21.0311 12 21.0311C12.1548 21.0296 12.3071 20.9918 12.4446 20.9208C12.5822 20.8498 12.7011 20.7475 12.792 20.6221L20.207 13.2071C22.561 10.8531 22.561 7.15811 20.205 4.79111C19.6536 4.23583 18.9979 3.79501 18.2756 3.49399C17.5532 3.19298 16.7785 3.03771 15.996 3.03711C14.5158 3.03735 13.0897 3.59338 12 4.59511ZM18.791 6.20511C20.354 7.77611 20.355 10.2301 18.793 11.7931L12 18.5861L5.20698 11.7931C3.64498 10.2301 3.64598 7.77611 5.20498 6.20911C5.96498 5.45311 6.95898 5.03711 8.00398 5.03711C9.04898 5.03711 10.039 5.45311 10.793 6.20711L11.293 6.70711C11.3858 6.80006 11.496 6.87379 11.6173 6.9241C11.7386 6.97441 11.8686 7.00031 12 7.00031C12.1313 7.00031 12.2614 6.97441 12.3827 6.9241C12.504 6.87379 12.6142 6.80006 12.707 6.70711L13.207 6.20711C14.719 4.69811 17.281 4.70211 18.791 6.20511Z"
+                                        fill="#4F4F5E" />
+                                </g>
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_31_2">
+                                    <rect width="24" height="24" fill="white" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+
+                        <!-- SVG de Comentario -->
+                        <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
+                            <path
+                                d="M47.8 3.8c-.3-.5-.8-.8-1.3-.8h-45C.9 3.1.3 3.5.1 4S0 5.2.4 5.7l15.9 15.6 5.5 22.6c.1.6.6 1 1.2 1.1h.2c.5 0 1-.3 1.3-.7l23.2-39c.4-.4.4-1 .1-1.5zM5.2 6.1h35.5L18 18.7 5.2 6.1zm18.7 33.6l-4.4-18.4L42.4 8.6 23.9 39.7z">
+                            </path>
+                        </svg>
+                    </div>
+                    <div class="flex">
+                        <!-- SVG de Compartir -->
+                        <svg fill="#262626" height="24" viewBox="0 0 48 48" width="24">
+                            <path
+                                d="M43.5 48c-.4 0-.8-.2-1.1-.4L24 29 5.6 47.6c-.4.4-1.1.6-1.6.3-.6-.2-1-.8-1-1.4v-45C3 .7 3.7 0 4.5 0h39c.8 0 1.5.7 1.5 1.5v45c0 .6-.4 1.2-.9 1.4-.2.1-.4.1-.6.1zM24 26c.8 0 1.6.3 2.2.9l15.8 16V3H6v39.9l15.8-16c.6-.6 1.4-.9 2.2-.9z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+                <!-- La cantidad de 'likes' podría ser dinámica dependiendo de la lógica de la aplicación, aquí se usa un número estático como placeholder -->
+                <div class="flex justify-between font-semibold text-sm mx-4 mt-2 mb-4">
+                    <span class="likes">@post.Reactions.Count Likes</span>
+                    <span>@post.FavoriteCount Saved</span>
+                </div>
+
+                @* propiedad oculta con un array de los usurios que dieron like *@
+                <input type="hidden" value='@Json.Serialize(post.Reactions)' class="reactions" />
+            </div>
+        }
+    </div>
+    </div>
+
+
+</main>
+
+
+<div id="editProfileModal"
+    class="z-40 fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="max-h-full w-full max-w-xl overflow-y-auto sm:rounded-2xl bg-white p-8">
+        <form id="profileForm" enctype="multipart/form-data" class="space-y-4">
+            <!-- Inicio del formulario de edición de perfil -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <!-- Columna izquierda: Selector de foto -->
+                <div class="text-center">
+                    <!-- foto-->
+                    <div x-data="{photoName: null, photoPreview: null}" class="col-span-6 ml-2 sm:col-span-4 md:mr-3">
+                        <!-- Photo File Input -->
+                        <input id="profilePicture" name="AvatarFile" type="file" accept="image/*" class="hidden"
+                            x-ref="photo" x-on:change="
+                        photoName = $refs.photo.files[0].name;
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            photoPreview = e.target.result;
+                        };
+                        reader.readAsDataURL($refs.photo.files[0]);
+                    ">
+
+                        <label class="block text-gray-700 text-sm font-bold mb-2 text-center" for="photo">
+                            Foto de Perfil <span class="text-red-600"> </span>
+                        </label>
+
+                        <div class="text-center">
+                            <!-- Current Profile Photo -->
+                            <div class="mt-2" x-show="!photoPreview">
+                                <span class="block w-40 h-40 rounded-full m-auto shadow"
+                                    style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@Model.Profile.AvatarUrl');">
+                                </span>
+                            </div>
+
+                            <!-- New Profile Photo Preview -->
+                            <div class="mt-2" x-show="photoPreview" style="display: none;">
+                                <span class="block w-40 h-40 rounded-full m-auto shadow"
+                                    x-bind:style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + photoPreview + '\');'"
+                                    style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('null');">
+                                </span>
+                            </div>
+                            <button type="button"
+                                class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-400 focus:shadow-outline-blue active:text-gray-800 active:bg-gray-50 transition ease-in-out duration-150 mt-2 ml-3"
+                                x-on:click.prevent="$refs.photo.click()">
+                                Subir Nueva Foto
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- foto-->
+                </div>
+
+
+                <!-- Columna derecha: Campos de texto y botones -->
+                <div>
+                    <h1 class="mb-4 text-3xl font-extrabold">Editar perfil</h1>
+
+                    <div class="mb-4">
+                        <label for="profileName" class="block text-sm font-bold mb-2">Nombre de Perfil</label>
+                        <input maxlength="40" value="@Model.Profile.User.Name" type="text" id="profileName" name="Name"
+                            class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
+                            placeholder="Nombre">
+                    </div>
+                    <div class="mb-4">
+                        <label for="profileBio" class="block text-sm font-bold mb-2">Biografía</label>
+                        <textarea maxlength="40"id="profileBio" rows="4"
+                            class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
+                            placeholder="Biografía"></textarea>
+                        <input name="Bio" id="HiddenBioParagraph" hidden>
+                    </div>
+
+                    <div class="flex justify-between">
+                        <button type="button" id="submitBtn"
+                            class="mx-2 p-3 bg-green-600 rounded-lg text-white w-full font-semibold focus:outline-none focus:shadow-outline transition-all duration-300 hover:bg-green-800">Actualizar</button>
+                        <button type="button" id="closeModal"
+                            class="mx-2 p-3 bg-white border border-gray-300 rounded-lg w-full font-semibold focus:outline-none focus:shadow-outline transition-all duration-300 hover:bg-gray-800 hover:text-white">Cancelar</button>
+                    </div>
+
+                </div>
+
+        </form>
+        <!-- Fin del formulario de edición de perfil -->
+    </div>
+</div>
+
+<div id="spinnerOverlay" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+        <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+        </svg>
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+
+
+
+
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.3.x/dist/index.js"></script>
+    <script src="~/js/like-func.js" asp-append-version="true"></script>
+
+    <script>
+        var userId = @Model.Profile.User.Id;
+        document.addEventListener("DOMContentLoaded", function () {
+            var openModalBtn = document.getElementById("openModal");
+            var closeModalBtn = document.getElementById("closeModal");
+            var editProfileModal = document.getElementById("editProfileModal");
+            var profileNameInput = document.getElementById("profileName");
+            var profileBioTextarea = document.getElementById("profileBio");
+            var profilePhotoInput = document.getElementById("profilePhoto");
+
+            openModalBtn.addEventListener("click", function () {
+                editProfileModal.classList.remove("hidden");
+                profileBioTextarea.innerHTML = "@Model.Profile.Bio"
+            });
+
+            closeModalBtn.addEventListener("click", function () {
+                editProfileModal.classList.add("hidden");
+            });
+
+            $("#bioParagraph").html(FormatBio());
+        });
+
+        function FormatBio(){
+            var xd = "@Model.Profile.Bio";
+            var bioContent = xd.replace(/\n/g, "<br>");
+            return bioContent;
+        }
+
+        $(document).ready(function () {
+            // Función para verificar si el usuario es propietario y mostrar u ocultar el botón en consecuencia
+            function checkUserOwner(username) {
+                $.ajax({
+                    url: '/Auth/ValidateUserOwner',
+                    type: 'GET',
+                    data: { username: username },
+                    success: function (response) {
+                        if (response.is_owner) {
+                            // Si el usuario es propietario, mostrar el botón
+                            $('#openModal').show();
+                        } else {
+                            // Si el usuario no es propietario, ocultar el botón
+                            $('#openModal').remove();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        // Manejar errores aquí
+                    }
+                });
+            }
+
+            // Al cargar el documento, verifica si el usuario es propietario
+            checkUserOwner('@Model.Profile.User.Username');
+
+            // Al hacer clic en el botón de enviar, verifica si el usuario es propietario
+            $('#submitBtn').click(function () {
+                // Obtenemos los valores de los campos
+                var profileName = $('#profileName').val();
+                var profileBio = $('#profileBio').val();
+
+                if (profileName.trim() === "" || profileBio.trim() === "") {
+                    alert("Por favor completa todos los campos.");
+                    return // Evita que se envíe el formulario
+                }
+
+                // Reemplazar los saltos de línea en el contenido del textarea con "\n"
+                profileBioN = profileBio.replace(/\n/g, "\\n");
+                profileBio = profileBio.replace(/\n/g, "<br>");
+                $('#profileBio').html(profileBio);
+                $('#HiddenBioParagraph').val(profileBioN);
+            
+                // Si todos los campos están llenos, procedemos con el envío del formulario
+                $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
+                var formData = new FormData($('#profileForm')[0]);
+
+                $.ajax({
+                    url: '/Profile/EditProfile',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        window.location.href = response.redirectTo;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        // Manejar errores aquí
+                    },
+                    complete: function() {
+                        // Oculta el spinner
+                        $('#spinnerOverlay').addClass('hidden');
+                        $('#editProfileModal').addClass('hidden');
+                    }
+                });
+            });
+        });
+
+        localStorage.clear();
+        localStorage.setItem('YCuserId', userId);
+    </script>
+}
+

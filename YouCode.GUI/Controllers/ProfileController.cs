@@ -1,72 +1,51 @@
-using YouCode;
 using Microsoft.AspNetCore.Mvc;
-using YouCode.DAL;
-using YouCode.BE;
-using YouCode.BL;
+using YouCode.GUI.Services.Auth;
+using static YouCode.GUI.Services.ProfileService;
 
-namespace YouCode.GUI.Controllers;
-public class ProfileController : Controller
+
+namespace YouCode.GUI.Controllers
 {
-    UserBL userBL = new UserBL();
-    PostBL postBL = new PostBL();
-    
-    public IActionResult Index()
+    public class ProfileController : Controller
     {
-        return View(); //falta de ver como madres traerme la info del usuario actual
-    }
-    public IActionResult Create()
-    {
-        ViewBag.Error = "";
-        return RedirectToAction("Index", "Profile");
-    }
-    public async Task<ActionResult> Details(int id)
-    {
-        var user = await userBL.GetByIdAsync(new User { Id = id});
-        return RedirectToAction(nameof(Index), user);
-    }
-    public async Task<IActionResult> Edit(int id)
-    {
-        var user = await userBL.GetByIdAsync(new User{Id =  id});
-        return View(user);
-    }
+        [HttpPost]
+        [JwtAuthentication]
+        [Route("Profile/EditProfile")]
+        public async Task<IActionResult> EditProfile(ProfileDto profileDto)
+        {
+            var sesion_username = HttpContext.Session.GetString("UserName");
+            var res = await UpdateProfile(profileDto, sesion_username);
+            Console.WriteLine("Result on controller:");
+            Console.WriteLine(res);
+            if(res)
+            {
+                return Json(new { success = true, redirectTo = Url.Action("Profile", "User", new{username = sesion_username}) });
+            }
+            else
+            {
+                return Json(new { success = false, redirectTo = Url.Action("Index", "Home") });  
+            }          
+        }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(User user)
-    {
-        try
+        [HttpGet]
+        [JwtAuthentication]
+        [Route("Profile/GetProfile")]
+        public async Task<IActionResult> GetProfile()
         {
-            int res = await userBL.CreateAsync(user);
-            return RedirectToAction(nameof(Index));
+            var username = HttpContext.Session.GetString("UserName");
+            if(string.IsNullOrEmpty(username))
+            {
+                return Json(new { success = false});
+            }
+            var res_dto = await GetProfileDto(username);
+            
+            if(res_dto != null)
+            {
+                return Json(new { success = true, profileDto = res_dto});
+            }
+            else
+            {
+                return Json(new { success = false, profileDto = res_dto});  
+            }          
         }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View(user);
-        }
-    }
-
-    [HttpPut]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(User user)
-    {
-        try
-        {
-            int res = await userBL.UpdateAsync(user);
-            return RedirectToAction(nameof(Index));
-        }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View();
-        }
-    }
-
-    [HttpDelete]
-    [ValidateAntiForgeryToken]
-    public IActionResult Delete(int id)
-    {
-        var res = userBL.DeleteAsync(new User{Id = id});
-        return RedirectToAction(nameof(Index));
     }
 }

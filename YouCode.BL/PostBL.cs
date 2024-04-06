@@ -15,6 +15,11 @@ namespace YouCode.BL
             return await PostDAL.CreateAsync(post);
         }
 
+        public async Task<Post> GetCreateAsync(Post post)
+        {
+            return await PostDAL.GetCreateAsync(post);
+        }
+
         public async Task<int> UpdateAsync(Post post)
         {
             return await PostDAL.UpdateAsync(post);
@@ -28,6 +33,11 @@ namespace YouCode.BL
         public async Task<Post> GetByIdAsync(Post post)
         {
             return await PostDAL.GetByIdAsync(post);
+        }
+
+        public async Task<Post> GetByUserIdAsync(int IdUser)
+        {
+            return await PostDAL.GetByUserIdAsync(IdUser);
         }
 
         public async Task<List<Post>> GetAllAsync()

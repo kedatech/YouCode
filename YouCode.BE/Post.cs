@@ -18,12 +18,9 @@ namespace YouCode.BE
         [Required]
         public string Content { get; set; } = string.Empty;
         [Required]
-        public DateTime PostedAt { get; set; }
+        public DateTime PostedAt { get; set; } = DateTime.UtcNow;
         [ForeignKey("User")]
         public int IdUser { get; set; }
-
-        [NotMapped]
-        public int Top_Aux { get; set; }
-        public User User { get; set; } = new User();      
+        public User User { get; set; } 
     }
 }

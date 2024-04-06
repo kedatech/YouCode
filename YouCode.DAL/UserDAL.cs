@@ -33,8 +33,7 @@ namespace YouCode.DAL
                     userDB.Id = user.Id;
                     userDB.Name = user.Name;
                     userDB.Username = user.Username;
-                    userDB.Email = user.Email;
-                    userDB.Password = user.Password;
+                   
                     userDB.CreatedAt = user.CreatedAt;
                     
                     bdContexto.Update(userDB);
@@ -65,6 +64,16 @@ namespace YouCode.DAL
             using (var bdContexto = new ContextoDB())
             {
                 userDB = await bdContexto.User.FirstOrDefaultAsync(u => u.Id == user.Id);
+            }
+            return userDB;
+        }
+        
+        public static async Task<User> GetByUsernameAsync(string username)
+        {
+            var userDB = new User();
+            using (var bdContexto = new ContextoDB())
+            {
+                userDB = await bdContexto.User.FirstOrDefaultAsync(u => u.Username == username);
             }
             return userDB;
         }
@@ -105,12 +114,6 @@ namespace YouCode.DAL
             if (!string.IsNullOrWhiteSpace(user.Username))
             {
                 query = query.Where(c => c.Username.Contains(user.Username));
-            }
-
-            query = query.OrderByDescending(c => c.Id);
-            if (user.Top_Aux > 0)
-            {
-                query = query.Take(user.Top_Aux).AsQueryable();
             }
             return query;
         }

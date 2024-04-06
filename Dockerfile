@@ -21,13 +21,16 @@ WORKDIR /app/YouCode.GUI
 RUN dotnet restore
 
 # Copia el resto de los archivos del proyecto
+COPY ./YouCode.BE/ ./
+COPY ./YouCode.DAL/ ./
+COPY ./YouCode.BL/ ./
 COPY ./YouCode.GUI/ ./
 
 # Usa npm ci para instalar dependencias, optimizado para entornos de producción
 RUN npm ci --only=production
 
-# Compila la aplicación .NET
-RUN dotnet publish -c Release -o out 
+# Compila la aplicación .NET especificando el proyecto YouCode.GUI
+RUN dotnet publish "./YouCode.GUI/YouCode.GUI.csproj" -c Release -o out 
 
 # Utiliza la imagen de runtime de ASP.NET Core
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime

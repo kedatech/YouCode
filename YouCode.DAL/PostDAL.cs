@@ -15,10 +15,25 @@ namespace YouCode.DAL
             int result = 0;
             using (var bdContexto = new ContextoDB())
             {
-                bdContexto.Add(post);
+                bdContexto.Post.Add(post);
                 result = await bdContexto.SaveChangesAsync();
             }
             return result;
+        }
+        /// <summary>
+        /// Esta madre guarda el post y retorna el recien creado :)
+        /// </summary>
+        /// <param name="post"></param>
+        /// <returns></returns>
+        public static async Task<Post> GetCreateAsync(Post post)
+        {
+            int result = 0;
+            using (var bdContexto = new ContextoDB())
+            {
+                bdContexto.Post.Add(post);
+                result = await bdContexto.SaveChangesAsync();
+            }
+            return post;
         }
         //Busca Id de 
         public static async Task<int> UpdateAsync(Post post)
@@ -65,12 +80,22 @@ namespace YouCode.DAL
             }
             return postDB;
         }
+
+        public static async Task<Post> GetByUserIdAsync(int userId)
+        {
+            var postDB = new Post();
+            using (var bdContexto = new ContextoDB())
+            {
+                postDB = await bdContexto.Post.FirstOrDefaultAsync(c => c.IdUser == userId);
+            }
+            return postDB;
+        }
         public static async Task<List<Post>> GetAllAsync()
         {
             var post = new List<Post>();
             using (var bdContexto = new ContextoDB())
             {
-                post = await bdContexto.Post.ToListAsync();
+                post = await bdContexto.Post.Include(c => c.User).ToListAsync();
             }
 
             return post;
@@ -87,10 +112,7 @@ namespace YouCode.DAL
             }
 
             query = query.OrderByDescending(c => c.Id);
-            if (post.Top_Aux > 0)
-            {
-                query = query.Take(post.Top_Aux).AsQueryable();
-            }
+            
             return query;
         }
 

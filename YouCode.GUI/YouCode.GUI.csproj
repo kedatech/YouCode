@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -7,20 +7,26 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
+    <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
+    <PackageReference Include="Markdig" Version="0.36.2" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Octokit" Version="9.1.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YouCode.BE\YouCode.BE.csproj" />
     <ProjectReference Include="..\YouCode.BL\YouCode.BL.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
     <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
   </ItemGroup>
-
   <Target Name="Tailwind" BeforeTargets="Publish">
-    <Exec Command="npm run tailwind:min"/>
+    <Exec Command="npm run tailwind:min" />
   </Target>
 </Project>
