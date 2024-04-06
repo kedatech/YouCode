@@ -19,11 +19,5 @@ namespace YouCode.BE
 
         [ForeignKey("IdPost")]
         public int IdPost { get; set; }
-
-        [NotMapped]
-        public User User { get; set; } = new User();
-
-        [NotMapped]
-        public Post Post { get; set; } = new Post();
     }
 }

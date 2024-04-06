@@ -1,9 +1,9 @@
 // Inicializar cuando el contenido esté cargado completamente
 document.addEventListener('DOMContentLoaded', function () {
-    initializePosts();
+    initializePostsLikes();
 });
 
-function initializePosts() {
+function initializePostsLikes() {
     var userId = getUserId();
     if (!userId) {
         alert('No se ha iniciado sesión');
@@ -12,7 +12,7 @@ function initializePosts() {
 
     var postItems = document.querySelectorAll('.post-item-render');
     postItems.forEach(function (postItem) {
-        setupPostItem(postItem, userId);
+        setupPostItemLikes(postItem, userId);
     });
 }
 
@@ -21,7 +21,7 @@ function getUserId() {
     return stringId ? parseInt(stringId) : null;
 }
 
-function setupPostItem(postItem, userId) {
+function setupPostItemLikes(postItem, userId) {
     var reactions = JSON.parse(postItem.querySelector('.reactions').value);
     var likeGreen = postItem.querySelector('#like-green');
     var likeGray = postItem.querySelector('#like-gray');
@@ -35,7 +35,7 @@ function setupPostItem(postItem, userId) {
         likeGray.classList.remove('hidden');
     }
 
-    var likeBtn = postItem.querySelector('.hover'); // Asumiendo que la clase 'hover' se utiliza para el botón de 'Me gusta'
+    var likeBtn = postItem.querySelector('.btn-like');
     likeBtn.onclick = function () { setLike(postItem, userId, reactions); };
 }
 

@@ -6,13 +6,11 @@ namespace YouCode.GUI.Services
 {
     public class PostService
     {
-        private readonly UserBL userBL = new UserBL();
         private readonly ProfileBL profileBL = new ProfileBL();
         private readonly PostBL postBL = new PostBL();
         private readonly ImageBL imageBL = new ImageBL();
         private readonly FavoriteBL favoriteBL = new FavoriteBL();
         private readonly ReactionBL reactionBL = new ReactionBL();
-
 
         public async Task<List<PostDto>> GetAllAsync(string? username)
         {
@@ -32,8 +30,9 @@ namespace YouCode.GUI.Services
                 var profile = await profileBL.GetByIdAsync(new Profile { Id = post.User.Id });
                 var Allimages = await imageBL.GetAllAsync();
                 var images = Allimages.FindAll(i => i.IdPost == post.Id);
+
                 var allfav = await favoriteBL.GetAllAsync();
-                var favoriteCount = allfav.Count(f => f.IdPost == post.Id);
+                var favorites = allfav.FindAll(f => f.IdPost == post.Id);
 
                 var allreactions = await reactionBL.GetAllAsync();
                 var reactions = allreactions.Where(r => r.IdPost == post.Id).ToList();
@@ -48,7 +47,7 @@ namespace YouCode.GUI.Services
                     Content = post.Content,
                     PostedAt = post.PostedAt,
                     Images = images,
-                    FavoriteCount = favoriteCount,
+                    Favorites = favorites,
                     Reactions = reactions
                 });
             }

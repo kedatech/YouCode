@@ -14,7 +14,6 @@ public class UserController : Controller
 {
     private readonly UserBL userBL = new UserBL();
     private readonly ProfileBL profileBL = new ProfileBL();
-    private readonly PostBL postBL = new PostBL();
     private readonly PostService postService = new PostService();
     
     [Route("User/Profile/{username}")]
