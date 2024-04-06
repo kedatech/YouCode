@@ -1,66 +1,43 @@
-using YouCode;
 using Microsoft.AspNetCore.Mvc;
-using YouCode.DAL;
-using YouCode.BE;
 using YouCode.BL;
+using YouCode.BE;
+using System.Threading.Tasks;
 
-namespace YouCode.GUI.Controllers;
-public class FavoriteController : Controller
+namespace YouCode.GUI.Controllers
 {
-    FavoriteBL favoriteBL = new FavoriteBL();
-    public IActionResult Create()
+    [Route("api/favorite")] // Define la ruta base para el controlador API
+    [ApiController] // Indica que este controlador es un controlador API
+    public class FavoriteApiController : ControllerBase
     {
-        ViewBag.Error = "";
-        return View();
-    }
-    public async Task<ActionResult> Details(int id)
-    {
-        var favorite = await favoriteBL.GetByIdAsync(new Favorite { Id = id});
-        return View(favorite);
-    }
-    public async Task<IActionResult> Edit(int id)
-    {
-        var favorite = await favoriteBL.GetByIdAsync(new Favorite{Id =  id});
-        return View(favorite);
-    }
+        private readonly FavoriteBL _favoriteBL = new FavoriteBL();
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Favorite favorite)
-    {
-        try
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Favorite favorite)
         {
-            int res = await favoriteBL.CreateAsync(favorite);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                int res = await _favoriteBL.CreateAsync(favorite);
+                return CreatedAtAction("Get", new { id = favorite.Id }, favorite); 
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message); // Devuelve 500 en caso de error interno del servidor
+            }
         }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View(favorite);
-        }
-    }
 
-    [HttpPut]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Favorite favorite)
-    {
-        try
+        // DELETE: api/Favorite/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            int res = await favoriteBL.UpdateAsync(favorite);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _favoriteBL.DeleteAsync(new Favorite { Id = id });
+                return NoContent(); // Devuelve 204 como confirmación de que el favorito se eliminó
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message); // Devuelve 500 en caso de error interno del servidor
+            }
         }
-        catch(Exception e)
-        {
-            ViewBag.Error = e.Message;
-            return View();
-        }
-    }
-
-    [HttpDelete]
-    [ValidateAntiForgeryToken]
-    public IActionResult Delete(int id)
-    {
-        var res = favoriteBL.DeleteAsync(new Favorite{Id = id});
-        return RedirectToAction(nameof(Index));
     }
 }
