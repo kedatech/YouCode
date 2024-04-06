@@ -39,7 +39,7 @@ public class FollowerDAL
             int result = 0;
             using (var bdContexto = new ContextoDB())
             {
-                var followerDB = await bdContexto.Follower.FirstOrDefaultAsync(c => c.Id == follower.Id);
+                var followerDB = await bdContexto.Follower.FirstOrDefaultAsync(c => c.IdFollower == follower.IdFollower && c.IdFollow == follower.IdFollow);
                 if (followerDB != null)
                 {
                     bdContexto.Follower.Remove(followerDB);

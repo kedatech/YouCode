@@ -41,7 +41,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="px-2">
+                <div class="px-2 h-min">
                     <h2 class="font-semibold text-gray-800">@post.Title</h2>
                     @if (ViewBag.PostsHtml != null)
                     {
@@ -51,7 +51,7 @@
                             if (postHtml.Id == post.Id)
                             {
 
-                                <div class="p-4 h-24 overflow-auto">
+                                <div class="p-4 overflow-auto">
                                     <p class="">@Html.Raw(postHtml.ContentHtml)</p>
                                 </div>
 
@@ -82,7 +82,7 @@
                             @foreach (var image in post.Images)
                             {
                                 <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
-                                    <img src="@image.Path" alt="post image"
+                                    <img src="@image.Path" alt="post"
                                         class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 aspect-w-16 aspect-h-9 object-cover">
                                 </div>
                             }
@@ -148,7 +148,7 @@
                         </svg>
 
                         <!-- SVG de Comentario -->
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="hover btn-comment" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="Frame">
                                 <path class="hidden" 
                                 id="comment-green" d="M12 2C6.486 2 2 5.589 2 10C2 12.908 3.897 15.516 7 16.934V22L12.34 17.996C17.697 17.852 22 14.32 22 10C22 5.589 17.514 2 12 2ZM9.5 11C9.10218 11 8.72064 10.842 8.43934 10.5607C8.15804 10.2794 8 9.89782 8 9.5C8 9.10218 8.15804 8.72064 8.43934 8.43934C8.72064 8.15804 9.10218 8 9.5 8C9.89782 8 10.2794 8.15804 10.5607 8.43934C10.842 8.72064 11 9.10218 11 9.5C11 9.89782 10.842 10.2794 10.5607 10.5607C10.2794 10.842 9.89782 11 9.5 11ZM14.5 11C14.1022 11 13.7206 10.842 13.4393 10.5607C13.158 10.2794 13 9.89782 13 9.5C13 9.10218 13.158 8.72064 13.4393 8.43934C13.7206 8.15804 14.1022 8 14.5 8C14.8978 8 15.2794 8.15804 15.5607 8.43934C15.842 8.72064 16 9.10218 16 9.5C16 9.89782 15.842 10.2794 15.5607 10.5607C15.2794 10.842 14.8978 11 14.5 11Z" fill="#4FDC54"/>
@@ -187,8 +187,7 @@
 
                 <!-- component Commet GABY -->
                 <!-- Tailwindcss V3 Script because here v3 is not supported -->
-                <script src="https://cdn.tailwindcss.com/"></script>
-                <div class="flex justify-center items-center w-full pb-10">
+                <div class="justify-center items-center w-full pb-10 comment-component hidden">
                     <div class="w-[90%] mx-auto">
                         <!-- Ajuste del ancho del contenedor principal -->
                         <div class="flex justify-between">
@@ -238,7 +237,10 @@
                 <div class="mt-4 flex flex-wrap">
                     @foreach (var user in ViewBag.UsersToFollow)
                     {
-                        <div class="bg-white rounded-md p-2 my-2 w-full grid grid-cols-10">
+                        <div 
+                            class="bg-white rounded-md p-2 my-2 w-full grid grid-cols-10 who-follow-render"
+                            itemid="@user.Id"
+                        >
                             <div class="col-span-2">
                                 <div class="aspect-w-1 aspect-h-1">
                                     <img src="https://picsum.photos/400" alt="User 1"
@@ -320,6 +322,10 @@
 
 
 @section Scripts {
+    <script src="~/js/like-func.js" asp-append-version="true"></script>
+    <script src="~/js/save-func.js" asp-append-version="true"></script>
+    <script src="~/js/comment-func.js" asp-append-version="true"></script>
+    <script src="~/js/follow-func.js" asp-append-version="true"></script>
 
     <style>
         .CodeMirror,
@@ -335,8 +341,6 @@
             background-color: #f7f7f7;
         }
     </style>
-    <script src="~/js/like-func.js" asp-append-version="true"></script>
-    <script src="~/js/save-func.js" asp-append-version="true"></script>
     <script>
         var simplemde = new SimpleMDE({
             element: document.getElementById("PostContentInput"),

@@ -72,6 +72,14 @@ namespace YouCode.GUI.Controllers
                     count ++;
                 }
             }
+            // en base a la lista de usuario, obtener el perfil de cada uno y devolver en otro viewbag
+            var profiles = new List<Profile>();
+            foreach(var u in usersToFollow)
+            {
+                var profile = await profileBL.GetByIdAsync(new Profile{Id = u.Id});
+                profiles.Add(profile);
+            }
+            ViewBag.Profiles = profiles;
             ViewBag.PostsHtml = postsHtml;
             ViewBag.UsersToFollow = usersToFollow;
             return View(posts);
