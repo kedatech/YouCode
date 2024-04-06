@@ -42,16 +42,16 @@
             </div>
         </div>
         <div class="mt-8">
-            <p class="text-gray-600 text-md p-2 mt-2">@Model.Profile.Bio</p>
-
+            <p class="text-gray-600 text-md p-2 mt-2" id="bioParagraph"></p>
         </div>
+
     </div>
 
     @* si los post son cero mostrar un mensaje *@
     @if (Model.Posts.Count == 0)
     {
         <div class="w-full flex items-center justify-center mt-5">
-            <p class="text-gray-600 text-lg">Cielos esta un poco vacío por aquí...</p>
+            <p class="text-gray-600 text-lg">Cielos está un poco vacío por aquí...</p>
         </div>
     }
 
@@ -69,7 +69,30 @@
                 </div>
                 <div class="px-2">
                     <h2 class="font-semibold text-gray-800">@post.Title</h2>
-                    <p class="text-[12px]">@post.Content</p>
+                    @if (ViewBag.PostsHtml != null){
+                        bool found = false;
+                        foreach (var postHtml in ViewBag.PostsHtml)
+                        {
+                            if (postHtml.Id == post.Id)
+                            {
+                                
+                                <div class="p-4 h-24  overflow-auto">
+                                    <p class="PCLAS">@Html.Raw(postHtml.ContentHtml)</p>
+                                </div>
+                            
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            <p class="text-[12px]">@post.Content</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-[12px]">@post.Content</p>
+                    }
                 </div>
 
                 @* *@
@@ -238,15 +261,16 @@
 
                     <div class="mb-4">
                         <label for="profileName" class="block text-sm font-bold mb-2">Nombre de Perfil</label>
-                        <input value="@Model.Profile.User.Name" type="text" id="profileName" name="Name"
+                        <input maxlength="40" value="@Model.Profile.User.Name" type="text" id="profileName" name="Name"
                             class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
                             placeholder="Nombre">
                     </div>
                     <div class="mb-4">
                         <label for="profileBio" class="block text-sm font-bold mb-2">Biografía</label>
-                        <textarea id="profileBio" name="Bio" rows="4"
+                        <textarea maxlength="40"id="profileBio" rows="4"
                             class="w-full border rounded-md px-3 py-2 focus:outline-none focus:border-blue-500"
-                            placeholder="Biografía">@Model.Profile.Bio</textarea>
+                            placeholder="Biografía"></textarea>
+                        <input name="Bio" id="HiddenBioParagraph" hidden>
                     </div>
 
                     <div class="flex justify-between">
@@ -278,8 +302,7 @@
 
 
 
-@section Scripts
-{
+@section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.3.x/dist/index.js"></script>
@@ -297,15 +320,21 @@
 
             openModalBtn.addEventListener("click", function () {
                 editProfileModal.classList.remove("hidden");
+                profileBioTextarea.innerHTML = "@Model.Profile.Bio"
             });
 
             closeModalBtn.addEventListener("click", function () {
                 editProfileModal.classList.add("hidden");
             });
+
+            $("#bioParagraph").html(FormatBio());
         });
 
-
-
+        function FormatBio(){
+            var xd = "@Model.Profile.Bio";
+            var bioContent = xd.replace(/\n/g, "<br>");
+            return bioContent;
+        }
 
         $(document).ready(function () {
             // Función para verificar si el usuario es propietario y mostrar u ocultar el botón en consecuencia
@@ -344,6 +373,12 @@
                     return // Evita que se envíe el formulario
                 }
 
+                // Reemplazar los saltos de línea en el contenido del textarea con "\n"
+                profileBioN = profileBio.replace(/\n/g, "\\n");
+                profileBio = profileBio.replace(/\n/g, "<br>");
+                $('#profileBio').html(profileBio);
+                $('#HiddenBioParagraph').val(profileBioN);
+            
                 // Si todos los campos están llenos, procedemos con el envío del formulario
                 $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
                 var formData = new FormData($('#profileForm')[0]);
@@ -370,10 +405,8 @@
             });
         });
 
-
-
         localStorage.clear();
         localStorage.setItem('YCuserId', userId);
     </script>
-
 }
+
