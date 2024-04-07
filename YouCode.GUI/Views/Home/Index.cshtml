@@ -10,16 +10,30 @@
 
 
     <div class="w-full px-4 flex flex-col items-center md:col-span-7" id="contendor-post">
-        <div class="bg-gray-200 rounded-lg p-6 w-full my-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <span class="h-12 w-12 rounded-full bg-cover mr-4"
-                        style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@ViewBag.AvatarUrl');"></span>
+        @if(ViewBag.IsLoggued)
+        {
+            <div class="bg-gray-200 rounded-lg p-6 w-full my-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <span class="h-12 w-12 rounded-full bg-cover mr-4"
+                            style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@ViewBag.AvatarUrl');"></span>
+                    </div>
+                    <input readonly onclick="openModal('NewPostModal')" type="text" placeholder="¿Qué piensas?"
+                        class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300">
                 </div>
-                <input readonly onclick="openModal('NewPostModal')" type="text" placeholder="¿Qué piensas?"
-                    class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300">
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="bg-gray-100 rounded-lg p-6 w-full my-4">
+                <div class="flex items-center justify-center">
+                    <a asp-action="Redirect" asp-controller="Auth"><h2 class="font-semibold text-lg text-center hover:underline">¿Qué tal si inicias sesión?</h2></a>
+                    <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <img src="/Images/github-mark.svg" alt="Profile" class="w-12 mr-2">
+                    </svg>
+                </div>
+            </div>
+        }
 
 
 
@@ -46,61 +60,63 @@
                     </div>
                 
                 <div class="relative inline-block text-left p-3">
-                    <div>
-                        <button onclick="openModal('OptionsModal-@post.Id', '@post.Id', true, '@post.User.Username')" type="button" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="OptionButton">
-                            Opciones
-                        </button>
-
-                    </div>
                     
-                    <div id="OptionsModal-@post.Id" class="z-40 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                        <input id="idPostHidden-@post.Id" hidden>
-                        <input id="UserNamePostHidden-@post.Id" hidden>
-                        
-                        <div class="bg-white p-2 rounded-md w-96">
-                            <div class="flex justify-between items-center pb-2">
-                                <h2 class="text-lg font-semibold m-2">Opciones de la publicación</h2>
-                                <button onclick="closeModal('OptionsModal-@post.Id','@post.Id', true, '@post.User.Username')" class="text-gray-500 hover:text-gray-700 focus:outline-none m-2">
-                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="w-full p-3 flex flex-col">
-                                
-                                <input id='EditPostTitleValue-@post.Id' type="hidden" hidden class="hidden" value="@post.Title">
-                                <input id='EditPostContentValue-@post.Id' type="hidden" hidden class="hidden" value="@post.Content">
+                    
+                    @if(ViewBag.IsLoggued)
+                    {
+                        <div>
+                            <button onclick="openModal('OptionsModal-@post.Id', '@post.Id', true, '@post.User.Username')" type="button" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="OptionButton">
+                                Opciones
+                            </button>
 
-                               <button onclick="openModal('EditPostModal', '@post.Id')" hidden id="editPostButton-@post.Id" class="hidden flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
-                                    <div class="flex flex-row">
-                                        <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <img src="/Images/edit.svg" alt="Profile" class="w-6 mr-2">
+                        </div>
+                        <div id="OptionsModal-@post.Id" class="z-40 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                            <input id="idPostHidden-@post.Id" hidden>
+                            <input id="UserNamePostHidden-@post.Id" hidden>
+                            
+                            <div class="bg-white p-2 rounded-md w-96">
+                                <div class="flex justify-between items-center pb-2">
+                                    <h2 class="text-lg font-semibold m-2">Opciones de la publicación</h2>
+                                    <button onclick="closeModal('OptionsModal-@post.Id','@post.Id', true, '@post.User.Username')" class="text-gray-500 hover:text-gray-700 focus:outline-none m-2">
+                                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
-                                        <span class="mx-2">Editar</span>
-                                    </div>
-                                </button>
+                                    </button>
+                                </div>
+                                <div class="w-full p-3 flex flex-col">
+                                    
+                                    <input id='EditPostTitleValue-@post.Id' type="hidden" hidden class="hidden" value="@post.Title">
+                                    <input id='EditPostContentValue-@post.Id' type="hidden" hidden class="hidden" value="@post.Content">
 
-                                <button onclick="deletePost('@post.Id')" hidden id="deletePostButton-@post.Id" class="hidden flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
-                                    <div class="flex flex-row">
-                                        <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <img src="/Images/delete.svg" alt="Profile" class="w-6 mr-2">
-                                        </svg>
-                                        <span class="mx-2">Eliminar</span>
-                                    </div>
-                                </button>
-                                <button class="flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
-                                    <div class="flex flex-row">
-                                        <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <img src="/Images/like-options.svg" alt="Profile" class="w-6 mr-2">
-                                        </svg>
-                                        <span class="mx-2">Ver Likes</span>
-                                    </div>
-                                </button>
+                                <button onclick="openModal('EditPostModal', '@post.Id')" hidden id="editPostButton-@post.Id" class="hidden flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
+                                        <div class="flex flex-row">
+                                            <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <img src="/Images/edit.svg" alt="Profile" class="w-6 mr-2">
+                                            </svg>
+                                            <span class="mx-2">Editar</span>
+                                        </div>
+                                    </button>
+
+                                    <button onclick="deletePost('@post.Id')" hidden id="deletePostButton-@post.Id" class="hidden flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
+                                        <div class="flex flex-row">
+                                            <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <img src="/Images/delete.svg" alt="Profile" class="w-6 mr-2">
+                                            </svg>
+                                            <span class="mx-2">Eliminar</span>
+                                        </div>
+                                    </button>
+                                    <button class="flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
+                                        <div class="flex flex-row">
+                                            <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <img src="/Images/like-options.svg" alt="Profile" class="w-6 mr-2">
+                                            </svg>
+                                            <span class="mx-2">Ver Likes</span>
+                                        </div>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    
-
+                    }
 
                 </div>
                 
@@ -214,7 +230,23 @@
                         </svg>
 
                         <!-- SVG de Comentario -->
-                        <svg class="hover btn-comment" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        @if(ViewBag.IsLoggued)
+                        {
+                            <svg class="hover btn-comment" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="Frame">
+                                    <path class="hidden" 
+                                    id="comment-green" d="M12 2C6.486 2 2 5.589 2 10C2 12.908 3.897 15.516 7 16.934V22L12.34 17.996C17.697 17.852 22 14.32 22 10C22 5.589 17.514 2 12 2ZM9.5 11C9.10218 11 8.72064 10.842 8.43934 10.5607C8.15804 10.2794 8 9.89782 8 9.5C8 9.10218 8.15804 8.72064 8.43934 8.43934C8.72064 8.15804 9.10218 8 9.5 8C9.89782 8 10.2794 8.15804 10.5607 8.43934C10.842 8.72064 11 9.10218 11 9.5C11 9.89782 10.842 10.2794 10.5607 10.5607C10.2794 10.842 9.89782 11 9.5 11ZM14.5 11C14.1022 11 13.7206 10.842 13.4393 10.5607C13.158 10.2794 13 9.89782 13 9.5C13 9.10218 13.158 8.72064 13.4393 8.43934C13.7206 8.15804 14.1022 8 14.5 8C14.8978 8 15.2794 8.15804 15.5607 8.43934C15.842 8.72064 16 9.10218 16 9.5C16 9.89782 15.842 10.2794 15.5607 10.5607C15.2794 10.842 14.8978 11 14.5 11Z" fill="#4FDC54"/>
+                                    <g id="comment-gray">
+                                    <path id="Vector" d="M9.5 11C10.3284 11 11 10.3284 11 9.5C11 8.67157 10.3284 8 9.5 8C8.67157 8 8 8.67157 8 9.5C8 10.3284 8.67157 11 9.5 11Z" fill="#4F4F5E"/>
+                                    <path id="Vector_2" d="M14.5 11C15.3284 11 16 10.3284 16 9.5C16 8.67157 15.3284 8 14.5 8C13.6716 8 13 8.67157 13 9.5C13 10.3284 13.6716 11 14.5 11Z" fill="#4F4F5E"/>
+                                    <path id="Vector_3" d="M12 2C6.486 2 2 5.589 2 10C2 12.908 3.897 15.515 7 16.934V22L12.34 17.996C17.697 17.852 22 14.32 22 10C22 5.589 17.514 2 12 2ZM12 16H11.667L9 18V15.583L8.359 15.336C5.671 14.301 4 12.256 4 10C4 6.691 7.589 4 12 4C16.411 4 20 6.691 20 10C20 13.309 16.411 16 12 16Z" fill="#4F585D"/>
+                                    </g>
+                                </g>
+                            </svg>
+                        }
+                        else
+                        {
+                            <svg onclick="openModal('LoginWarningModal')" class="" width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="Frame">
                                 <path class="hidden" 
                                 id="comment-green" d="M12 2C6.486 2 2 5.589 2 10C2 12.908 3.897 15.516 7 16.934V22L12.34 17.996C17.697 17.852 22 14.32 22 10C22 5.589 17.514 2 12 2ZM9.5 11C9.10218 11 8.72064 10.842 8.43934 10.5607C8.15804 10.2794 8 9.89782 8 9.5C8 9.10218 8.15804 8.72064 8.43934 8.43934C8.72064 8.15804 9.10218 8 9.5 8C9.89782 8 10.2794 8.15804 10.5607 8.43934C10.842 8.72064 11 9.10218 11 9.5C11 9.89782 10.842 10.2794 10.5607 10.5607C10.2794 10.842 9.89782 11 9.5 11ZM14.5 11C14.1022 11 13.7206 10.842 13.4393 10.5607C13.158 10.2794 13 9.89782 13 9.5C13 9.10218 13.158 8.72064 13.4393 8.43934C13.7206 8.15804 14.1022 8 14.5 8C14.8978 8 15.2794 8.15804 15.5607 8.43934C15.842 8.72064 16 9.10218 16 9.5C16 9.89782 15.842 10.2794 15.5607 10.5607C15.2794 10.842 14.8978 11 14.5 11Z" fill="#4FDC54"/>
@@ -225,23 +257,44 @@
                                 </g>
                             </g>
                         </svg>
+                        }
 
 
                     </div>
-                    <div class="flex">
-                        <!-- SVG de Saved (Guardado) -->
-                        <svg class="hover btn-favorite" width="30" height="30" viewBox="0 0 24 24" fill="none"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <g id="Frame">
-                                <path class="hidden" id="favorite-green"
-                                    d="M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V8L16 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21ZM7 5H11V7H13V5H15V9H7V5ZM7 13H17V19H7V13Z"
-                                    fill="#4FDC54" />
-                                <path id="favorite-gray"
-                                    d="M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0392 21 19.5305 21 19V8.00002C21.0008 7.86841 20.9755 7.73795 20.9258 7.61611C20.876 7.49427 20.8027 7.38346 20.71 7.29002L16.71 3.29002C16.6166 3.19734 16.5057 3.12401 16.3839 3.07425C16.2621 3.02448 16.1316 2.99926 16 3.00002H5C4.46957 3.00002 3.96086 3.21073 3.58579 3.5858C3.21071 3.96088 3 4.46958 3 5.00002V19C3 19.5305 3.21071 20.0392 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21ZM15 19H9V14H15V19ZM13 7.00002H11V5.00002H13V7.00002ZM5 5.00002H7V9.00002H15V5.00002H15.59L19 8.41002V19H17V14C17 13.4696 16.7893 12.9609 16.4142 12.5858C16.0391 12.2107 15.5304 12 15 12H9C8.46957 12 7.96086 12.2107 7.58579 12.5858C7.21071 12.9609 7 13.4696 7 14V19H5V5.00002Z"
-                                    fill="#4F4F5E" />
-                            </g>
-                        </svg>
-                    </div>
+                    @if(ViewBag.IsLoggued)
+                    {
+                        <div class="flex">
+                            <!-- SVG de Saved (Guardado) -->
+                            <svg class="hover btn-favorite" width="30" height="30" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="Frame">
+                                    <path class="hidden" id="favorite-green"
+                                        d="M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V8L16 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21ZM7 5H11V7H13V5H15V9H7V5ZM7 13H17V19H7V13Z"
+                                        fill="#4FDC54" />
+                                    <path id="favorite-gray"
+                                        d="M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0392 21 19.5305 21 19V8.00002C21.0008 7.86841 20.9755 7.73795 20.9258 7.61611C20.876 7.49427 20.8027 7.38346 20.71 7.29002L16.71 3.29002C16.6166 3.19734 16.5057 3.12401 16.3839 3.07425C16.2621 3.02448 16.1316 2.99926 16 3.00002H5C4.46957 3.00002 3.96086 3.21073 3.58579 3.5858C3.21071 3.96088 3 4.46958 3 5.00002V19C3 19.5305 3.21071 20.0392 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21ZM15 19H9V14H15V19ZM13 7.00002H11V5.00002H13V7.00002ZM5 5.00002H7V9.00002H15V5.00002H15.59L19 8.41002V19H17V14C17 13.4696 16.7893 12.9609 16.4142 12.5858C16.0391 12.2107 15.5304 12 15 12H9C8.46957 12 7.96086 12.2107 7.58579 12.5858C7.21071 12.9609 7 13.4696 7 14V19H5V5.00002Z"
+                                        fill="#4F4F5E" />
+                                </g>
+                            </svg>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex">
+                            <!-- SVG de Saved (Guardado) -->
+                            <svg onclick="openModal('LoginWarningModal')" width="30" height="30" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g id="Frame">
+                                    <path class="hidden" id="favorite-green"
+                                        d="M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0391 21 19.5304 21 19V8L16 3H5C4.46957 3 3.96086 3.21071 3.58579 3.58579C3.21071 3.96086 3 4.46957 3 5V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21ZM7 5H11V7H13V5H15V9H7V5ZM7 13H17V19H7V13Z"
+                                        fill="#4FDC54" />
+                                    <path id="favorite-gray"
+                                        d="M5 21H19C19.5304 21 20.0391 20.7893 20.4142 20.4142C20.7893 20.0392 21 19.5305 21 19V8.00002C21.0008 7.86841 20.9755 7.73795 20.9258 7.61611C20.876 7.49427 20.8027 7.38346 20.71 7.29002L16.71 3.29002C16.6166 3.19734 16.5057 3.12401 16.3839 3.07425C16.2621 3.02448 16.1316 2.99926 16 3.00002H5C4.46957 3.00002 3.96086 3.21073 3.58579 3.5858C3.21071 3.96088 3 4.46958 3 5.00002V19C3 19.5305 3.21071 20.0392 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21ZM15 19H9V14H15V19ZM13 7.00002H11V5.00002H13V7.00002ZM5 5.00002H7V9.00002H15V5.00002H15.59L19 8.41002V19H17V14C17 13.4696 16.7893 12.9609 16.4142 12.5858C16.0391 12.2107 15.5304 12 15 12H9C8.46957 12 7.96086 12.2107 7.58579 12.5858C7.21071 12.9609 7 13.4696 7 14V19H5V5.00002Z"
+                                        fill="#4F4F5E" />
+                                </g>
+                            </svg>
+                        </div>
+                    }
 
                 </div>
                 
@@ -288,49 +341,52 @@
 
 
 
-            @* propiedad oculta con un array de los usurios que dieron like *@
+                 @* propiedad oculta con un array de los usurios que dieron like *@
                 <input type="hidden" value='@Json.Serialize(post.Reactions)' class="reactions" />
                 <input type="hidden" value='@Json.Serialize(post.Favorites)' class="favorites" />
             </div>
     }
 </div>
 
-    @*<-! WHO TO FOLLOW -->*@
-    <section class="md:col-span-3 h-full">
-        <article class="sticky top-[90px]">
-            <div class="bg-gray-200 border rounded-md p-4">
-                <h2 class="font-semibold text-gray-800">Who to follow?</h2>
-                <div class="mt-4 flex flex-wrap">
-                    @foreach (var user in ViewBag.UsersToFollow)
-                    {
-                        <div 
-                            class="bg-white rounded-md p-2 my-2 w-full grid grid-cols-10 who-follow-render"
-                            itemid="@user.Id"
-                        >
-                            <div class="col-span-2">
-                                <div class="aspect-w-1 aspect-h-1">
-                                    <img src="https://picsum.photos/400" alt="User 1"
-                                        class="object-cover w-full h-full p-2 rounded-full">
+   @if(ViewBag.IsLoggued)
+   {
+     @*<-! WHO TO FOLLOW -->*@
+        <section class="md:col-span-3 h-full">
+            <article class="sticky top-[90px]">
+                <div class="bg-gray-200 border rounded-md p-4">
+                    <h2 class="font-semibold text-gray-800">Who to follow?</h2>
+                    <div class="mt-4 flex flex-wrap">
+                        @foreach (var user in ViewBag.UsersToFollow)
+                        {
+                            <div 
+                                class="bg-white rounded-md p-2 my-2 w-full grid grid-cols-10 who-follow-render"
+                                itemid="@user.Id"
+                            >
+                                <div class="col-span-2">
+                                    <div class="aspect-w-1 aspect-h-1">
+                                        <img src="https://picsum.photos/400" alt="User 1"
+                                            class="object-cover w-full h-full p-2 rounded-full">
+                                    </div>
+                                </div>
+                                <div class="col-span-5 flex flex-col w-full justify-center">
+                                    <h3 class="font-semibold text-gray-800 text-sm">@user.Name</h3>
+                                    <h3 class="font-semibold text-gray-500 text-sm"> @user.Username</h3>
+                                </div>
+
+                                <div class="col-span-3 px-2 py-4 flex justify-center items-center">
+                                    <button
+                                        class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
                                 </div>
                             </div>
-                            <div class="col-span-5 flex flex-col w-full justify-center">
-                                <h3 class="font-semibold text-gray-800 text-sm">@user.Name</h3>
-                                <h3 class="font-semibold text-gray-500 text-sm"> @user.Username</h3>
-                            </div>
-
-                            <div class="col-span-3 px-2 py-4 flex justify-center items-center">
-                                <button
-                                    class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
-                            </div>
-                        </div>
-                    }
+                        }
 
 
+                    </div>
                 </div>
-            </div>
-            </div>
-        </article>
-    </section>
+                
+            </article>
+        </section>
+   }
 
 </main>
 
@@ -387,7 +443,6 @@
         </form>
     </div>
 
-
 <div id="spinnerOverlay" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
     <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center">
         <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -404,6 +459,27 @@
 </div>
 
 
+<div id="LoginWarningModal" class="hidden fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-50 py-10">
+  <div class="max-h-full w-full max-w-xl overflow-y-auto sm:rounded-2xl bg-white">
+    <div class="w-full">
+      <div class="m-8 my-20 max-w-[400px] mx-auto">
+        <div class="mb-8">
+          <div class="flex flex-row items-center mb-4 justify-center">
+            <h1 class="text-3xl font-extrabold">Inicia Sesión</h1>
+            <svg class="w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <img src="/Images/github-mark.svg" alt="Profile" class="w-12">
+            </svg>
+          </div>
+          <p class="text-gray-600">Para poder interactuar con el sitio en su totalidad. Deberás de iniciar sesón con tu cuenta de gitub!</p>
+        </div>
+        <div class="space-y-4">
+          <a asp-action="Redirect" asp-controller="Auth"><button class="p-3 bg-black rounded-md text-white w-full font-semibold">¡Iniciaré Sesión!</button></a>
+          <button onclick="closeModal('LoginWarningModal')" class="p-3 bg-white border border-gray-500 rounded-md w-full font-semibold">Mejor después.</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
@@ -464,8 +540,12 @@
 
 
     </style>
+
     <script>
        // Función para inicializar SimpleMDE
+       var isUserLoggued = '@ViewBag.IsLogguedString' == "true";
+       localStorage.setItem('UL', isUserLoggued);
+
         function initializeSimpleMDE(elementId) {
             return new SimpleMDE({
                 element: document.getElementById(elementId),
@@ -582,6 +662,12 @@
 
         // Función para agregar un "Me gusta"
         function addLike(postItem, reactions, userId, postId) {
+
+            if (!isUserLoggued) {
+                openModal('LoginWarningModal');
+                return;
+            }
+
             var url = 'http://localhost:5096/api/reaction/';
             fetch(url, {
                 method: 'POST',
@@ -603,6 +689,10 @@
 
         // Función para quitar un "Me gusta"
         function removeLike(postItem, reactions, reactionId) {
+            if (!isUserLoggued) {
+                openModal('LoginWarningModal');
+                return;
+            }
             var url = `http://localhost:5096/api/reaction/${reactionId}`;
             fetch(url, { method: 'DELETE' })
                 .then(function (response) {

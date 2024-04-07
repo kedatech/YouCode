@@ -49,6 +49,20 @@ namespace YouCode.GUI.Services.Auth
             return username;
         }
 
+         public static string getCurrentUsername(HttpContext httpContext)
+        {
+            var username = "";
+            var encryptedToken = httpContext.Request.Cookies["_TojiBestoProta"];
+
+            if(!string.IsNullOrEmpty(encryptedToken))
+            {
+                var token_decrypted = DecryptToken(encryptedToken);
+                username = ValidateToken(token_decrypted);
+            }
+
+            return username;
+        }
+
         
         public static string ValidateToken(string token)
         {
