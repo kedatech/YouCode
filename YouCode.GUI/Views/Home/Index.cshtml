@@ -57,10 +57,10 @@
                         <input id="idPostHidden-@post.Id" hidden>
                         <input id="UserNamePostHidden-@post.Id" hidden>
                         
-                        <div class="bg-white p-4 rounded-md w-96">
+                        <div class="bg-white p-2 rounded-md w-96">
                             <div class="flex justify-between items-center pb-2">
-                                <h2 class="text-lg font-semibold">Opciones de la publicación @post.Id</h2>
-                                <button onclick="closeModal('OptionsModal-@post.Id','@post.Id', true, '@post.User.Username')" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                <h2 class="text-lg font-semibold m-2">Opciones de la publicación</h2>
+                                <button onclick="closeModal('OptionsModal-@post.Id','@post.Id', true, '@post.User.Username')" class="text-gray-500 hover:text-gray-700 focus:outline-none m-2">
                                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
@@ -72,24 +72,29 @@
                                 <input id='EditPostContentValue-@post.Id' type="hidden" hidden class="hidden" value="@post.Content">
 
                                <button onclick="openModal('EditPostModal', '@post.Id')" hidden id="editPostButton-@post.Id" class="hidden flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8v.01M6 8v.01"></path>
-                                    </svg>
-                                    <span>Editar</span>
+                                    <div class="flex flex-row">
+                                        <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <img src="/Images/edit.svg" alt="Profile" class="w-6 mr-2">
+                                        </svg>
+                                        <span class="mx-2">Editar</span>
+                                    </div>
                                 </button>
 
                                 <button onclick="deletePost('@post.Id')" hidden id="deletePostButton-@post.Id" class="hidden flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                                    </svg>
-                                    <span>Eliminar</span>
+                                    <div class="flex flex-row">
+                                        <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <img src="/Images/delete.svg" alt="Profile" class="w-6 mr-2">
+                                        </svg>
+                                        <span class="mx-2">Eliminar</span>
+                                    </div>
                                 </button>
                                 <button class="flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10V8a3 3 0 013-3h8a3 3 0 013 3v2M3 10h18M3 14h18M3 18h18"></path>
-                                    </svg>
-                                    <span>Ver Likes</span>
+                                    <div class="flex flex-row">
+                                        <svg class="w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <img src="/Images/like-options.svg" alt="Profile" class="w-6 mr-2">
+                                        </svg>
+                                        <span class="mx-2">Ver Likes</span>
+                                    </div>
                                 </button>
                             </div>
                         </div>
@@ -638,18 +643,19 @@
                 if (!response.ok){
                     $('#spinnerOverlay').addClass('hidden');
                     showToast('danger', 'No se pudo eliminar el post debido a un error.');
+                    window.location.reload();
                     throw new Error('Falló la petición');
                 }
                 else {
                     localStorage.removeItem('toastState');
                     showToast('success', 'Se eliminó el post con éxito.');
                     $('#spinnerOverlay').addClass('hidden');
-                    
+                    window.location.reload();
                 }
             })
             .catch(function(error) {
                 console.error('Error:', error);
-                window.location.reload();
+                
             });
         }
 
