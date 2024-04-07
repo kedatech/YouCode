@@ -47,16 +47,18 @@
 
                 <div class="flex justify-between ">
                 <div class="flex items-center px-4 py-2">
-                        <div class="flex items-center px-4 py-2">
-                            <span class="h-12 w-12 rounded-full bg-cover"
-                            style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
-                            <div class="ml-3 ">
-                                <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span
-                                    class="text-gray-600">@post.User.Username</span></span>
-                                <!-- Asumiendo que User tiene una propiedad Name -->
-                                <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
+                        <a asp-action="Profile" asp-controller="User" asp-route-username="@post.User.Username">
+                            <div class="flex items-center px-4 py-2">
+                                <span class="h-12 w-12 rounded-full bg-cover"
+                                style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
+                                <div class="ml-3 ">
+                                    <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span
+                                        class="text-gray-600">@post.User.Username</span></span>
+                                    <!-- Asumiendo que User tiene una propiedad Name -->
+                                    <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 
                 <div class="relative inline-block text-left p-3">
