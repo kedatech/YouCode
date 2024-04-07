@@ -3,70 +3,73 @@ using Microsoft.AspNetCore.Mvc;
 using YouCode.DAL;
 using YouCode.BE;
 using YouCode.BL;
+using YouCode.GUI.Services.Auth;
 
 namespace YouCode.GUI.Controllers;
-public class CommentController : Controller
+[Route("api/comment")] // Define la ruta base para el controlador API de comentarios
+[ApiController] // Indica que este controlador es un controlador API
+[JwtAuthentication] // Asegura que se aplique la autenticación JWT
+public class CommentApiController : ControllerBase
 {
-    CommentBL commentBL = new CommentBL();
-    public IActionResult Create()
-    {
-        ViewBag.Error = "";
-        return View();
-    }
+    private readonly CommentBL _commentBL = new CommentBL(); // Inyecta la lógica de negocios de los comentarios
 
-    public async Task<IActionResult> Replies(int id)
-    {
-        var comments = await commentBL.SearchAsync(new Comment { Id = id});
-        return View(comments);
-    }
-    public async Task<ActionResult> Details(int id)
-    {
-        var comment = await commentBL.GetByIdAsync(new Comment { Id = id});
-        return View(comment);
-    }
-    public async Task<IActionResult> Edit(int id)
-    {
-        var comment = await commentBL.GetByIdAsync(new Comment{Id =  id});
-        return View(comment);
-    }
-
+    // POST: api/Comment
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Comment comment)
+    public async Task<IActionResult> PostCreate([FromBody] Comment comment)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState); // Devuelve 400 si el modelo no es válido
+        }
         try
         {
-            int res = await commentBL.CreateAsync(comment);
-            return RedirectToAction(nameof(Index));
+            await _commentBL.CreateAsync(comment);
+            return CreatedAtAction("Get", new { id = comment.Id }, comment); // Devuelve 201 como confirmación de que el comentario se creó
         }
-        catch(Exception e)
+        catch (Exception ex)
         {
-            ViewBag.Error = e.Message;
-            return View(comment);
+            // Manejo de la excepción en caso de error
+            return StatusCode(500, ex.Message); // Devuelve 500 en caso de error interno del servidor
         }
     }
 
-    [HttpPut]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(Comment comment)
+    // GET: api/Comment
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
         try
         {
-            int res = await commentBL.UpdateAsync(comment);
-            return RedirectToAction(nameof(Index));
+            var comments = await _commentBL.GetAllAsync();
+            return Ok(comments); // Devuelve 200 con la lista de comentarios
         }
-        catch(Exception e)
+        catch (Exception ex)
         {
-            ViewBag.Error = e.Message;
-            return View();
+            // Manejo de la excepción en caso de error
+            return StatusCode(500, ex.Message); // Devuelve 500 en caso de error interno del servidor
         }
     }
 
-    [HttpDelete]
-    [ValidateAntiForgeryToken]
-    public IActionResult Delete(int id)
+    // DELETE: api/Comment/{id}
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
     {
-        var res = commentBL.DeleteAsync(new Comment{Id = id});
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            Comment commentQuery = new Comment { Id = id };
+            var comment = await _commentBL.GetByIdAsync(commentQuery);
+            if (comment == null)
+            {
+                return NotFound(); // Devuelve 404 si no se encuentra el comentario
+            }
+
+            await _commentBL.DeleteAsync(comment);
+            return NoContent(); // Devuelve 204 como confirmación de que el comentario se eliminó
+        }
+        catch (Exception ex)
+        {
+            // Manejo de la excepción en caso de error
+            return StatusCode(500, ex.Message); // Devuelve 500 en caso de error interno del servidor
+        }
     }
 }
+
