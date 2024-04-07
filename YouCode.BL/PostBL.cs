@@ -20,7 +20,7 @@ namespace YouCode.BL
             return await PostDAL.GetCreateAsync(post);
         }
 
-        public async Task<int> UpdateAsync(Post post)
+        public async Task<Post> UpdateAsync(Post post)
         {
             return await PostDAL.UpdateAsync(post);
         }

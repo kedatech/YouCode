@@ -44,9 +44,32 @@ namespace YouCode.GUI.Controllers
         [HttpGet]
         public IActionResult ValidateUserOwner(string username)
         {
-            var owner_username = HttpContext.Session.GetString("UserName");
+            var currentUsernameResult = GetCurrentUsername();
+            return Json(new { is_owner = username == currentUsernameResult });
+        }
 
-            return Json(new { is_owner = owner_username == username });
+        [JwtAuthentication]
+        [HttpGet]
+        public string GetCurrentUsername()
+        {
+            string currentUsername = "";
+            var owner_username = HttpContext.Session.GetString("UserName");
+            if(!string.IsNullOrEmpty(owner_username))
+            {
+                var encryptedToken = HttpContext.Request.Cookies["_TojiBestoProta"];
+                var token = AuthenticationService.DecryptToken(encryptedToken);
+
+                if(!string.IsNullOrEmpty(token))
+                {
+                    var userName = AuthenticationService.ValidateToken(token);
+                    if(!string.IsNullOrEmpty(userName))
+                    {
+                        currentUsername = userName;
+                    }
+                }
+            }
+
+            return currentUsername;
         }
 
         /// <summary>

@@ -45,6 +45,21 @@ public class ReactionDAL
                 return result;
             }
         }
+
+        public static async Task<int> DeleteOnAllPostAsync(int IdPost)
+        {
+            int result = 0;
+            using (var bdContexto = new ContextoDB())
+            {
+                var reactionDB = await bdContexto.Reaction.FirstOrDefaultAsync(c => c.IdPost == IdPost);
+                if (reactionDB != null)
+                {
+                    bdContexto.Reaction.Remove(reactionDB);
+                    result = await bdContexto.SaveChangesAsync();
+                }
+                return result;
+            }
+        }
         public static async Task<Reaction> GetByIdAsync(Reaction reaction)
         {
             var reactionDB = new Reaction();

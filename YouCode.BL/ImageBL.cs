@@ -25,6 +25,11 @@ namespace YouCode.BL
             return await ImageDAL.DeleteAsync(image);
         }
 
+        public async Task<int> DeleteOnAllPostAsync(int IdPost)
+        {
+            return await ImageDAL.DeleteOnAllPostAsync(IdPost);
+        }
+
         public async Task<Image> GetByIdAsync(Image image)
         {
             return await ImageDAL.GetByIdAsync(image); 
@@ -33,6 +38,11 @@ namespace YouCode.BL
         public async Task<List<Image>> GetAllAsync()
         {
             return await ImageDAL.GetAllAsync();
+        }
+
+        public async Task<List<Image>> GetAllOnAPostAsync(int IdPost)
+        {
+            return await ImageDAL.GetAllOnAPostAsync(IdPost);
         }
 
         public async Task<List<Image>> SearchAsync(Image image)

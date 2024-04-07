@@ -5,6 +5,9 @@
 }
 @* dividir en vista desktop en dos columnas en proporciona 1 3 *@
 <main class="max-w-5xl relative mx-auto w-full grid md:grid-cols-10 gap-0">
+<div id="toastContainer" class="fixed bottom-0 left-0 z-50 flex flex-col items-start p-6 gap-4"></div>
+
+
 
 
 <div class="w-full px-4 flex flex-col items-center md:col-span-7" id="contendor-post">
@@ -13,7 +16,7 @@
             <div class="flex items-center">
             <span class="h-12 w-12 rounded-full bg-cover mr-4" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@ViewBag.AvatarUrl');"></span>
         </div>
-            <input readonly onclick="openModal()" type="text" placeholder="¿Qué piensas?" class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300">
+            <input readonly onclick="openModal('NewPostModal')" type="text" placeholder="¿Qué piensas?" class="w-full border rounded-md p-2 focus:outline-none focus:ring focus:border-blue-300">
         </div>
     </div>
 
@@ -27,15 +30,74 @@
         <div class="bg-white border rounded-sm w-full mb-3 w-full post-item-render" id="post-@post.Id">
             
             
-            <div class="flex items-center px-4 py-3">
-                <div class="flex items-center px-4 py-3">
-                    <span class="h-12 w-12 rounded-full bg-cover" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
-                    <div class="ml-3 ">
-                        <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span class="text-gray-600">@post.User.Username</span></span>
-                        <!-- Asumiendo que User tiene una propiedad Name -->
-                        <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
+            <div class="flex justify-between ">
+                <div class="flex items-center px-4 py-2">
+                    <div class="flex items-center px-4 py-2">
+                        <span class="h-12 w-12 rounded-full bg-cover" style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
+                        <div class="ml-3 ">
+                            <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span class="text-gray-600">@post.User.Username</span></span>
+                            <!-- Asumiendo que User tiene una propiedad Name -->
+                            <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
+                        </div>
                     </div>
                 </div>
+                
+                <div class="relative inline-block text-left p-3">
+                    <div>
+                        <button onclick="openModal('OptionsModal-@post.Id', '@post.Id', true, '@post.User.Username')" type="button" class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" id="OptionButton">
+                            Opciones
+                        </button>
+
+                    </div>
+                    
+                    <div id="OptionsModal-@post.Id" class="z-40 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                        <input id="idPostHidden-@post.Id" hidden>
+                        <input id="UserNamePostHidden-@post.Id" hidden>
+                        
+                        <div class="bg-white p-4 rounded-md w-96">
+                            <div class="flex justify-between items-center pb-2">
+                                <h2 class="text-lg font-semibold">Opciones de la publicación @post.Id</h2>
+                                <button onclick="closeModal('OptionsModal-@post.Id','@post.Id', true, '@post.User.Username')" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="w-full p-3 flex flex-col">
+                                
+                                <input id='EditPostTitleValue-@post.Id' type="hidden" hidden class="hidden" value="@post.Title">
+                                <input id='EditPostContentValue-@post.Id' type="hidden" hidden class="hidden" value="@post.Content">
+
+                               <button onclick="openModal('EditPostModal', '@post.Id')" hidden id="editPostButton-@post.Id" class="hidden flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 8v.01M6 8v.01"></path>
+                                    </svg>
+                                    <span>Editar</span>
+                                </button>
+
+                                <button onclick="deletePost('@post.Id')" hidden id="deletePostButton-@post.Id" class="hidden flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                                    </svg>
+                                    <span>Eliminar</span>
+                                </button>
+                                <button class="flex items-center justify-start p-3 text-left space-x-2 hover:bg-gray-100 focus:outline-none rounded-md">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10V8a3 3 0 013-3h8a3 3 0 013 3v2M3 10h18M3 14h18M3 18h18"></path>
+                                    </svg>
+                                    <span>Ver Likes</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+
+                </div>
+                
+                
+
             </div>
             <div class="px-2">
                 <h2 class="font-semibold text-gray-800">@post.Title</h2>
@@ -159,11 +221,19 @@
                 <span>@post.FavoriteCount Saved</span>
             </div>
 
+
+            <!-- por aqui -->
+
             @* propiedad oculta con un array de los usurios que dieron like *@
             <input type="hidden" value='@Json.Serialize(post.Reactions)' class="reactions" />
         </div>
     }
 </div>
+
+
+
+    
+
 
     @*<-! WHO TO FOLLOW -->*@
     <section class="md:col-span-3 h-full">
@@ -213,8 +283,28 @@
                     <svg class="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
                 </div>
                 <input id="InputFiles" name="Files" type="file" accept="image/*" multiple>
-                <button type="button" class="btn border border-gray-300 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-500 ml-auto" onclick="closeModal()">Cancelar</button>
+                <button type="button" class="btn border border-gray-300 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-500 ml-auto" onclick="closeModal('NewPostModal')">Cancelar</button>
                 <button id="submitBtn" type="submit" class="btn border border-indigo-500 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-200 ml-2 bg-green-500">Publicar</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="EditPostModal" class="z-40 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <form enctype="multipart/form-data" id="editPostForm" class="editor mx-auto w-100 md:w-10/12 lg:w-8/12 xl:w-6/12 bg-white p-4 rounded-lg overflow-y-auto">
+            <style>
+                body {background:white !important;}
+            </style>
+            <input id="EditPostIdInput" type="hidden" name="Id">
+            <input id="EditPostTitleInput" name="Title" class="title bg-gray-100 rounded-md border border-gray-300 p-2 mb-4 outline-none w-full" spellcheck="false" placeholder="Título" type="text">
+            <textarea id="EditPostContentInput" name="Content" class="" spellcheck="false" placeholder="Escribe tu publicación aquí."></textarea>
+            
+            <div class="buttons flex">
+                <div class="icons flex text-gray-500 m-1">
+                    <svg class="mr-2 cursor-pointer hover:text-gray-700 border rounded-full p-1 h-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" /></svg>
+                </div>
+                <input id="EditInputFiles" name="Files" type="file" accept="image/*" multiple>
+                <button type="button" class="btn border border-gray-300 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-500 ml-auto" onclick="closeModal('EditPostModal')">Cancelar</button>
+                <button id="EditPostSubmitBtn" type="submit" class="btn border border-indigo-500 p-1 px-5 rounded-md font-semibold cursor-pointer text-gray-200 ml-2 bg-green-500">Publicar</button>
             </div>
         </form>
     </div>
@@ -230,6 +320,7 @@
         </div>
     </div>
 
+    
 
 
 
@@ -248,53 +339,118 @@
             border-radius: 4px;
             background-color: #f7f7f7;
         }
+        .toast {
+        min-width: 300px;
+        max-width: 400px;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transition: opacity 0.8s ease-in-out;
+        display: flex;
+        align-items: center;
+        }
+
+        .toast-info {
+        background-color: #ebf8ff;
+        color: #3182ce;
+        }
+
+        .toast-danger {
+        background-color: #fed7d7;
+        color: #e53e3e;
+        }
+
+        .toast-success {
+        background-color: #d1fae5;
+        color: #047857;
+        }
+
+        .toast-warning {
+        background-color: #fefcbf;
+        color: #b7791f;
+        }
+
+        .toast-close {
+        cursor: pointer;
+        }
+
+
     </style>
+
     <script src="~/js/like-func.js" asp-append-version="true"></script>
     <script>
-       var simplemde = new SimpleMDE({ 
-            element: document.getElementById("PostContentInput"),
-            forceSync: true, // Fuerza la sincronización del contenido
-            toolbar: ["code","bold", "link", "preview"],
-	        spellChecker: false,
-            promptURLs:true,
-            previewRender: function(plainText) {
-                return customMarkdownParser(plainText); // Returns HTML from a custom parser
-            },
-            previewRender: function(plainText, preview) { // Async method
-                setTimeout(function(){
-                    preview.innerHTML = customMarkdownParser(plainText);
-                }, 250);
-
-                return "Loading...";
-            },
-        });
-
-        function openModal() {
-            var modal = document.getElementById('NewPostModal');
-            modal.classList.remove('hidden');
-        }
-
-        function closeModal() {
-            var modal = document.getElementById('NewPostModal');
-            modal.classList.add('hidden');
-        }
-
-
-        // Inicializar cuando el contenido esté cargado completamente
-        document.addEventListener('DOMContentLoaded', function () {
-            initializePosts();
-            var postForm = document.getElementById('postForm');
-            postForm.addEventListener('submit', function(event) {
-                event.preventDefault(); 
-
-                /*var title = postForm.elements['Title'].value;
-                var content = postForm.elements['Content'].value;
-                var file = postForm.elements['File'].value;
-
-                createPost(title, content, file);*/
+       // Función para inicializar SimpleMDE
+        function initializeSimpleMDE(elementId) {
+            return new SimpleMDE({
+                element: document.getElementById(elementId),
+                forceSync: true, // Fuerza la sincronización del contenido
+                toolbar: ["code","bold", "link", "preview"],
+                spellChecker: false,
+                promptURLs: true,
+                previewRender: function(plainText, preview) { // Async method
+                    setTimeout(function(){
+                        preview.innerHTML = customMarkdownParser(plainText);
+                    }, 250);
+                    return "Loading...";
+                },
             });
-        });
+        }
 
+        var simplemde = initializeSimpleMDE("PostContentInput");
+        var editPostMDE = initializeSimpleMDE("EditPostContentInput");
+
+        // Funciones para abrir y cerrar modales
+        function openModal(modalId, IdPostModalEdit=null, Validate=false, Username="") {
+            document.getElementById(modalId).classList.remove('hidden');
+            if(IdPostModalEdit !== null)
+            {
+                if(Validate)
+                {
+                    validateUserOwner(IdPostModalEdit, Username);
+                }
+                var content = $("#EditPostContentValue-"+IdPostModalEdit).val();
+                var title = $("#EditPostTitleValue-"+IdPostModalEdit).val();
+                loadEditPostContent(IdPostModalEdit, title, content)
+            }
+
+            
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        // Función para cargar contenido de edición de publicación
+        function loadEditPostContent(IdPost, PostTitle, PostContent) {
+            $("#EditPostContentInput").val(PostContent);
+            $("#EditPostTitleInput").val(PostTitle);
+            $("#EditPostIdInput").val(IdPost);
+            editPostMDE.value(PostContent);
+        }
+
+        // Función para validar si el usuario es el propietario
+        function validateUserOwner(IdPost, usernameToCompare) {
+            $.ajax({
+                url: '/Auth/ValidateUserOwner',
+                type: 'GET',
+                data: { username: usernameToCompare },
+                success: function (response) {
+                    if(response.is_owner) {
+                        $("#deletePostButton-"+IdPost).show();
+                        $("#editPostButton-"+IdPost).show();
+                    } else {
+                        $("#deletePostButton-"+IdPost).remove();
+                        $("#editPostButton-"+IdPost).remove();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        // Función para inicializar las publicaciones
         function initializePosts() {
             var userId = getUserId();
             if (!userId) {
@@ -308,11 +464,7 @@
             });
         }
 
-        function getUserId() {
-            var stringId = localStorage.getItem('YCuserId');
-            return stringId ? parseInt(stringId) : null;
-        }
-
+        // Función para configurar los elementos de publicación
         function setupPostItem(postItem, userId) {
             var reactions = JSON.parse(postItem.querySelector('.reactions').value);
             var likeGreen = postItem.querySelector('#like-green');
@@ -343,6 +495,7 @@
             }
         }
 
+        // Función para agregar un "Me gusta"
         function addLike(postItem, reactions, userId, postId) {
             var url = 'http://localhost:5096/api/reaction/';
             fetch(url, {
@@ -363,6 +516,7 @@
             });
         }
 
+        // Función para quitar un "Me gusta"
         function removeLike(postItem, reactions, reactionId) {
             var url = `http://localhost:5096/api/reaction/${reactionId}`;
             fetch(url, { method: 'DELETE' })
@@ -377,6 +531,7 @@
             });
         }
 
+        // Función para actualizar la interfaz de usuario para un "Me gusta"
         function updateUIForLike(postItem, reactions) {
             var likesCount = postItem.querySelector('.likes');
             likesCount.innerText = `${reactions.length} Likes`;
@@ -387,48 +542,63 @@
             postItem.querySelector('.reactions').value = JSON.stringify(reactions);
         }
 
-         //---------------------
-        /*function createPost(title, content) {
-            if (title.trim() === "" || content.trim() === "") {
-                alert("Por favor completa todos los campos.");
-                return
-            }
+        // Función para obtener el ID del usuario
+        function getUserId() {
+            var stringId = localStorage.getItem('YCuserId');
+            return stringId ? parseInt(stringId) : null;
+        }
 
-            var url = 'http://localhost:5096/api/Post/CreatePost';
-            $('#spinnerOverlay').removeClass('hidden');
-            var data = {
-                Title: title,
-                Content: simplemde.value(),
-            };
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
+        // Función para eliminar una publicación
+        function deletePost(IdPost) {
+            $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
+            var url = `http://localhost:5096/api/Post/DeletePost/${IdPost}`;
+            
+            fetch(url, { method: 'DELETE' })
             .then(function(response) { 
-                $('#spinnerOverlay').addClass('hidden');
-                console.log(data);
-                if (!response.ok) throw new Error('Falló la petición');
-                // Recargar la página después de recibir una respuesta exitosa
-                window.location.reload();
+                if (!response.ok){
+                    $('#spinnerOverlay').addClass('hidden');
+                    showToast('danger', 'No se pudo eliminar el post debido a un error.');
+                    throw new Error('Falló la petición');
+                }
+                else {
+                    localStorage.removeItem('toastState');
+                    showToast('success', 'Se eliminó el post con éxito.');
+                    $('#spinnerOverlay').addClass('hidden');
+                    
+                }
             })
             .catch(function(error) {
-                $('#spinnerOverlay').addClass('hidden');
                 console.error('Error:', error);
+                window.location.reload();
             });
-            closeModal();
-        }   */
+        }
 
+
+        // Inicializar cuando el contenido esté cargado completamente
+        document.addEventListener('DOMContentLoaded', function () {
+            initializePosts();
+            document.getElementById('postForm').addEventListener('submit', function(event) {
+                event.preventDefault(); 
+            });
+            document.getElementById('editPostForm').addEventListener('submit', function(event) {
+                event.preventDefault(); 
+            });
+
+            const toastState = JSON.parse(localStorage.getItem('toastState'));
+            if (toastState) {
+                showToast(toastState.type, toastState.message);
+                localStorage.removeItem('toastState');
+            }
+        });
+
+        // Manejador de evento para el botón de envío de nueva publicación
         $('#submitBtn').click(function () {
-            // Obtenemos los valores de los campos
             var postTitle = $('#PostTitleInput').val();
             var postContent = $('#PostContentInput').val();
-            console.log(postTitle);
+            
             if (postTitle.trim() === "" || postContent.trim() === "") {
-                alert("Por favor completa todos los campos.");
-                return // Evita que se envíe el formulario
+                showToast('warning', 'Debes llenar todos los campos.');
+                return; // Evita que se envíe el formulario
             }
 
             $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
@@ -441,19 +611,110 @@
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    window.location.reload();
+                    showToast("success", "Se creó el post")
                 },
                 error: function (xhr, status, error) {
+                    showToast("danger", "No se pudo crear el post.")
                     console.error(xhr.responseText);
-                    // Manejar errores aquí
                 },
                 complete: function() {
-                    // Oculta el spinner
-                    $('#spinnerOverlay').addClass('hidden');
-                    $('#editProfileModal').addClass('hidden');
+                    window.location.reload();
                 }
             });
         });
+
+        // Manejador de evento para el botón de envío de edición de publicación
+        $('#EditPostSubmitBtn').click(function () {
+
+            var EditTitle = $("#EditPostTitleInput").val();
+            var editContent = editPostMDE.value();
+
+            if (EditTitle.trim() === "" || editContent.trim() === "") {
+                showToast('warning', 'Debes llenar todos los campos.');
+                return; // Evita que se envíe el formulario
+            }
+
+            var dataform = new FormData($('#editPostForm')[0]);
+
+            $('#spinnerOverlay').removeClass('hidden');
+            
+            $.ajax({
+                url: '/api/Post/UpdatePost',
+                type: 'POST',
+                data: dataform,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    localStorage.removeItem('toastState');
+                    showToast("success", "Se actualizó el post")
+                },
+                error: function (xhr, status, error) {
+                    localStorage.removeItem('toastState');
+                    showToast("danger", "No se pudo actualizar el post")
+                    console.error(xhr.responseText);
+                },
+                complete: function() {
+                    // Ocultamos el spinner
+                    window.location.reload();
+                }
+            });
+        });
+
+
+        // Función para crear un nuevo toast
+        function showToast(type, message) {
+            // Crear elemento de toast
+            const toast = document.createElement('div');
+            toast.classList.add('toast', `toast-${type}`);
+            toast.innerHTML = `
+                <div class="z-90 flex items-center justify-between p-2 rounded-md">
+                    <svg class="w-6 h-6 mr-2 text-yellow-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" fill="#ffffff" />
+                        <line x1="12" y1="8" x2="12" y2="12" stroke="#000000" />
+                        <line x1="12" y1="16" x2="12" y2="16" stroke="#000000" />
+                    </svg>
+                    <div>${message}</div>
+                    <div class="toast-close mx-2 p-1 font-bold text-xl">
+                        X
+                    </div>
+                </div>
+            `;
+
+                    
+            // Agregar evento de clic para cerrar el toast
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                toast.style.opacity = 0;
+                setTimeout(() => {
+                toast.remove();
+                }, 500);
+                localStorage.removeItem('toastState');
+            });
+
+            // Agregar toast al contenedor
+            document.getElementById('toastContainer').appendChild(toast);
+
+            // Mostrar el toast con efecto de fade
+            setTimeout(() => {
+                toast.style.opacity = 1;
+            }, 100);
+
+            // Eliminar el toast después de un tiempo
+            setTimeout(() => {
+                toast.style.opacity = 0;
+                setTimeout(() => {
+                toast.remove();
+                }, 500);
+            }, 5000); // Cambiar 5000 por el tiempo deseado en milisegundos
+            localStorage.setItem('toastState', JSON.stringify({ type, message }));
+        }
+
+        // Ejemplo de uso
+        /*showToast('info', 'Info alert! Change a few things up and try submitting again.');
+        showToast('danger', 'Danger alert! Change a few things up and try submitting again.');
+        showToast('success', 'Success alert! Change a few things up and try submitting again.');
+        showToast('warning', 'Warning alert! Change a few things up and try submitting again.');*/
+        
+        
 
 
     </script>
