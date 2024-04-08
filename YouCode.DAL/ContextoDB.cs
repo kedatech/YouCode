@@ -25,7 +25,9 @@ namespace YouCode.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(local);Database=YouCodeDb;Integrated Security=True;Encrypt=False");
+            string connectionString = "Data Source=youcode.mssql.somee.com;Initial Catalog=YouCode;User Id=eliseodesign_SQLLogin_1;Password=qbk92kjobt;Integrated Security=False";
+
+            optionsBuilder.UseSqlServer(connectionString);
         }
     }
 }
