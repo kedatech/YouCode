@@ -21,10 +21,21 @@ namespace YouCode.GUI.Controllers.Api
             return Ok(filteredFollowers);
         }
 
+        [HttpGet]
+        [Route("isfollowing/{idfollower}/{idfollow}")] 
+        public async Task<IActionResult> IsFollowing(int idfollower, int idfollow)
+        {
+            var followers = await _followerBL.GetAllAsync();
+            var isFollowing = followers.Any(f => f.IdFollower == idfollower && f.IdFollow == idfollow);
+            
+            return Ok(isFollowing);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Follower follower)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(follower));
+            // Console.WriteLine(JsonConvert.SerializeObject(follower));
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

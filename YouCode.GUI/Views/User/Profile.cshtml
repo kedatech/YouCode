@@ -14,6 +14,15 @@
                 perfil</button>
 
         </div>
+        <div class="relative">
+            <button onclick="follow()" id="followButton" hidden
+                class="absolute m-1 top-0 right-0  px-4 py-2 w-32
+                bg-transparent text-[13px] font-bold rounded
+                text-green-400 border border-green-400 transition-all duration-300
+                hover:bg-green-600 hover:text-white hover:border-transparent">
+                Seguir</button>
+
+        </div>
         <div class="flex items-center justify-center">
             <div class="mt-2">
                 <span class="block w-40 h-40 rounded-full m-auto shadow"
@@ -22,20 +31,21 @@
             </div>
 
             <div class="ml-6">
-                <h2 class="text-3xl font-bold">@Model.Profile.User.Name</h2>
+               <h2 class="text-2xl font-bold">@Model.Profile.User.Name</h2>
+
                 <p class="text-gray-600 text-xl font-semibold mt-1">@Model.Profile.User.Username</p>
                 <hr class="mt-3">
                 <div class="flex justify-between text-gray-600 mx-2 mt-2">
                     <div class="text-center">
-                        <span class="block font-bold text-lg">1.5k</span>
+                        <span class="block font-bold text-lg mr-2">1.5k</span>
                         <span class="text-xs">Seguidores</span>
                     </div>
                     <div class="text-center">
-                        <span class="block font-bold text-lg">120</span>
+                        <span class="block font-bold text-lg mr-2">120</span>
                         <span class="text-xs">Seguidos</span>
                     </div>
                     <div class="text-center">
-                        <span class="block font-bold text-lg">350</span>
+                        <span class="block font-bold text-lg mr-2">350</span>
                         <span class="text-xs">Posts</span>
                     </div>
                 </div>
@@ -382,6 +392,8 @@
                 editProfileModal.classList.add("hidden");
             });
 
+            
+
             $("#bioParagraph").html(FormatBio());
         });
 
@@ -402,9 +414,12 @@
                         if (response.is_owner) {
                             // Si el usuario es propietario, mostrar el botón
                             $('#openModal').show();
+                            $('#followButton').remove();
                         } else {
+                             initFollows();
                             // Si el usuario no es propietario, ocultar el botón
                             $('#openModal').remove();
+                            
                         }
                     },
                     error: function (xhr, status, error) {
@@ -459,6 +474,91 @@
                 });
             });
         });
+
+
+        function follow()
+        {
+            var IdToFollow = '@Model.Profile.User.Id' 
+            var userId = '@ViewBag.CurrentUserId' 
+            
+            if ($('#followButton').text() === "Dejar de Seguir")
+            {
+                unfollow(IdToFollow, userId);
+                return;
+            }
+            
+
+            let follower = {
+                IdFollower: userId,
+                IdFollow: IdToFollow
+            };
+            $('#followButton').text('Espera...')
+            
+            fetch('/api/follower', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(follower)
+            })
+                .then(response => {
+                    if (response.ok) {
+                        setfollowUI(true)
+                    } else {
+                        alert('Error al seguir usuario');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function unfollow(IdToFollow, userId)
+        {
+
+            $('#followButton').text('Espera...')
+            
+            fetch(`/api/follower/${userId}/${IdToFollow}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        setfollowUI(false);
+                    } else {
+                        alert('Error al dejar de seguir usuario');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function setfollowUI(follow)
+        {
+            if (follow) {
+            $('#followButton').text('Dejar de Seguir').removeClass('text-green-400 border-green-400 hover:bg-green-600 hover:text-white hover:border-transparent')
+                                 .addClass('text-gray-500 border-gray-500 hover:bg-gray-600 hover:text-white hover:border-transparent');
+            } else {
+                $('#followButton').text('Seguir').removeClass('text-gray-400 border-gray-400 hover:bg-gray-600 hover:text-white hover:border-transparent')
+                                    .addClass('text-green-400 border-green-400 hover:bg-green-600 hover:text-white hover:border-transparent');
+            }
+        }
+
+
+        function initFollows()
+        {
+            var idfollow = ' @Model.Profile.User.Id'
+            var idfollower = ' @ViewBag.CurrentUserId'
+            // hacer peticion para obtener a los seguidos
+            let url = `http://localhost:5096/api/follower/isfollowing/${idfollower}/${idfollow}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(isFollowing => {
+                    setfollowUI(isFollowing)
+                    $('#followButton').show();
+                })
+                
+        }
 
         localStorage.clear();
         localStorage.setItem('YCuserId', userId);
