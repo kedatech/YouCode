@@ -73,10 +73,8 @@
         <div class="flex-initial">
             <div class="flex justify-end items-center relative">
 
-                <div class="flex mr-4 items-center">
-                    <a class="inline-block py-2 px-3 hover:bg-gray-200 rounded-full"  href="/">
-                        <div class="flex items-center relative cursor-pointer whitespace-nowrap">Feed</div>
-                    </a>
+                @* <div class="flex mr-4 items-center">
+                   
                     
 
                     <div class="block relative">
@@ -94,26 +92,46 @@
                             </div>
                         </button>
                     </div>
-                </div>
+                </div> *@
 
-                <div class="block" id="Boton login">
+                <div class="block" id="">
                     <div class="inline relative">
-                        <a id="ButtonLogin" asp-controller="Auth" asp-action="Redirect" hidden>
-                            <button type="button"
-                                class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg">
-                                <span class="text-gray-700 pr-2 font-semibold text-[13px]">Login with</span>
-                                <div class="flex flex-grow-0 flex-shrink-0 h-6 w-6">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="currentColor"
+                        @* <a id="ButtonLogin" asp-controller="Auth" asp-action="Redirect" hidden>
+                            
+                        </a> *@
+                        <button id="ButtonLogin" type="button"
+                            class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg hidden" hidden>
+                            <span class="text-gray-700 pr-2 font-semibold text-[13px]">Iniciar con </span>
+                            <div class="flex flex-grow-0 flex-shrink-0 h-6 w-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="currentColor"
+                                    class="w-full h-full">
+                                    <img src="/Images/github-mark.svg" alt="GitHub" class="w-full h-full">
+                                </svg>
+                            </div>
+                        </button> 
+
+                        @* <a id="ButtonProfile" asp-controller="User" asp-action="Profile" asp-route-username="@ViewBag.Username" hidden>
+                            
+                        </a> *@
+                        
+
+                        @if(ViewBag.IsInProfile != null && ViewBag.IsInProfile == true)
+                        {
+                            <button  id="ButtonLogout" type="button"
+                                class="inline-flex items-center relative py-2 px-3 border border-red-600 rounded-lg transition-all duration-200 hover:shadow-lg">
+                                <span class="text-red-600 pr-2 font-semibold text-[13px]">Cerrar</span>
+                                <div class="flex flex-grow-0 flex-shrink-0 h-7 w-7">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                         class="w-full h-full">
-                                        <img src="/Images/github-mark.svg" alt="GitHub" class="w-full h-full">
+                                        <img src="/Images/logout.svg" alt="Profile" class="w-full h-full">
                                     </svg>
                                 </div>
                             </button> 
-                        </a>
-
-                        <a id="ButtonProfile" asp-controller="User" asp-action="Profile" asp-route-username="@ViewBag.Username" hidden>
-                            <button type="button"
-                                class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg">
+                        }
+                        else
+                        {
+                            <button  id="ButtonProfile" type="button"
+                                class="inline-flex items-center relative py-2 px-3 border rounded-lg transition-all duration-200 hover:shadow-lg hidden" hidden>
                                 <span class="text-gray-700 pr-2 font-semibold text-[13px]">Perfil</span>
                                 <div class="flex flex-grow-0 flex-shrink-0 h-6 w-6">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 15" fill="currentColor"
@@ -122,7 +140,8 @@
                                     </svg>
                                 </div>
                             </button> 
-                        </a>
+                        }
+
                     </div>
                 </div>
 
@@ -147,7 +166,8 @@
     <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     
     @await RenderSectionAsync("Scripts", required: false)
-    <script>
+    <script> 
+        var username = ""
         $(document).ready(function () {
              function checkUserOwner() {
                 $.ajax({
@@ -157,12 +177,14 @@
                     dataType: 'json',
                     success: function (response) {
                         if (response.currentUsername === null || response.currentUsername === "") {
-                            $('#ButtonLogin').show();
-                            $('#ButtonProfile').hide();
+                            $('#ButtonLogin').removeClass("hidden")
+                            $('#ButtonProfile').addClass("hidden")
+                            
                         } else {
-                            $('#ButtonLogin').hide();
-                            $('#ButtonProfile').show();
-                            $('#ButtonProfile').attr('href', '/User/Profile/' + response.currentUsername);
+                            username =response.currentUsername;
+                            $('#ButtonLogin').addClass("hidden")
+                            $('#ButtonProfile').removeClass("hidden")
+                            
                         }
                     },
                     error: function (xhr, status, error) {
@@ -171,6 +193,29 @@
                 });
              }
              checkUserOwner();
+
+
+             $("#ButtonLogin").click(function (){
+               window.location.href = '/Auth/Redirect/';
+            });
+            $("#ButtonProfile").click(function (){
+              window.location.href = '/User/Profile/' + username;
+            });
+
+            $("#ButtonLogout").click(function (){
+              $.ajax({
+                    url: `/api/auth/logout`,
+                    type: 'GET',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (response) {
+                        window.location.href = '/';
+                    },
+                    error: function (xhr, status, error) {
+                        alert(error + " NO SE");
+                    }
+                });
+            });
         });
         
     </script>

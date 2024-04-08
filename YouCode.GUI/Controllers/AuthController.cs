@@ -186,6 +186,16 @@ namespace YouCode.GUI.Controllers
             return await githubClient.User.Current();
         }
 
+        [Route("api/auth/logout")]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("UserName");
+            AuthenticationService.DeleteSession(HttpContext);
+            return Ok(Json(new {success = true}));
+        }
+
+
+
         public IActionResult Error() => View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace YouCode.GUI.Services.Auth
 {
@@ -39,7 +40,14 @@ namespace YouCode.GUI.Services.Auth
 
         }
 
+        public static void DeleteSession(HttpContext httpContext)
+        {
+            foreach (var cookie in httpContext.Request.Cookies)
+            {
+                httpContext.Response.Cookies.Delete(cookie.Key);
+            }
 
+        }
         public static string ValidateUserLogged(HttpContext httpContext)
         {
             var encryptedToken = httpContext.Request.Cookies["_TojiBestoProta"];
