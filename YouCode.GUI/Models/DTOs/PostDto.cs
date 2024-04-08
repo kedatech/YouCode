@@ -8,6 +8,8 @@ namespace YouCode.GUI.Models.DTOs
         public List<Image>? Images { get; set; }
         public List<Favorite>? Favorites { get; set; }
         public List<Reaction>? Reactions { get; set; }
+        public List<Comment>? Comments { get; set; }
+        
 
     }
 }

@@ -86,7 +86,7 @@ function removeFavorite(postItem, favorites, favoriteId) {
 
 function updateUIForFavorite(postItem, favorites) {
     var savesCount = postItem.querySelector('.saves');
-    savesCount.innerText = `${favorites.length} Saved`;
+    savesCount.innerText = `${favorites.length} Guardados`;
     var favoriteGreen = postItem.querySelector('[id^="favorite-green"]');
     var favoriteGray = postItem.querySelector('[id^="favorite-gray"]');
 

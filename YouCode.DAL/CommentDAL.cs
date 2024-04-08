@@ -68,7 +68,7 @@ namespace YouCode.DAL
             var comment = new List<Comment>();
             using (var bdContexto = new ContextoDB())
             {
-                comment = await bdContexto.Comment.ToListAsync();
+                comment = await bdContexto.Comment.Include(u=>u.User).ToListAsync();
             }
 
             return comment;

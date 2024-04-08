@@ -376,6 +376,7 @@
     <script>
         var userId = '@ViewBag.CurrentUserId';
         localStorage.setItem('YCuserId', userId);
+        localStorage.setItem('YCuserU', '@Model.Profile.User.Username');
 
         document.addEventListener("DOMContentLoaded", function () {
             var openModalBtn = document.getElementById("openModal");

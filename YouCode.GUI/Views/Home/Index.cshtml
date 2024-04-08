@@ -53,7 +53,7 @@
                                 style="background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url('@post.UserProfile.AvatarUrl');"></span>
                                 <div class="ml-3 ">
                                     <span class="text-md font-semibold antialiased block leading-tight">@post.User.Name <span
-                                        class="text-gray-600">@post.User.Username</span></span>
+                                        class="text-gray-600"><text>@@</text>@post.User.Username</span></span>
                                     <!-- Asumiendo que User tiene una propiedad Name -->
                                     <span class="text-gray-600 text-xs block">@post.PostedAt.ToString("MMMM dd, yyyy")</span>
                                 </div>
@@ -301,8 +301,11 @@
                 </div>
                 
                 <div class="flex justify-between font-semibold text-sm mx-4 mt-2 mb-4">
-                    <span class="likes">@post.Reactions.Count Likes</span>
-                    <span class="saves">@post.Favorites.Count Saved</span>
+                    <div class="">
+                        <span class="likes text-gray-600">@post.Reactions.Count Likes</span>
+                        <span class="comments text-gray-600">@post.Comments.Count Comentarios</span>
+                    </div>
+                    <span class="saves text-gray-600">@post.Favorites.Count Guardados</span>
                 </div>
 
 
@@ -310,34 +313,58 @@
                 <!-- Tailwindcss V3 Script because here v3 is not supported -->
                 <div class="justify-center items-center w-full pb-10 comment-component hidden">
                     <div class="w-[90%] mx-auto">
-                        <!-- Ajuste del ancho del contenedor principal -->
-                        <div class="flex justify-between">
-                            @* <div class="mb-4">
-                                <span class="bg-[#F3F4F6] rounded-md font-semibold cursor-pointer p-2">Write</span>
-                                <span class="bg-transparent font-semibold text-[#7E8490] cursor-pointer p-2">Preview</span>
-                            </div> *@
-                            @* <div class="flex gap-3 text-[#9CA3AF]">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                                </svg>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                                </svg>
-                            </div> *@
-                        </div>
-                        <textarea placeholder="Add your comment..." class="p-2 focus:outline-1 focus:outline-blue-500 font-bold border-[0.1px] resize-none h-[120px] border-[#9EA5B1] rounded-md w-full"></textarea> <!-- Ajuste del ancho del textarea -->
+                        <textarea maxlength="260" id="commentContentInput-@post.Id" Name="Content" placeholder="Escribe tu comentario..." class="p-2 focus:outline-1 focus:outline-green-500 font-bold border-[0.1px] resize-none h-[120px] border-[#9EA5B1] rounded-md w-full"></textarea> <!-- Ajuste del ancho del textarea -->
                         <div class="flex justify-end">
-                            <button class="flex items-center justify-center text-sm font-semibold absolute bg-[#4F46E5] w-fit text-white py-2 rounded px-3">
-                                Post
+                            <button onclick="submitComment('@post.Id')" id="ButtonsSubmitComment-@post.Id" type="submit" class="flex items-center justify-center text-sm font-semibold absolute bg-green-500 w-fit text-white py-2 rounded px-3">
+                                Comentar
                                 <svg class="ml-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" style="fill: #eee;transform: ;msFilter:;"><path d="m21.426 11.095-17-8A1 1 0 0 0 3.03 4.242l1.212 4.849L12 12l-7.758 2.909-1.212 4.849a.998.998 0 0 0 1.396 1.147l17-8a1 1 0 0 0 0-1.81z"></path></svg>
                             </button>
                         </div>
                     </div>
+
+                    <div class="mt-10">
+                        <div class="mx-4 "> 
+                            @if(post.Comments.Count != 0)
+                            {
+                                <h2 class="p-2 text-xl font-bold text-gray-800">Otras personas comentaron</h2>
+                            }
+                            @foreach (var comment in post.Comments)
+                            {
+                                <div class="relative grid grid-cols-1 gap-4 p-4 mb-2 border rounded-lg bg-gray-100 ">
+                                    <div class="relative flex gap-4">
+                                        
+                                        <img src="@comment.AvatarUrl" class="relative rounded-lg -top-4 -mb-4 bg-white border h-12 w-12" alt="" loading="lazy">
+                                        <div class="flex flex-col flex-grow w-full">
+                                            <div class="flex flex-row justify-between">
+                                                <span class="text-md font-semibold antialiased block leading-tight">@comment.User.Name</span>
+                                                <button  onclick="deleteComment('@comment.Id')" class="ButtonDeleteComment absolute top-0 right-0 mt-2 mr-2 hidden">
+                                                    <input type="hidden" id="UserCommentIdValue" value="@comment.User.Username">
+                                                    <!-- Agrega aquí tu ícono de eliminación -->
+                                                    <!-- Por ejemplo, un ícono X de eliminación -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        @* <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/> *@
+                                                        <img src="Images/delete.svg" class="w-6">
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <span class="text-green-600 overflow-y-hidden flex-grow"><text>@@</text>@comment.User.Username</span>
+                                        </div>
+                                    </div>
+                                    <div class="overflow-auto">
+                                        <p class="text-md text-gray-600 mt-1" style="word-wrap: break-word;">@comment.Content</p>
+                                    </div>
+                                    
+
+                                </div>
+
+
+                            }
+                        </div>
+
+                    </div>
                 </div>
+
+                
 
 
 
@@ -346,6 +373,7 @@
                  @* propiedad oculta con un array de los usurios que dieron like *@
                 <input type="hidden" value='@Json.Serialize(post.Reactions)' class="reactions" />
                 <input type="hidden" value='@Json.Serialize(post.Favorites)' class="favorites" />
+                <input type="hidden" value='@Json.Serialize(post.Comments)' class="comments" />
             </div>
     }
 </div>
@@ -763,7 +791,9 @@
             document.getElementById('editPostForm').addEventListener('submit', function(event) {
                 event.preventDefault(); 
             });
+            const commentForms = document.querySelectorAll('.commentForm');
 
+  
             const toastState = JSON.parse(localStorage.getItem('toastState'));
             if (toastState) {
                 showToast(toastState.type, toastState.message);
@@ -895,7 +925,93 @@
         showToast('warning', 'Warning alert! Change a few things up and try submitting again.');*/
         
         
+        function submitComment(postid)
+        {
+            var commentContent = $("#commentContentInput-"+postid).val();
 
+            
+            if (commentContent.trim() === "") {
+                showToast('warning', 'Debes llenar todos los campos.');
+                return; // Evita que se envíe el formulario
+            }
+
+            var userId = getUserId()
+
+            $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
+            var data = {
+                IdPost: postid,  // Reemplaza 132 con el valor correcto
+                IdUser: userId,  // Convertir a entero si es necesario
+                Content: commentContent
+            };
+
+            var url = 'http://localhost:5096/api/comment/add';
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(function (response) {
+                    if (!response.ok) console.log(response);
+                    return response.json();
+                })
+                .then(function (data) {
+                    $('#spinnerOverlay').addClass('hidden');
+                    showToast("success", "Se agregó el comentario")
+                    window.location.reload();
+                })
+                .catch(function (error) {   
+                    console.error('Error:', error);
+                    showToast("warning", "No se pudo agregar el comentario")
+                });
+        }
+
+
+        function deleteComment(commentId)
+        {
+
+            $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
+
+            var url = 'http://localhost:5096/api/comment/remove/'+commentId;
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(function (response) {
+                    
+                })
+                .then(function (data) {
+                    $('#spinnerOverlay').addClass('hidden');
+                    showToast("success", "Se eliminó el comentario")
+                    window.location.reload();
+                })
+                .catch(function (error) {   
+                    console.error('Error:', error);
+                    showToast("warning", "No se pudo eliminar el comentario")
+                });
+        }
+
+
+        function validateOwner(UserComment, deleteButton)
+        {
+            
+            $.ajax({
+                url: '/Auth/ValidateUserOwner',
+                type: 'GET',
+                data: { username: UserComment },
+                success: function (response) {
+                    if(response.is_owner) {
+                        deleteButton.classList.remove('hidden');
+                    } else {
+                       deleteButton.remove();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        }
 
     </script>
 }
