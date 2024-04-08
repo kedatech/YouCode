@@ -17,20 +17,17 @@ RUN npm install -g npm@latest
 COPY ./YouCode.GUI/YouCode.GUI.csproj ./YouCode.GUI/
 
 # Cambia al directorio del proyecto antes de restaurar
-WORKDIR .
+WORKDIR /app/YouCode.GUI
 RUN dotnet restore
 
 # Copia el resto de los archivos del proyecto
-COPY ./YouCode.BE/ ./YouCode.BE/
-COPY ./YouCode.DAL/ ./YouCode.DAL/
-COPY ./YouCode.BL/ ./YouCode.BL/
-COPY ./YouCode.GUI/ ./YouCode.GUI/
-
-# Usa npm ci para instalar dependencias, optimizado para entornos de producción
-RUN npm ci --only=production
+COPY ./YouCode.BE/ ./../YouCode.BE/
+COPY ./YouCode.DAL/ ./../YouCode.DAL/
+COPY ./YouCode.BL/ ./../YouCode.BL/
+COPY ./YouCode.GUI/ .
 
 # Compila la aplicación .NET especificando el proyecto YouCode.GUI
-RUN dotnet publish "./YouCode.GUI/YouCode.GUI.csproj" -c Release -o out 
+RUN dotnet publish -c Release -o out 
 
 # Utiliza la imagen de runtime de ASP.NET Core
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
