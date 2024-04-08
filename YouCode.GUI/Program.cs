@@ -38,7 +38,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.WebHost.UseUrls("http://localhost:5096");
+builder.WebHost.UseUrls("http://https://youcode.onrender.com");
 
 // Add session and configure cookie
 builder.Services.AddSession(options =>

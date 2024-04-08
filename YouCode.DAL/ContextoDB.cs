@@ -25,7 +25,7 @@ namespace YouCode.DAL
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "Data Source=youcode.mssql.somee.com;Initial Catalog=YouCode;User Id=eliseodesign_SQLLogin_1;Password=qbk92kjobt;Integrated Security=False";
+            string connectionString = @"workstation id=YouCode.mssql.somee.com;packet size=4096;user id=eliseodesign_SQLLogin_1;pwd=qbk92kjobt;data source=YouCode.mssql.somee.com;persist security info=False;initial catalog=YouCode;TrustServerCertificate=True;";
 
             optionsBuilder.UseSqlServer(connectionString);
         }
