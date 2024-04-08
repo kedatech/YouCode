@@ -10,6 +10,10 @@ namespace YouCode.BL
 {
     public class CommentBL
     {
+        public async Task<int> DeleteOnAllPostAsync(int IdPost)
+        {
+            return await CommentDAL.DeleteOnAllPostAsync(IdPost);
+        }
         public async Task<int> CreateAsync(Comment comment)
         {
             return await CommentDAL.CreateAsync(comment);

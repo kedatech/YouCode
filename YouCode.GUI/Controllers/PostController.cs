@@ -11,10 +11,11 @@ using YouCode.GUI.Models.DTOs;
 namespace YouCode.GUI.Controllers;
 public class PostController : Controller
 {
-    PostBL postBL = new PostBL();
-    UserBL userBL = new UserBL();
-    ImageBL imageBL = new ImageBL();
-    ReactionBL reactionBL = new ReactionBL();
+    private readonly PostBL postBL = new PostBL();
+    private readonly UserBL userBL = new UserBL();
+    private readonly ImageBL imageBL = new ImageBL();
+    private readonly CommentBL commentBL = new CommentBL();
+    private readonly ReactionBL reactionBL = new ReactionBL();
     
     // [ValidateAntiForgeryToken]
     [JwtAuthentication]
@@ -61,6 +62,7 @@ public class PostController : Controller
             await Task.WhenAll(
                 imageBL.DeleteOnAllPostAsync(IdPost),
                 reactionBL.DeleteOnAllPostAsync(IdPost),
+                commentBL.DeleteOnAllPostAsync(IdPost),
                 postBL.DeleteAsync(new Post { Id = IdPost })
             );
 

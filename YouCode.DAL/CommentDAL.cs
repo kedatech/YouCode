@@ -11,6 +11,21 @@ namespace YouCode.DAL
 {
     public class CommentDAL
     {
+
+        public static async Task<int> DeleteOnAllPostAsync(int IdPost)
+        {
+            int result = 0;
+            using (var bdContexto = new ContextoDB())
+            {
+                var commentDB = await bdContexto.Comment.Where(c => c.IdPost == IdPost).ToListAsync();
+                if (commentDB != null)
+                {
+                    bdContexto.Comment.RemoveRange(commentDB);
+                    result = await bdContexto.SaveChangesAsync();
+                }
+                return result;
+            }
+        }
         public static async Task<int> CreateAsync(Comment comment)
         {
             int result = 0;
