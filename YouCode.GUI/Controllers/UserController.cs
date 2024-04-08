@@ -23,12 +23,15 @@ public class UserController : Controller
         var user = await userBL.GetByUsernameAsync(username);
         var logguedUsername = AuthenticationService.getCurrentUsername(HttpContext);
         var IdLogguedUser = await userBL.GetByUsernameAsync(logguedUsername);
+        Console.WriteLine(IdLogguedUser.Id);
             if(user != null)
             {
+                Console.WriteLine("primer paso");
                 var profile = await profileBL.GetByIdAsync(new Profile { Id = user.Id });
                 var posts = await postService.GetAllAsync(user.Username);
                 if(profile != null)
                 {
+                    Console.WriteLine("segundo paso");
                     var postsHtml = new List<dynamic>();
                     foreach (var post in posts)
                     {
@@ -37,6 +40,7 @@ public class UserController : Controller
                     }
                     ViewBag.PostsHtml = postsHtml;
                     ViewBag.CurrentUserId = IdLogguedUser.Id;
+                    Console.WriteLine(IdLogguedUser.Id);
                     return View(new ProfileReturnDto(){
                         Profile = profile,
                         Posts = posts

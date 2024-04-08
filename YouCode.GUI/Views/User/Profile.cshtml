@@ -374,7 +374,9 @@
     <script src="https://cdn.jsdelivr.net/gh/alpine-collective/alpine-magic-helpers@0.3.x/dist/index.js"></script>
 
     <script>
-        var userId = @Model.Profile.User.Id;
+        var userId = '@ViewBag.CurrentUserId';
+        localStorage.setItem('YCuserId', userId);
+
         document.addEventListener("DOMContentLoaded", function () {
             var openModalBtn = document.getElementById("openModal");
             var closeModalBtn = document.getElementById("closeModal");
@@ -480,7 +482,7 @@
         {
             var IdToFollow = '@Model.Profile.User.Id' 
             var userId = '@ViewBag.CurrentUserId' 
-            
+
             if ($('#followButton').text() === "Dejar de Seguir")
             {
                 unfollow(IdToFollow, userId);
@@ -560,8 +562,7 @@
                 
         }
 
-        localStorage.clear();
-        localStorage.setItem('YCuserId', userId);
+        
     </script>
 }
 
