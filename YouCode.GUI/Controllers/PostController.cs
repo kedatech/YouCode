@@ -62,7 +62,7 @@ public class PostController : Controller
             await Task.WhenAll(
                 imageBL.DeleteOnAllPostAsync(IdPost),
                 reactionBL.DeleteOnAllPostAsync(IdPost),
-                commentBL.DeleteOnAllPostAsync(IdPost),
+                // commentBL.DeleteOnAllPostAsync(IdPost),
                 postBL.DeleteAsync(new Post { Id = IdPost })
             );
 
