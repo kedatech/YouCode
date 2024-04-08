@@ -21,5 +21,8 @@ namespace YouCode.BE
         // [Required]
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
+        [NotMapped]
+        public Profile Profile { get; set; } = new Profile();
+
     }
 }

@@ -8,9 +8,7 @@ function followInit() {
     let stringId = localStorage.getItem('YCuserId');
     let userId = parseInt(stringId);
 
-    
-    // recorrer las sugerencias de follow user
-    let follows = document.querySelectorAll('.who-follow-render');
+
 
     follows.forEach(follow => {
         follow.addEventListener('click', function () {
