@@ -24,6 +24,10 @@ namespace YouCode.BL
         {
             return await ReactionDAL.DeleteAsync(reaction);
         }
+        public async Task<int> DeleteOnAllPostAsync(int IdPost)
+        {
+            return await ReactionDAL.DeleteOnAllPostAsync(IdPost);
+        }
 
         public async Task<Reaction> GetByIdAsync(Reaction reaction)
         {

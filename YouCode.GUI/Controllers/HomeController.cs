@@ -34,17 +34,21 @@ namespace YouCode.GUI.Controllers
         public async Task<IActionResult> Index()
         {
             //TODO: Mejorar esto y no hacer peticiones innecesarias
-            var username = HttpContext.Session.GetString("UserName");
+            var username = AuthenticationService.getCurrentUsername(HttpContext);
             // Console.WriteLine(string.IsNullOrEmpty(username));
             if(!string.IsNullOrEmpty(username))
             {
                 var user = await userBL.GetByUsernameAsync(username);
                 var profile = await profileBL.GetByIdAsync(new Profile{Id = user.Id});
                 ViewBag.AvatarUrl = profile.AvatarUrl;
+                ViewBag.IsLoggued = true;
+                ViewBag.IsLogguedString = "true";
             }
             else
             {
                 ViewBag.AvatarUrl = "";
+                ViewBag.IsLoggued = false;
+                ViewBag.IsLogguedString = "false";
             }
             
             var posts = await postService.GetAllAsync(null);
@@ -95,7 +99,6 @@ namespace YouCode.GUI.Controllers
         {
             return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
         
     }
 

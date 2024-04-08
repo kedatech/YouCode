@@ -21,6 +21,9 @@ public class UserController : Controller
     public async Task<IActionResult> Profile(string username)
     {
         var user = await userBL.GetByUsernameAsync(username);
+        var logguedUsername = AuthenticationService.getCurrentUsername(HttpContext);
+        var IdLogguedUser = await userBL.GetByUsernameAsync(logguedUsername);
+        Console.WriteLine(IdLogguedUser.Id);
             if(user != null)
             {
                 var profile = await profileBL.GetByIdAsync(new Profile { Id = user.Id });
@@ -34,6 +37,10 @@ public class UserController : Controller
                         postsHtml.Add(new { Id = post.Id, ContentHtml = contentHtml });
                     }
                     ViewBag.PostsHtml = postsHtml;
+                    ViewBag.CurrentUserId = IdLogguedUser.Id;
+                    ViewBag.IsInProfile = true;
+
+                    Console.WriteLine(IdLogguedUser.Id);
                     return View(new ProfileReturnDto(){
                         Profile = profile,
                         Posts = posts

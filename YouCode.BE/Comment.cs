@@ -16,15 +16,17 @@ namespace YouCode.BE
         [Required]
         public string Content  { get; set; } = string.Empty;
 
-        [ForeignKey("User")]
-        public int IdUser { get; set; }
+        
 
         [ForeignKey("Post")]
         public int IdPost { get; set; }
-        [NotMapped]
-        public User User { get; set; } = new User();
-        [NotMapped]
-        public Post Post { get; set; } =new Post();
 
+        [ForeignKey("User")]
+        public int IdUser { get; set; }
+
+        public User User { get; set; }
+
+        [NotMapped]
+        public string AvatarUrl {get; set;}
     }
 }

@@ -36,7 +36,7 @@ namespace YouCode.DAL
             return post;
         }
         //Busca Id de 
-        public static async Task<int> UpdateAsync(Post post)
+        public static async Task<Post> UpdateAsync(Post post)
         {
             int result = 0;
             using (var bdContexto = new ContextoDB())
@@ -53,7 +53,7 @@ namespace YouCode.DAL
                     bdContexto.Update(postDB);
                     result = await bdContexto.SaveChangesAsync();
                 }
-                return result;
+                return post;
             }
 
         }

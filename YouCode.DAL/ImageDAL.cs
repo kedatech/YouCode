@@ -55,6 +55,21 @@ namespace YouCode.DAL
             }
             return result;
         }
+
+        public static async Task<int> DeleteOnAllPostAsync(int IdPost)
+        {
+            int result = 0;
+            using (var bdContexto = new ContextoDB())
+            {
+                var imageDB = await bdContexto.Image.FirstOrDefaultAsync(i => i.IdPost == IdPost);
+                if (imageDB != null)
+                {
+                    bdContexto.Image.Remove(imageDB);
+                    result = await bdContexto.SaveChangesAsync();
+                }
+            }
+            return result;
+        }
         public static async Task<BE.Image> GetByIdAsync(BE.Image image)
         {
             var imageDB = new BE.Image();
@@ -75,6 +90,18 @@ namespace YouCode.DAL
             }
 
         }
+
+        public static async Task<List<BE.Image>> GetAllOnAPostAsync(int PostId)
+        {
+            using (var bdContexto = new ContextoDB())
+            {
+                // Filtrar las imágenes por IdPost igual a PostId
+                var images = await bdContexto.Image.Where(image => image.IdPost == PostId).ToListAsync();
+
+                return images;
+            }
+        }
+
         // este método permite filtrar y ordenar consultas de entidades BE.Image
         internal static IQueryable<BE.Image> QuerySelect(IQueryable<BE.Image> query, BE.Image image)
         {
