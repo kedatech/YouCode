@@ -53,7 +53,7 @@ function followInit() {
                 if (!followButton) {
                     return;
                 }
-                followButton.textContent = 'Unfollow';
+                followButton.textContent = 'Eliminar';
                 // cambiar color background
                 followButton.classList.add('bg-gray-500');
             });
@@ -63,7 +63,7 @@ function followInit() {
 
 function setFollow(userId, followId) {
     let followButton = document.querySelector(`.who-follow-render[itemid="${followId}"] button`);
-    if (followButton.textContent === 'Follow') {
+    if (followButton.textContent === 'Seguir') {
         followUser(userId, followId);
     } else {
         unfollowUser(userId, followId);
@@ -84,7 +84,7 @@ function unfollowUser(userId, followId) {
             if (response.ok) {
                 // cambiar texto del boton
                 let followButton = document.querySelector(`.who-follow-render[itemid="${followId}"] button`);
-                followButton.textContent = 'Follow';
+                followButton.textContent = 'Seguir';
                 // cambiar color background
                 followButton.classList.remove('bg-gray-500');
             } else {
@@ -116,7 +116,7 @@ function followUser(userId, followId) {
             if (response.ok) {
                 // cambiar texto del boton
                 let followButton = document.querySelector(`.who-follow-render[itemid="${followId}"] button`);
-                followButton.textContent = 'Unfollow';
+                followButton.textContent = 'Eliminar';
                 // cambiar color background
                 followButton.classList.add('bg-gray-500');
             } else {
@@ -148,7 +148,7 @@ function followUser(userId, followId) {
 
         <div class="col-span-3 px-2 py-4 flex justify-center items-center">
             <button
-                class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Follow</button>
+                class=" bg-[#45a448] max-h-5 hover:bg-[#5bc25f] text-white text-[13px] font-bold px-2 rounded">Seguir</button>
         </div>
     </div>
 }
