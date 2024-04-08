@@ -51,7 +51,7 @@ function setFavorite(postItem, userId, favorites) {
 }
 
 function addFavorite(postItem, favorites, userId, postId) {
-    var url = 'http://https://youcode.onrender.com/api/favorite/';
+    var url = 'http://localhost:5096/api/favorite/';
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,7 +71,7 @@ function addFavorite(postItem, favorites, userId, postId) {
 }
 
 function removeFavorite(postItem, favorites, favoriteId) {
-    var url = `http://https://youcode.onrender.com/api/favorite/${favoriteId}`;
+    var url = `http://localhost:5096/api/favorite/${favoriteId}`;
     fetch(url, { method: 'DELETE' })
     .then(function (response) {
         if (!response.ok) throw new Error('Falló la petición');

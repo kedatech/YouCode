@@ -7,7 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "http://https://youcode.onrender.com"
+      "applicationUrl": "http://localhost:5096"
     },
     "https": {
       "commandName": "Project",
@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:7175;http://https://youcode.onrender.com"
+      "applicationUrl": "https://localhost:7175;http://localhost:5096"
     },
     "IIS Express": {
       "commandName": "IISExpress",

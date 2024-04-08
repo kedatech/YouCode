@@ -56,7 +56,7 @@ function setLike(postItem, userId, reactions) {
 
 
 function addLike(postItem, reactions, userId, postId) {
-    var url = 'http://https://youcode.onrender.com/api/reaction/';
+    var url = 'http://localhost:5096/api/reaction/';
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -76,7 +76,7 @@ function addLike(postItem, reactions, userId, postId) {
 }
 
 function removeLike(postItem, reactions, reactionId) {
-    var url = `http://https://youcode.onrender.com/api/reaction/${reactionId}`;
+    var url = `http://localhost:5096/api/reaction/${reactionId}`;
     fetch(url, { method: 'DELETE' })
         .then(function (response) {
             if (!response.ok) throw new Error('Falló la petición');
