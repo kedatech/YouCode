@@ -5,10 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function initializePostsLikes() {
     var userId = getUserId();
-    if (!userId) {
-        alert('No se ha iniciado sesión');
-        return;
-    }
+    //if (!userId) {
+    //    alert('No se ha iniciado sesión');
+    //    return;
+    //}
 
     var postItems = document.querySelectorAll('.post-item-render');
     postItems.forEach(function (postItem) {
