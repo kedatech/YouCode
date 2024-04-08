@@ -12,6 +12,16 @@ function followInit() {
     // recorrer las sugerencias de follow user
     let follows = document.querySelectorAll('.who-follow-render');
 
+    follows.forEach(follow => {
+        follow.addEventListener('click', function () {
+            // obtener el data-username 
+            let username = follow.getAttribute('data-username');
+            // User/Profile/ redirigir
+            window.location.href = `/User/Profile/${username}`;
+        });
+
+    });
+    
     // si no se encuentar el id del usuario, en lugar de agregar evento click se agrega un alert al intentar seguir
     if (!userId) {
         follows.forEach(follow => {
