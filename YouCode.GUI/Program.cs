@@ -38,7 +38,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.WebHost.UseUrls("http://*:5000");
+builder.WebHost.UseUrls("http://localhost:5069");
 
 // Add session and configure cookie
 builder.Services.AddSession(options =>

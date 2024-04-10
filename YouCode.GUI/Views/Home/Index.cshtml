@@ -701,7 +701,7 @@
                 return;
             }
 
-            var url = 'https://youcode.onrender.com/api/reaction/';
+            var url = 'http://localhost:5069/api/reaction/';
             fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -726,7 +726,7 @@
                 openModal('LoginWarningModal');
                 return;
             }
-            var url = `https://youcode.onrender.com/api/reaction/${reactionId}`;
+            var url = `http://localhost:5069/api/reaction/${reactionId}`;
             fetch(url, { method: 'DELETE' })
                 .then(function (response) {
                     if (!response.ok) throw new Error('Falló la petición');
@@ -759,7 +759,7 @@
         // Función para eliminar una publicación
         function deletePost(IdPost) {
             $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
-            var url = `https://youcode.onrender.com/api/Post/DeletePost/${IdPost}`;
+            var url = `http://localhost:5069/api/Post/DeletePost/${IdPost}`;
             
             fetch(url, { method: 'DELETE' })
             .then(function(response) { 
@@ -945,7 +945,7 @@
                 Content: commentContent
             };
 
-            var url = 'https://youcode.onrender.com/api/comment/add';
+            var url = 'http://localhost:5069/api/comment/add';
 
             fetch(url, {
                 method: 'POST',
@@ -973,7 +973,7 @@
 
             $('#spinnerOverlay').removeClass('hidden'); // Mostramos el spinner
 
-            var url = 'https://youcode.onrender.com/api/comment/remove/'+commentId;
+            var url = 'http://localhost:5069/api/comment/remove/'+commentId;
 
             fetch(url, {
                 method: 'POST',

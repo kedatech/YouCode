@@ -48,7 +48,7 @@ function followInit() {
 
 
     // hacer peticion para obtener a los seguidos
-    let url = `https://youcode.onrender.com/api/follower/${userId}`;
+    let url = `http://localhost:5069/api/follower/${userId}`;
     fetch(url)
         .then(response => response.json())
         .then(data => {
